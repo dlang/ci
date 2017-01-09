@@ -1,0 +1,31 @@
+#!/bin/env groovy
+
+def reset () {
+    sh "git reset --hard"
+    sh "git clean -fdx"
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+def projects = [ "s-ludwig/taggedalgebraic", "repeatedly/mustache-d" ]
+
+stage('Get compiler') {
+    sh "Fetch/unpack artifacts"
+}
+
+stage('Clone') {
+    def repos = [:]
+
+    projects.each {
+        repos[${it}] = {
+            dir(${it}) {
+                git url: "https://github.com/${it}.git"
+                reset()
+            }
+        }
+    }
+
+    node {
+        parallel repos
+    }
+}
