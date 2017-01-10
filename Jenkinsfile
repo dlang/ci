@@ -12,46 +12,19 @@ def build (os) {
     }
 }
 
-def reset () {
-    sh "git reset --hard"
-    sh "git clean -fdx"
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 
 stage('Clone') {
-    def repos = [
-        dmd: {
-            dir('dmd') {
-                git url: 'https://github.com/dlang/dmd.git'
-                reset()
-            }
-        },
-        druntime: {
-            dir('druntime') {
-                git url: 'https://github.com/dlang/druntime.git'
-                reset()
-            }
-        },
-        phobos: {
-            dir('phobos') {
-                git url: 'https://github.com/dlang/phobos.git'
-                reset()
-            }
-        },
-        dub: {
-            dir('dub') {
-                git url: 'https://github.com/dlang/dub.git'
-                reset()
-            }
-        },
-        tools: {
-            dir('tools') {
-                git url: 'https://github.com/dlang/tools.git'
-                reset()
+    def projects = [ 'dmd', 'druntime', 'phobos', 'dub', 'tools' ]
+    def repos = [:]
+
+    projects.each {
+        repos[${it}] = {
+            dir('dlang/${it}') {
+                checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'CleanBeforeCheckout']], userRemoteConfigs: [[url: 'https://github.com/dlang/${it}.git']]]
             }
         }
-    ]
+    }
 
     node {
         parallel repos

@@ -1,10 +1,5 @@
 #!/bin/env groovy
 
-def reset () {
-    sh "git reset --hard"
-    sh "git clean -fdx"
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 
 def projects = [ "s-ludwig/taggedalgebraic", "repeatedly/mustache-d" ]
@@ -19,8 +14,7 @@ stage('Clone') {
     projects.each {
         repos[${it}] = {
             dir(${it}) {
-                git url: "https://github.com/${it}.git"
-                reset()
+                checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'CleanBeforeCheckout']], userRemoteConfigs: [[url: 'https://github.com/dlang/${it}.git']]]
             }
         }
     }
