@@ -5,7 +5,7 @@ def build (os) {
 
     switch (os) {
         case "linux":
-            sh "make -f posix.mak RELEASE=1"
+            sh "make -f posix.mak RELEASE=1 AUTO_BOOTSTRAP=1"
             break
         default:
             assert false
