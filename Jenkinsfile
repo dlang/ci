@@ -48,18 +48,18 @@ stage('Build Compiler') {
 stage('Test Compiler') {
     def repos = [
         dmd: {
-            dir('dmd') {
-                sh "make -f posix.mak unittest"
+            dir('dmd/test') {
+                sh "make MODEL=64"
             }
         },
         druntime: {
             dir('druntime') {
-                sh "make -f posix.mak test"
+                sh "make -f posix.mak unittest"
             }
         },
         phobos: {
             dir('phobos') {
-                sh "make -f posix.mak test"
+                sh "make -f posix.mak unittest"
             }
         }
     ]
