@@ -18,10 +18,11 @@ stage('Clone') {
     def projects = [ 'dmd', 'druntime', 'phobos', 'dub', 'tools' ]
     def repos = [:]
 
-    projects.each {
-        repos[${it}] = {
-            dir('dlang/${it}') {
-                checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'CleanBeforeCheckout']], userRemoteConfigs: [[url: 'https://github.com/dlang/${it}.git']]]
+    for (int i = 0; i < projects.size(); ++i) {
+        def proj = projects[i]; // http://stackoverflow.com/a/35776133
+        repos["$proj"] = {
+            dir("$proj") {
+                checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'CleanBeforeCheckout']], userRemoteConfigs: [[url: "https://github.com/dlang/${proj}.git"]]]
             }
         }
     }
