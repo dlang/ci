@@ -119,7 +119,5 @@ DFLAGS=-I%@P%/../imports -L-L%@P%/../libs -L--export-dynamic -L--export-dynamic 
 }
 
 stage("Test downstream projects") {
-    node {
-        echo "Runs job from ProjectsJenkinsfile"
-    }
+    build "dlangci-downstream"
 }
