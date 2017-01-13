@@ -77,8 +77,25 @@ stage('Test Compiler') {
 }
 
 stage('Build Tools') {
-    withEnv(["PATH=${env.WORKSPACE}/dmd/src/dmd:${env.PATH}"]) {
-        sh "To be done"
+    def repos = [
+        dub: {
+            dir ("dub") {
+                withEnv(["PATH=${env.WORKSPACE}/dmd/src/dmd:${env.PATH}"]) {
+                        sh "./build.sh"
+                }
+            }
+        },
+        tools: {
+            dir ("tools") {
+                withEnv(["PATH=${env.WORKSPACE}/dmd/src/dmd:${env.PATH}"]) {
+                    build 'linux'
+                }
+            }
+        }
+    ]
+
+    node {
+        parallel repos
     }
 }
 
