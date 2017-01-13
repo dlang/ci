@@ -100,10 +100,26 @@ stage('Build Tools') {
 }
 
 stage("Package distribution") {
-    sh "To be done"
+    node {
+        sh "mkdir -p distribution/{bin,imports,libs}"
+
+        sh "cp dmd/src/dmd distribution/bin/"
+        writeFile file: 'distribution/bin/dmd.conf', text: '''[Environment]
+DFLAGS=-I%@P%/../imports -L-L%@P%/../libs -L--export-dynamic -L--export-dynamic -fPIC'''
+        sh "cp dub/bin/dub distribution/bin/"
+        sh "cp tools/generated/linux/64/rdmd distribution/bin/"
+
+        sh "cp -r phobos/{etc,std} distribution/imports/"
+        sh "cp -r druntime/import/* distribution/imports/"
+        sh "cp phobos/generated/linux/release/64/libphobos2.a distribution/libs"
+
+        sh "tar -cf distribution.tar distribution"
+        archiveArtifacts artifacts: 'distribution.tar', onlyIfSuccessful: true
+    }
 }
 
 stage("Test downstream projects") {
-    // TODO:
-    sh "Runs job from ProjectsJenkinsfile"
+    node {
+        echo "Runs job from ProjectsJenkinsfile"
+    }
 }
