@@ -12,6 +12,12 @@ def build (os) {
     }
 }
 
+def cleanCheckout (repo_url) {
+    checkout poll: false, scm: [$class: 'GitSCM', branches: [[name:
+        '*/master']], extensions: [[$class: 'CleanBeforeCheckout']],
+        userRemoteConfigs: [[url: repo_url]]]
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 stage('Clone') {
@@ -22,7 +28,7 @@ stage('Clone') {
         def proj = projects[i]; // http://stackoverflow.com/a/35776133
         repos["$proj"] = {
             dir("$proj") {
-                checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'CleanBeforeCheckout']], userRemoteConfigs: [[url: "https://github.com/dlang/${proj}.git"]]]
+                cleanCheckout "https://github.com/dlang/${proj}.git"
             }
         }
     }
