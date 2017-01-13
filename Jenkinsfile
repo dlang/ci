@@ -1,6 +1,6 @@
 #!/bin/env groovy
 
-def build (os) {
+def build_with_make (os) {
     // TODO: figure out OS from node label
 
     switch (os) {
@@ -41,13 +41,13 @@ stage('Clone') {
 stage('Build Compiler') {
     node {
         dir('dmd') {
-            build 'linux'
+            build_with_make 'linux'
         }
         dir('druntime') {
-            build 'linux'
+            build_with_make 'linux'
         }
         dir('phobos') {
-            build 'linux'
+            build_with_make 'linux'
         }
     }
 }
@@ -88,7 +88,7 @@ stage('Build Tools') {
         tools: {
             dir ("tools") {
                 withEnv(["PATH=${env.WORKSPACE}/dmd/src/dmd:${env.PATH}"]) {
-                    build 'linux'
+                    build_with_make 'linux'
                 }
             }
         }
@@ -119,5 +119,6 @@ DFLAGS=-I%@P%/../imports -L-L%@P%/../libs -L--export-dynamic -L--export-dynamic 
 }
 
 stage("Test downstream projects") {
-    build "dlangci-downstream"
+    // Requires Multibranch pipeline build plugin
+    build job: 'dlangci-downstream'
 }

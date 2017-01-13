@@ -1,11 +1,23 @@
 #!/bin/env groovy
 
+def cleanCheckout (repo_url) {
+    checkout poll: false, scm: [$class: 'GitSCM', branches: [[name:
+        '*/master']], extensions: [[$class: 'CleanBeforeCheckout']],
+        userRemoteConfigs: [[url: repo_url]]]
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 def projects = [ "s-ludwig/taggedalgebraic", "repeatedly/mustache-d" ]
 
 stage('Get compiler') {
-    sh "Fetch/unpack artifacts"
+    node {
+        // Requires CopyArtifact plugin
+        step ([$class: 'CopyArtifact',
+            projectName: 'dlangci-main',
+            selector: [$class: 'TriggeredBuildSelector']])
+        sh "tar -xf distribution.tar"
+    }
 }
 
 stage('Clone') {
@@ -15,7 +27,45 @@ stage('Clone') {
         def proj = projects[i]; // http://stackoverflow.com/a/35776133
         repos["$proj"] = {
             dir("$proj") {
-                checkout poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], extensions: [[$class: 'CleanBeforeCheckout']], userRemoteConfigs: [[url: 'https://github.com/${proj}.git']]]
+                cleanCheckout "https://github.com/${proj}.git"
+            }
+        }
+    }
+
+    node {
+        parallel repos
+    }
+}
+
+stage('Build') {
+    def repos = [:]
+
+    for (int i = 0; i < projects.size(); ++i) {
+        def proj = projects[i]; // http://stackoverflow.com/a/35776133
+        repos["$proj"] = {
+            dir("$proj") {
+                withEnv(["PATH=${env.WORKSPACE}/distribution/bin:${env.PATH}"]) {
+                    sh "dub build"
+                }
+            }
+        }
+    }
+
+    node {
+        parallel repos
+    }
+}
+
+stage('Test') {
+    def repos = [:]
+
+    for (int i = 0; i < projects.size(); ++i) {
+        def proj = projects[i]; // http://stackoverflow.com/a/35776133
+        repos["$proj"] = {
+            dir("$proj") {
+                withEnv(["PATH=${env.WORKSPACE}/distribution/bin:${env.PATH}"]) {
+                    sh "dub test"
+                }
             }
         }
     }
