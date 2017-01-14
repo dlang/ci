@@ -1,21 +1,14 @@
 #!/bin/env groovy
 
-def build_with_make (os) {
-    // TODO: figure out OS from node label
+def Utils
 
-    switch (os) {
-        case "linux":
-            sh "make -f posix.mak RELEASE=1 AUTO_BOOTSTRAP=1"
-            break
-        default:
-            assert false
+stage('Initialization') {
+    node {
+        checkout scm
+        sh "ls -lah"
+        Utils = load "Utils.groovy"
+        assert Utils
     }
-}
-
-def cleanCheckout (repo_url) {
-    checkout poll: false, scm: [$class: 'GitSCM', branches: [[name:
-        '*/master']], extensions: [[$class: 'CleanBeforeCheckout']],
-        userRemoteConfigs: [[url: repo_url]]]
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -28,7 +21,7 @@ stage('Clone') {
         def proj = projects[i]; // http://stackoverflow.com/a/35776133
         repos["$proj"] = {
             dir("$proj") {
-                cleanCheckout "https://github.com/dlang/${proj}.git"
+                Utils.cleanCheckout "https://github.com/dlang/${proj}.git"
             }
         }
     }
@@ -41,13 +34,13 @@ stage('Clone') {
 stage('Build Compiler') {
     node {
         dir('dmd') {
-            build_with_make 'linux'
+            Utils.dlang_make()
         }
         dir('druntime') {
-            build_with_make 'linux'
+            Utils.dlang_make()
         }
         dir('phobos') {
-            build_with_make 'linux'
+            Utils.dlang_make()
         }
     }
 }
@@ -88,7 +81,7 @@ stage('Build Tools') {
         tools: {
             dir ("tools") {
                 withEnv(["PATH=${env.WORKSPACE}/dmd/src/dmd:${env.PATH}"]) {
-                    build_with_make 'linux'
+                    Utils.dlang_make()
                 }
             }
         }
