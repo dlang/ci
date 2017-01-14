@@ -1,9 +1,17 @@
 #!/bin/env groovy
 
 def cleanCheckout (repo_url) {
-    checkout poll: false, scm: [$class: 'GitSCM', branches: [[name:
-        '*/master']], extensions: [[$class: 'CleanBeforeCheckout']],
-        userRemoteConfigs: [[url: repo_url]]]
+    git poll: false, branch: "master",
+        extensions: [[$class: 'CleanBeforeCheckout']], url: repo_url
+
+    def LATEST = sh (
+        script: 'git tag -l | egrep "^v[0-9]+\\.[0-9]+\\.[0-9]+.*$" | sort --version-sort | tail -n 1',
+        returnStdout: true
+    ).trim()
+
+    echo LATEST
+
+    sh "git checkout ${LATEST}" // TODO: figure out how to do it via built-in git step
 }
 
 ////////////////////////////////////////////////////////////////////////////////
