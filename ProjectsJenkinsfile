@@ -8,7 +8,31 @@ def cleanCheckout (repo_url) {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-def projects = [ "s-ludwig/taggedalgebraic", "repeatedly/mustache-d" ]
+def dub_projects = [
+   "Abscissa/libInputVisitor",
+   "BlackEdder/ggplotd",
+   "DerelictOrg/DerelictFT",
+   "DerelictOrg/DerelictGL3",
+   "DerelictOrg/DerelictGLFW3",
+   "DerelictOrg/DerelictSDL2",
+   "DlangScience/scid",
+   "Hackerpilot/libdparse",
+   "ariovistus/pyd",
+   "atilaneves/unit-threaded",
+   "d-gamedev-team/gfm",
+   "dlang/dub",
+   "economicmodeling/containers",
+   "higgsjs/Higgs",
+   "kyllingstad/zmqd",
+   "lgvz/imageformats",
+   "msgpack/msgpack-d",
+   "msoucy/dproto",
+   "nomad-software/dunit",
+   "rejectedsoftware/diet-ng",
+   "rejectedsoftware/vibe.d",
+   "repeatedly/mustache-d",
+   "s-ludwig/taggedalgebraic",
+]
 
 stage('Get compiler') {
     node {
@@ -23,8 +47,8 @@ stage('Get compiler') {
 stage('Clone') {
     def repos = [:]
 
-    for (int i = 0; i < projects.size(); ++i) {
-        def proj = projects[i]; // http://stackoverflow.com/a/35776133
+    for (int i = 0; i < dub_projects.size(); ++i) {
+        def proj = dub_projects[i]; // http://stackoverflow.com/a/35776133
         repos["$proj"] = {
             dir("$proj") {
                 cleanCheckout "https://github.com/${proj}.git"
@@ -40,8 +64,8 @@ stage('Clone') {
 stage('Build') {
     def repos = [:]
 
-    for (int i = 0; i < projects.size(); ++i) {
-        def proj = projects[i]; // http://stackoverflow.com/a/35776133
+    for (int i = 0; i < dub_projects.size(); ++i) {
+        def proj = dub_projects[i]; // http://stackoverflow.com/a/35776133
         repos["$proj"] = {
             dir("$proj") {
                 withEnv(["PATH=${env.WORKSPACE}/distribution/bin:${env.PATH}"]) {
@@ -59,8 +83,8 @@ stage('Build') {
 stage('Test') {
     def repos = [:]
 
-    for (int i = 0; i < projects.size(); ++i) {
-        def proj = projects[i]; // http://stackoverflow.com/a/35776133
+    for (int i = 0; i < dub_projects.size(); ++i) {
+        def proj = dub_projects[i]; // http://stackoverflow.com/a/35776133
         repos["$proj"] = {
             dir("$proj") {
                 withEnv(["PATH=${env.WORKSPACE}/distribution/bin:${env.PATH}"]) {
