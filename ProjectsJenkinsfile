@@ -1,5 +1,14 @@
 #!/bin/env groovy
 
+/*******************************************************************************
+
+    Utilities and helpers
+
+*******************************************************************************/
+
+/**
+    Checks out latest SemVer-compatible tag available in specified repo
+ **/
 def cleanCheckout (repo_url) {
     git poll: false, branch: "master",
         extensions: [[$class: 'CleanBeforeCheckout']], url: repo_url
@@ -9,12 +18,49 @@ def cleanCheckout (repo_url) {
         returnStdout: true
     ).trim()
 
-    echo LATEST
-
-    sh "git checkout ${LATEST}" // TODO: figure out how to do it via built-in git step
+    sh "git checkout ${LATEST}"
 }
 
-////////////////////////////////////////////////////////////////////////////////
+/**
+    Utility to simplify repeating boilerplate of defining parallel steps
+    over array of folders. Creates a map from @names array where each value
+    is @action called with each name respectively while being wrapped in
+    `dir(name)` statement.
+ **/
+def mapSteps (names, action) {
+    def steps = [:]
+
+    for (int i = 0; i < names.size(); ++i) {
+        def name = names[i];
+        steps[name] = { dir(name, { action(name) }) }
+    }
+
+    return steps
+}
+
+/*******************************************************************************
+
+    Actions
+
+    In Groovy it is not possible to define a "static" nested function and
+    defining a closure wrongly captures a context, making it break `parallel`
+    in weird ways.
+
+    Because of that, all actions to be used with `mapSteps` are to be define
+    here as global functions. Each function should be named in relation to stage
+    is used in and take exactly one argument - directory name
+
+*******************************************************************************/
+
+def clone (name) {
+    cleanCheckout "https://github.com/${name}.git"
+}
+
+/*******************************************************************************
+
+    Stages
+
+*******************************************************************************/
 
 def dub_projects = [
    "Abscissa/libInputVisitor",
@@ -42,67 +88,32 @@ def dub_projects = [
    "s-ludwig/taggedalgebraic",
 ]
 
-stage('Get compiler') {
-    node {
-        // Requires CopyArtifact plugin
+node { // for now whole pipeline runs on one node because no slaves are present
+
+    stage('Get compiler') {
         step ([$class: 'CopyArtifact',
             projectName: 'dlangci-main',
             selector: [$class: 'TriggeredBuildSelector']])
         sh "tar -xf distribution.tar"
     }
-}
 
-stage('Clone') {
-    def repos = [:]
+    stage('Clone') {
+        parallel mapSteps(dub_projects, this.&clone)
+    }
 
-    for (int i = 0; i < dub_projects.size(); ++i) {
-        def proj = dub_projects[i]; // http://stackoverflow.com/a/35776133
-        repos["$proj"] = {
-            dir("$proj") {
-                cleanCheckout "https://github.com/${proj}.git"
+    stage('Build') {
+        parallel mapSteps(dub_projects, { name ->
+            withEnv(["PATH=${env.WORKSPACE}/distribution/bin:${env.PATH}"]) {
+                sh "dub build"
             }
-        }
+        })
     }
 
-    node {
-        parallel repos
-    }
-}
-
-stage('Build') {
-    def repos = [:]
-
-    for (int i = 0; i < dub_projects.size(); ++i) {
-        def proj = dub_projects[i]; // http://stackoverflow.com/a/35776133
-        repos["$proj"] = {
-            dir("$proj") {
-                withEnv(["PATH=${env.WORKSPACE}/distribution/bin:${env.PATH}"]) {
-                    sh "dub build"
-                }
+    stage('Test') {
+        parallel mapSteps(dub_projects, { name ->
+            withEnv(["PATH=${env.WORKSPACE}/distribution/bin:${env.PATH}"]) {
+                sh "dub build"
             }
-        }
-    }
-
-    node {
-        parallel repos
-    }
-}
-
-stage('Test') {
-    def repos = [:]
-
-    for (int i = 0; i < dub_projects.size(); ++i) {
-        def proj = dub_projects[i]; // http://stackoverflow.com/a/35776133
-        repos["$proj"] = {
-            dir("$proj") {
-                withEnv(["PATH=${env.WORKSPACE}/distribution/bin:${env.PATH}"]) {
-                    sh "dub test"
-                }
-            }
-        }
-    }
-
-    node {
-        parallel repos
+        })
     }
 }

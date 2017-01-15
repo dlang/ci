@@ -1,104 +1,126 @@
 #!/bin/env groovy
 
-def Utils
+/*******************************************************************************
 
-stage('Initialization') {
-    node {
-        checkout scm
-        sh "ls -lah"
-        Utils = load "Utils.groovy"
-        assert Utils
-    }
+    Utilities and helpers
+
+*******************************************************************************/
+
+/**
+    Standard function to be used to do a git checkout for arbitrary URL in
+    current folder. Cleans the folder (using `git reset --hard` +
+    `git clean -fdx`) in the process.
+ **/
+def cleanCheckout (repo_url, git_ref = "master") {
+    git poll: false, branch: "master",
+        extensions: [[$class: 'CleanBeforeCheckout']], url: repo_url
 }
 
-////////////////////////////////////////////////////////////////////////////////
+/**
+    Utility to simplify repeating boilerplate of defining parallel steps
+    over array of folders. Creates a map from @names array where each value
+    is @action called with each name respectively while being wrapped in
+    `dir(name)` statement.
+ **/
+def mapSteps (names, action) {
+    def steps = [:]
 
-stage('Clone') {
+    for (int i = 0; i < names.size(); ++i) {
+        def name = names[i];
+        steps[name] = { dir(name, { action(name) }) }
+    }
+
+    return steps
+}
+
+/*******************************************************************************
+
+    Actions
+
+    In Groovy it is not possible to define a "static" nested function and
+    defining a closure wrongly captures a context, making it break `parallel`
+    in weird ways.
+
+    Because of that, all actions to be used with `mapSteps` are to be define
+    here as global functions. Each function should be named in relation to stage
+    is used in and take exactly one argument - directory name
+
+*******************************************************************************/
+
+def clone (name) {
+    cleanCheckout "https://github.com/dlang/${name}.git"
+}
+
+def test (name) {
+    if (name == 'dmd')
+        sh "make -j 4 -f posix.mak test MODEL=64"
+    else
+        sh "make -f posix.mak unittest"
+}
+
+/*******************************************************************************
+
+    Stages
+
+*******************************************************************************/
+
+node { // for now whole pipeline runs on one node because no slaves are present
+
     def projects = [ 'dmd', 'druntime', 'phobos', 'dub', 'tools' ]
-    def repos = [:]
 
-    for (int i = 0; i < projects.size(); ++i) {
-        def proj = projects[i]; // http://stackoverflow.com/a/35776133
-        repos["$proj"] = {
-            dir("$proj") {
-                Utils.cleanCheckout "https://github.com/dlang/${proj}.git"
-            }
-        }
+    stage('Clone') {
+        parallel mapSteps(projects, this.&clone)
     }
 
-    node {
-        parallel repos
+    stage('Build Compiler') {
+        // main compilation process can't be parallel because each repo
+        // expects previous one to be already built and present in parent
+        // folder
+
+        def action = { sh "make -f posix.mak RELEASE=1 AUTO_BOOTSTRAP=1" }
+
+        dir('dmd',      action)
+        dir('druntime', action)
+        dir('phobos',   action)
     }
-}
 
-stage('Build Compiler') {
-    node {
-        dir('dmd') {
-            Utils.dlang_make()
-        }
-        dir('druntime') {
-            Utils.dlang_make()
-        }
-        dir('phobos') {
-            Utils.dlang_make()
-        }
+    stage('Test Compiler') {
+        // dmd own test execution time is the biggest lirability here
+        // so it is run with additional internal parallelization (make -j 4)
+        // finding ways to speed up tests would help this pipeline a lot
+
+        parallel mapSteps([ 'dmd', 'druntime', 'phobos' ], this.&test)
     }
-}
 
-stage('Test Compiler') {
-    def repos = [
-        dmd: {
-            dir('dmd/test') {
-                sh "make MODEL=64"
-            }
-        },
-        druntime: {
-            dir('druntime') {
-                sh "make -f posix.mak unittest"
-            }
-        },
-        phobos: {
-            dir('phobos') {
-                sh "make -f posix.mak unittest"
-            }
-        }
-    ]
-
-    node {
-        parallel repos
-    }
-}
-
-stage('Build Tools') {
-    def repos = [
-        dub: {
-            dir ("dub") {
+    stage('Build Tools') {
+        def repos = [
+            'dub': {
                 withEnv(["PATH=${env.WORKSPACE}/dmd/src/dmd:${env.PATH}"]) {
-                        sh "./build.sh"
+                    dir ('dub') { sh "./build.sh" }
+                }
+            },
+            'tools': {
+                withEnv(["PATH=${env.WORKSPACE}/dmd/src/dmd:${env.PATH}"]) {
+                    dir ('tools') { sh "make -f posix.mak RELEASE=1" }
                 }
             }
-        },
-        tools: {
-            dir ("tools") {
-                withEnv(["PATH=${env.WORKSPACE}/dmd/src/dmd:${env.PATH}"]) {
-                    Utils.dlang_make()
-                }
-            }
-        }
-    ]
+        ]
 
-    node {
         parallel repos
     }
-}
 
-stage("Package distribution") {
-    node {
+    stage("Package distribution") {
+        // ideally this step should be in sync with release packaging scripts
+        // but that requires a lot of additional work to set up virtualization
+        // for different platforms and separate manual bits from automatic in
+        // actual packaging script. Thus for now most simple tarball is
+        // generated - just enough to run downstream project tests
+
         sh "mkdir -p distribution/{bin,imports,libs}"
 
         sh "cp dmd/src/dmd distribution/bin/"
         writeFile file: 'distribution/bin/dmd.conf', text: '''[Environment]
-DFLAGS=-I%@P%/../imports -L-L%@P%/../libs -L--export-dynamic -L--export-dynamic -fPIC'''
+    DFLAGS=-I%@P%/../imports -L-L%@P%/../libs -L--export-dynamic -L--export-dynamic -fPIC'''
         sh "cp dub/bin/dub distribution/bin/"
         sh "cp tools/generated/linux/64/rdmd distribution/bin/"
 
@@ -112,6 +134,5 @@ DFLAGS=-I%@P%/../imports -L-L%@P%/../libs -L--export-dynamic -L--export-dynamic 
 }
 
 stage("Test downstream projects") {
-    // Requires Multibranch pipeline build plugin
     build job: 'dlangci-downstream'
 }
