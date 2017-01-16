@@ -1,0 +1,6 @@
+[vagrant]
+ci ansible_ssh_host=172.16.1.2
+
+[vagrant:vars]
+ansible_ssh_user=vagrant
+ansible_ssh_private_key_file=.vagrant/machines/{{inventory_hostname}}foo/virtualbox/private_key

@@ -1,0 +1,2 @@
+[online_net]
+ci ansible_ssh_host=ci2.dawg.eu
