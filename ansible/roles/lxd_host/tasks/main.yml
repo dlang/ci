@@ -1,0 +1,5 @@
+---
+# [LXD 2.0: Installing and configuring LXD [2/12] | Ubuntu Insights](https://insights.ubuntu.com/2016/03/16/lxd-2-0-installing-and-configuring-lxd-212/)
+- name: install lxd
+  apt: { name: lxd }
+# TODO: run equivalent of lxd init (fixed or random subnet?)

@@ -1,0 +1,7 @@
+---
+- name: install ufw
+  apt: { name: ufw }
+- name: rate limit ssh connections
+  ufw: { rule: limit, port: ssh, proto: tcp }
+- name: enable ufw
+  ufw: { state: enabled }

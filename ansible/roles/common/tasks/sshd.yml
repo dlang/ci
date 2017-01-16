@@ -1,0 +1,11 @@
+---
+# [Security/Guidelines/OpenSSH - MozillaWiki](https://wiki.mozilla.org/Security/Guidelines/OpenSSH)
+- name: sshd_config
+  copy: { src: sshd_config, dest: /etc/ssh/sshd_config }
+  notify: restart sshd
+- name: remove ssh keys
+  file: { dest: "/etc/ssh/ssh_host_{{item}}_key", state: absent }
+  with_items: [dsa, ecdsa]
+- name: remove ssh keys
+  file: { dest: "/etc/ssh/ssh_host_{{item}}_key.pub", state: absent }
+  with_items: [dsa, ecdsa]
