@@ -9,6 +9,8 @@
 - hosts: container_hosts
   roles:
     - common
-    #- lxd_host
-  tasks:
-    - debug: msg='nothing there yet'
+    - lxd_host
+
+- hosts: jenkins.ci2.lxd
+
+- hosts: executors

@@ -1,5 +1,5 @@
 [vagrant]
-ci2.dawg.eu ansible_ssh_host=172.16.1.2
+ci2.dawg.eu
 
 [container_hosts]
 ci2.dawg.eu
@@ -9,11 +9,15 @@ ci2.dawg.eu
 ci2_containers
 
 [ci2_containers]
-jenkins
-runner-01
-runner-02
+jenkins.ci2.lxd
+runner-01.ci2.lxd
+runner-02.ci2.lxd
 
 [ci2_containers:vars]
 # ssh proxy into container (running ssh itself)
 ansible_ssh_common_args=-o ProxyCommand="ssh -o IdentityFile=.vagrant/machines/ci/virtualbox/private_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -W %h:%p vagrant@172.16.1.2" -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null
 ansible_ssh_user=root
+
+[executors]
+runner-01.ci2.lxd
+runner-02.ci2.lxd

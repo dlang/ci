@@ -2,4 +2,75 @@
 # [LXD 2.0: Installing and configuring LXD [2/12] | Ubuntu Insights](https://insights.ubuntu.com/2016/03/16/lxd-2-0-installing-and-configuring-lxd-212/)
 - name: install lxd
   apt: { name: lxd }
-# TODO: run equivalent of lxd init (fixed or random subnet?)
+# dpkg-reconfigure -p medium lxd
+# debconf-show lxd
+- name: configure lxd
+  lineinfile:
+    dest: /etc/default/lxd-bridge
+    regexp: "^{{ item.key }}="
+    line: "{{ item.key }}=\"{{ item.value }}\""
+  notify: reconfigure lxd
+  with_dict:
+    USE_LXD_BRIDGE: 'true'
+    LXD_BRIDGE: 'lxdbr0'
+    UPDATE_PROFILE: 'true'
+    LXD_CONFILE:
+    LXD_DOMAIN: "{{ inventory_hostname_short }}.lxd"
+    LXD_IPV4_ADDR: "10.23.{{ host_id | int }}.1"
+    LXD_IPV4_NETMASK: 255.255.255.0
+    LXD_IPV4_NETWORK: "10.23.{{ host_id | int }}.1/24"
+    LXD_IPV4_DHCP_RANGE: "10.23.{{ host_id | int }}.2,10.23.{{ host_id | int }}.254"
+    LXD_IPV4_DHCP_MAX: 250
+    LXD_IPV4_NAT: 'true'
+    LXD_IPV6_ADDR:
+    LXD_IPV6_MASK:
+    LXD_IPV6_NETWORK:
+    LXD_IPV6_NAT: 'false'
+    LXD_IPV6_PROXY: 'false'
+
+- name: resolve container names (lxd dnsmasq)
+  lineinfile:
+    dest: /etc/resolvconf/resolv.conf.d/head
+    line: "nameserver 10.23.{{ host_id | int }}.1"
+  notify: resolvconf
+
+- name: reconfigure lxd
+  meta: flush_handlers
+
+# https://docs.ansible.com/ansible/lxd_container_module.html
+- name: create containers
+  lxd_container:
+    name: "{{ item.split('.')[0] }}"
+    source:
+      type: image
+      mode: pull
+      server: https://images.linuxcontainers.org
+      alias: ubuntu/xenial/amd64
+  with_items: "{{ groups[inventory_hostname_short + '_containers'] }}"
+
+- name: install python for provisioning
+  command: lxc exec {{ item.split('.')[0] }} -- sh -c 'apt-get update -q2 && apt-get install -q2 python'
+  args:
+    creates: "/var/lib/lxd/containers/{{ item.split('.')[0] }}/rootfs/usr/bin/python"
+  with_items: "{{ groups[inventory_hostname_short + '_containers'] }}"
+
+- name: install sshd for provisioning
+  command: lxc exec {{ item.split('.')[0] }} -- sh -c 'apt-get update -q2 && apt-get install -q2 openssh-server'
+  args:
+    creates: "/var/lib/lxd/containers/{{ item.split('.')[0] }}/rootfs/usr/sbin/sshd"
+  with_items: "{{ groups[inventory_hostname_short + '_containers'] }}"
+
+- name: create .ssh folder
+  command: lxc exec {{ item.split('.')[0] }} -- mkdir .ssh --mode=0700
+  args:
+    creates: "/var/lib/lxd/containers/{{ item.split('.')[0] }}/rootfs/root/.ssh"
+  with_items: "{{ groups[inventory_hostname_short + '_containers'] }}"
+
+- name: add authorized_keys
+  copy:
+    src: files/containers_authorized_keys
+    dest: "/var/lib/lxd/containers/{{ item.split('.')[0] }}/rootfs/root/.ssh/authorized_keys"
+    group: 100000 # TODO: subgid
+    owner: 100000 # TODO: subuid
+    mode: 0400
+  with_items: "{{ groups[inventory_hostname_short + '_containers'] }}"
