@@ -9,9 +9,10 @@
 /**
     Checks out latest SemVer-compatible tag available in specified repo
  **/
-def cleanCheckout (repo_url) {
-    git poll: false, branch: "master",
-        extensions: [[$class: 'CleanBeforeCheckout']], url: repo_url
+def cleanCheckout (repo_url, git_ref = "master") {
+    checkout poll: false,
+        scm: [$class: 'GitSCM', branches: [[name: git_ref]], doGenerateSubmoduleConfigurations: false,
+              extensions: [[$class: 'CleanBeforeCheckout']], submoduleCfg: [], userRemoteConfigs: [[url: repo_url]]]
 
     def LATEST = sh (
         script: 'git tag -l | egrep "^v[0-9]+\\.[0-9]+\\.[0-9]+.*$" | sort --version-sort | tail -n 1',

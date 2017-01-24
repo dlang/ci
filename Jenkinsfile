@@ -12,8 +12,9 @@
     `git clean -fdx`) in the process.
  **/
 def cleanCheckout (repo_url, git_ref = "master") {
-    git poll: false, branch: "master",
-        extensions: [[$class: 'CleanBeforeCheckout']], url: repo_url
+    checkout poll: false,
+        scm: [$class: 'GitSCM', branches: [[name: git_ref]], doGenerateSubmoduleConfigurations: false,
+              extensions: [[$class: 'CleanBeforeCheckout']], submoduleCfg: [], userRemoteConfigs: [[url: repo_url]]]
 }
 
 /**
