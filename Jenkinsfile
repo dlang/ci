@@ -111,25 +111,19 @@ node { // for now whole pipeline runs on one node because no slaves are present
     }
 
     stage("Package distribution") {
-        // ideally this step should be in sync with release packaging scripts
-        // but that requires a lot of additional work to set up virtualization
-        // for different platforms and separate manual bits from automatic in
-        // actual packaging script. Thus for now most simple tarball is
-        // generated - just enough to run downstream project tests
+        // ideally this step should be in sync with the release tars
+        sh '''#!/usr/bin/env bash
+            set -ueo pipefail
 
-        sh "mkdir -p distribution/{bin,imports,libs}"
-
-        sh "cp dmd/src/dmd distribution/bin/"
-        writeFile file: 'distribution/bin/dmd.conf', text: '''[Environment]
-    DFLAGS=-I%@P%/../imports -L-L%@P%/../libs -L--export-dynamic -L--export-dynamic -fPIC'''
-        sh "cp dub/bin/dub distribution/bin/"
-        sh "cp tools/generated/linux/64/rdmd distribution/bin/"
-
-        sh "cp -r phobos/{etc,std} distribution/imports/"
-        sh "cp -r druntime/import/* distribution/imports/"
-        sh "cp phobos/generated/linux/release/64/libphobos2.a distribution/libs"
-
-        sh "tar -cf distribution.tar distribution"
+            rm -rf distribution
+            mkdir -p distribution/{bin,imports,libs}
+            cp --recursive --link dmd/src/dmd dub/bin/dub tools/generated/linux/64/rdmd distribution/bin/
+            cp --recursive --link phobos/etc phobos/std druntime/import/* distribution/imports/
+            cp --recursive --link phobos/generated/linux/release/64/libphobos2.a distribution/libs/
+            echo '[Environment]
+DFLAGS=-I%@P%/../imports -L-L%@P%/../libs -L--export-dynamic -L--export-dynamic -fPIC' > distribution/bin/dmd.conf
+            tar -cf distribution.tar distribution
+        '''
         archiveArtifacts artifacts: 'distribution.tar', onlyIfSuccessful: true
     }
 }
