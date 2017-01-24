@@ -54,9 +54,9 @@ def clone (name) {
 
 def test (name) {
     if (name == 'dmd')
-        sh "make -j 4 -f posix.mak test MODEL=64"
+        sh "make -f posix.mak test MODEL=64 --jobs=4"
     else
-        sh "make -f posix.mak unittest"
+        sh "make -f posix.mak unittest --jobs=4"
 }
 
 /*******************************************************************************
@@ -78,7 +78,7 @@ node { // for now whole pipeline runs on one node because no slaves are present
         // expects previous one to be already built and present in parent
         // folder
 
-        def action = { sh "make -f posix.mak AUTO_BOOTSTRAP=1" }
+        def action = { sh "make -f posix.mak AUTO_BOOTSTRAP=1 --jobs=4" }
 
         dir('dmd',      action)
         dir('dmd/src', { sh 'make -f posix.mak AUTO_BOOTSTRAP=1 dmd.conf' })
@@ -103,7 +103,7 @@ node { // for now whole pipeline runs on one node because no slaves are present
             },
             'tools': {
                 withEnv(["PATH=${env.WORKSPACE}/dmd/src:${env.PATH}"]) {
-                    dir ('tools') { sh "make -f posix.mak RELEASE=1" }
+                    dir ('tools') { sh "make -f posix.mak RELEASE=1 --jobs=4" }
                 }
             }
         ]
