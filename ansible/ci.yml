@@ -20,4 +20,10 @@
   roles:
     - jenkins
 
-- hosts: executors
+- hosts: jenkins_slaves
+  vars:
+    - jenkins_addr: ci2.dawg.eu
+  vars_files:
+    - vars/passwords.yml # jenkins_admin_password
+  roles:
+    - jenkins_slave

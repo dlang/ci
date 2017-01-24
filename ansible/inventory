@@ -18,6 +18,7 @@ runner-02.ci2.lxd
 ansible_ssh_common_args=-o ProxyCommand="ssh -W %h:%p ci2.dawg.eu"
 ansible_ssh_user=root
 
-[executors]
+# grouped by purpose
+[jenkins_slaves]
 runner-01.ci2.lxd
 runner-02.ci2.lxd

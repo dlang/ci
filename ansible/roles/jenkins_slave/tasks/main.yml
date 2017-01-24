@@ -1,0 +1,25 @@
+---
+- name: install java
+  apt: { name: default-jre, install_recommends: no, update_cache: yes, cache_valid_time: 3600 }
+- name: add jenkins slave user
+  user: { name: jenkins, system: yes, home: /var/lib/jenkins }
+- name: get slave secret
+  uri:
+    url: https://{{ jenkins_addr}}/scriptText
+    user: admin
+    password: "{{ jenkins_admin_password }}"
+    force_basic_auth: yes
+    method: POST
+    body: >-
+      script=import hudson.model.Hudson; println(Hudson.instance.slaves.find { it.name == '{{ inventory_hostname_short }}' }.getComputer().getJnlpMac())
+    return_content: yes
+  register: response
+- set_fact:
+    secret: "{{ response.content }}"
+- name: add jenkins slave service
+  template: { src: jenkins.service.j2, dest: /etc/systemd/system/jenkins.service }
+  vars:
+    secret: secret.content
+  notify: [systemctl daemon-reload, restart jenkins]
+- name: enable jenkins slave
+  service: { name: jenkins, state: started, enabled: yes }
