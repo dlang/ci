@@ -1,0 +1,5 @@
+---
+jenkins_admin_username: admin
+jenkins_admin_password:
+jenkins_http_port:
+jenkins_slave_agent_port:

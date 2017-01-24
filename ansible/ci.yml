@@ -12,5 +12,12 @@
     - lxd_host
 
 - hosts: jenkins.ci2.lxd
+  vars:
+    - jenkins_http_port: 8080
+    - jenkins_slave_agent_port: 55000
+  vars_files:
+    - vars/passwords.yml # jenkins_admin_password
+  roles:
+    - jenkins
 
 - hosts: executors
