@@ -7,6 +7,7 @@ ExecStartPre=/usr/bin/wget https://{{ jenkins_addr }}/jnlpJars/slave.jar -O /var
 ExecStart=/usr/bin/java -Xms64m -Xmx256m -jar /var/lib/jenkins/slave.jar -jnlpUrl https://{{ jenkins_addr }}/computer/{{ inventory_hostname_short }}/slave-agent.jnlp -secret {{ secret }}
 
 User=jenkins
+WorkingDirectory=/var/lib/jenkins
 
 [Install]
 WantedBy=multi-user.target
