@@ -95,12 +95,12 @@ node { // for now whole pipeline runs on one node because no slaves are present
     stage('Build Tools') {
         def repos = [
             'dub': {
-                withEnv(["PATH=${env.WORKSPACE}/dmd/src/dmd:${env.PATH}"]) {
+                withEnv(["PATH=${env.WORKSPACE}/dmd/src:${env.PATH}"]) {
                     dir ('dub') { sh "./build.sh" }
                 }
             },
             'tools': {
-                withEnv(["PATH=${env.WORKSPACE}/dmd/src/dmd:${env.PATH}"]) {
+                withEnv(["PATH=${env.WORKSPACE}/dmd/src:${env.PATH}"]) {
                     dir ('tools') { sh "make -f posix.mak RELEASE=1" }
                 }
             }
