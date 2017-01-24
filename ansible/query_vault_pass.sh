@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # Query https://www.passwordstore.org/ for GPG encrypted
 # vault password to leverage keyring/gpg-agent caching.
-pass show dlangci/ansible_vault
+exec pass show dlangci/ansible_vault
