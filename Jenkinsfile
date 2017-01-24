@@ -122,9 +122,8 @@ node { // for now whole pipeline runs on one node because no slaves are present
             cp --recursive --link phobos/generated/linux/release/64/libphobos2.a distribution/libs/
             echo '[Environment]
 DFLAGS=-I%@P%/../imports -L-L%@P%/../libs -L--export-dynamic -L--export-dynamic -fPIC' > distribution/bin/dmd.conf
-            tar -cf distribution.tar distribution
         '''
-        archiveArtifacts artifacts: 'distribution.tar', onlyIfSuccessful: true
+        stash name: "dlang-build", includes: "distribution/**"
     }
 
 }

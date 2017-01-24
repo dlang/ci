@@ -91,10 +91,7 @@ def dub_projects = [
 node { // for now whole pipeline runs on one node because no slaves are present
 
     stage('Get compiler') {
-        step ([$class: 'CopyArtifact',
-            projectName: 'dlangci-main',
-            selector: [$class: 'TriggeredBuildSelector']])
-        sh "tar -xf distribution.tar"
+        unstash name: "dlang-build"
     }
 
     stage('Clone') {
