@@ -27,6 +27,30 @@
     - vars/passwords.yml # jenkins_admin_password
   roles:
     - jenkins_slave
+  tasks:
+    - name: test dependencies
+      apt: { name: "{{ item }}", install_recommends: no, update_cache: yes, cache_valid_time: 3600 }
+      with_items:
+        - build-essential
+        - curl
+        - gdb
+        - git
+        - jq
+        - libblas-dev
+        - libcairo-dev
+        - libcurl4-gnutls-dev
+        - libevent-dev
+        - libgtk-3-0
+        - liblapack-dev
+        - libssl-dev
+        - libzmq3-dev
+        - mongodb-server
+        - pkg-config
+        - python-dev
+        - redis-server
+        - unzip
+    - name: use ld.gold
+      alternatives: { name: ld, link: /usr/bin/ld, path: /usr/bin/ld.gold }
 
 - hosts: ci2.dawg.eu
   roles:
