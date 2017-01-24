@@ -89,16 +89,19 @@ def dub_projects = [
    "s-ludwig/taggedalgebraic",
 ]
 
-node { // for now whole pipeline runs on one node because no slaves are present
-
-    unstash name: "dlang-build"
-
-    stage('Test Projects') {
-        parallel mapSteps(dub_projects, { name ->
-            clone(name)
+def runTest(name) {
+    def n = name // to fix issues with closure
+    node {
+        unstash name: "dlang-build"
+        dir(n) {
+            clone(n)
             withEnv(["PATH=${env.WORKSPACE}/distribution/bin:${env.PATH}"]) {
                 sh "dub test"
             }
-        })
+        }
     }
+}
+
+stage('Test Projects') {
+    parallel mapSteps(dub_projects, this.&runTest)
 }
