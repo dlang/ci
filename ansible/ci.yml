@@ -19,6 +19,10 @@
     - vars/passwords.yml # jenkins_admin_password
   roles:
     - jenkins
+  tasks:
+    - name: tools
+      apt: { name: "{{ item }}", install_recommends: no, update_cache: yes, cache_valid_time: 3600 }
+      with_items: [git, jq]
 
 - hosts: jenkins_slaves
   vars:
