@@ -90,26 +90,13 @@ def dub_projects = [
 
 node { // for now whole pipeline runs on one node because no slaves are present
 
-    stage('Get compiler') {
-        unstash name: "dlang-build"
-    }
+    unstash name: "dlang-build"
 
-    stage('Clone') {
-        parallel mapSteps(dub_projects, this.&clone)
-    }
-
-    stage('Build') {
+    stage('Test Projects') {
         parallel mapSteps(dub_projects, { name ->
+            clone(name)
             withEnv(["PATH=${env.WORKSPACE}/distribution/bin:${env.PATH}"]) {
-                sh "dub build"
-            }
-        })
-    }
-
-    stage('Test') {
-        parallel mapSteps(dub_projects, { name ->
-            withEnv(["PATH=${env.WORKSPACE}/distribution/bin:${env.PATH}"]) {
-                sh "dub build"
+                sh "dub test"
             }
         })
     }
