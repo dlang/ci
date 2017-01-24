@@ -126,8 +126,8 @@ DFLAGS=-I%@P%/../imports -L-L%@P%/../libs -L--export-dynamic -L--export-dynamic 
         '''
         archiveArtifacts artifacts: 'distribution.tar', onlyIfSuccessful: true
     }
+
 }
 
-stage("Test downstream projects") {
-    build job: 'dlangci-downstream'
-}
+// executed from workspace root
+load('dlangci/ProjectsJenkinsfile')
