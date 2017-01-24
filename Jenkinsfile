@@ -80,6 +80,7 @@ node { // for now whole pipeline runs on one node because no slaves are present
         def action = { sh "make -f posix.mak RELEASE=1 AUTO_BOOTSTRAP=1" }
 
         dir('dmd',      action)
+        dir('dmd/src', { sh 'make -f posix.mak AUTO_BOOTSTRAP=1 dmd.conf' })
         dir('druntime', action)
         dir('phobos',   action)
     }
