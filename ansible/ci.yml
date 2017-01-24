@@ -27,3 +27,11 @@
     - vars/passwords.yml # jenkins_admin_password
   roles:
     - jenkins_slave
+
+- hosts: ci2.dawg.eu
+  roles:
+    - role: haproxy
+      backends:
+        ci2.dawg.eu: |
+          mode http
+          server s1 jenkins.ci2.lxd:8080

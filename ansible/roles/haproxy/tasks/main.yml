@@ -1,0 +1,66 @@
+---
+# setup haproxy and letsencrypt certificates
+- name: install haproxy
+  apt: { name: haproxy, install_recommends: no, update_cache: yes, cache_valid_time: 3600 }
+
+- name: configure http frontend
+  blockinfile:
+    dest: /etc/haproxy/haproxy.cfg
+    marker: "# {mark} http"
+    block: |
+      frontend http
+              mode http
+              bind :::80
+              acl acme path_beg /.well-known/acme-challenge/
+              redirect scheme https code 301 if !acme
+              use_backend acme if acme
+      backend acme # for renewing letencrypt challenges
+              server s1 127.0.0.1:23878
+  when: ansible_virtualization_type != 'virtualbox'
+  notify: restart haproxy
+
+- meta: flush_handlers
+
+- name: allow http and https on firewall
+  ufw: { rule: allow, port: "{{ item }}", proto: tcp }
+  with_items: [http, https]
+
+- include: obtain_cert.yml
+  vars:
+    email: webmaster@dawg.eu
+    domains: "{{ backends }}"
+    http_challenge_port: 23878
+    reload_cmd: systemctl reload haproxy
+  when: ansible_virtualization_type != 'virtualbox'
+
+- name: configure haproxy
+  blockinfile:
+    dest: /etc/haproxy/haproxy.cfg
+    marker: "# {mark} https"
+    block: |
+      frontend https
+              mode http
+              bind :::443 ssl crt /etc/ssl/private
+              http-request set-header X-Forwarded-Proto https
+              {% for domain in backends.keys() -%}
+              use_backend {{ domain }} if { ssl_fc_sni -i {{ domain }} }
+              {%- endfor %}
+
+      {% for domain, backend in backends.iteritems() -%}
+      backend {{ domain }}
+              {{ backend | indent(8) }}
+      {%- endfor %}
+  when: ansible_virtualization_type != 'virtualbox'
+  notify: restart haproxy
+
+- blockinfile:
+    dest: /etc/haproxy/haproxy.cfg
+    block: |
+      frontend http
+              mode http
+              bind :::80
+              use_backend jenkins
+      backend jenkins
+              server s1 127.0.0.1:9000
+  when: ansible_virtualization_type == 'virtualbox'
+  notify: restart haproxy

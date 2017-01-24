@@ -1,0 +1,57 @@
+---
+- name: install letsencrypt
+  apt: { name: letsencrypt }
+- name: configure letsencrypt cli
+  lineinfile: { dest: /etc/letsencrypt/cli.ini, regexp: "{{ item.key }}", line: '{{ item.key }} = {{ item.value }}', create: yes }
+  with_dict:
+    rsa-key-size: 4096
+    email: "{{ email }}"
+    authenticator: standalone
+    standalone-supported-challenges: http-01
+    http-01-port: "{{ http_challenge_port }}"
+- name: stat certificates
+  stat: { path: "/etc/letsencrypt/live/{{item}}" }
+  register: cert_stats
+  with_items: "{{ domains }}"
+- name: get initial certificate
+  command: letsencrypt certonly --standalone -d {{item.item}} --email {{email}} --non-interactive --agree-tos
+  with_items: "{{ cert_stats.results }}"
+  when: not item.stat.exists
+- name: stat combined pem
+  stat: path=/etc/ssl/private/{{item}}.pem
+  register: cert_stats
+  with_items: "{{ domains }}"
+- name: combine certs and key
+  shell: cat /etc/letsencrypt/live/{{item.item}}/fullchain.pem /etc/letsencrypt/live/{{item.item}}/privkey.pem > /etc/ssl/private/{{item.item}}.pem
+  with_items: "{{ cert_stats.results }}"
+  when: not item.stat.exists
+- name: set file mode
+  file: dest=/etc/ssl/private/{{item}}.pem mode=0400
+  with_items: "{{ domains }}"
+
+- name: renewal script
+  copy:
+    dest: /root/letsencrypt_renew.sh
+    mode: 0700
+    content: |
+      #!/usr/bin/env bash
+      set -ueo pipefail
+
+      letsencrypt renew | logger -t letsencrypt_renew -p info
+      reload=0
+      for domain in $(ls /etc/letsencrypt/live/); do
+          if [ /etc/letsencrypt/live/$domain/fullchain.pem -nt /etc/ssl/private/$domain.pem ]; then
+            cat /etc/letsencrypt/live/"$domain"/fullchain.pem /etc/letsencrypt/live/"$domain"/privkey.pem > /etc/ssl/private/"$domain".pem
+            reload=1
+          fi
+      done
+      if [ $reload -eq 1 ]; then
+        {{ reload_cmd }}
+      fi
+- name: cron for renewal
+  cron:
+    name: letsencrypt
+    special_time: weekly
+    cron_file: letsencrypt_renew
+    user: root
+    job: /root/letsencrypt_renew.sh
