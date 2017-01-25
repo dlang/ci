@@ -15,7 +15,7 @@ def cleanCheckout (repo_url, git_ref = "master") {
               extensions: [[$class: 'CleanBeforeCheckout']], submoduleCfg: [], userRemoteConfigs: [[url: repo_url]]]
 
     def LATEST = sh (
-        script: 'git tag -l | egrep "^v[0-9]+\\.[0-9]+\\.[0-9]+.*$" | sort --version-sort | tail -n 1',
+        script: 'git tag -l | egrep "^v?[0-9]+\\.[0-9]+\\.[0-9]+$" | sort --version-sort | tail -n 1',
         returnStdout: true
     ).trim()
 
