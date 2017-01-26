@@ -49,7 +49,32 @@ def mapSteps (names, action) {
 *******************************************************************************/
 
 def clone (name) {
-    cleanCheckout "https://github.com/dlang/${name}.git"
+    // presence of CHANGE_URL environment variable means this pipeline tests
+    // Pull Request and has to checkout PR branch instead of master branch
+    // for relevant repository:
+    def regex = /https:\/\/github.com\/[^\/]+\/([^\/]+)\/pull\/(\d+)/
+    def match = (env.CHANGE_URL =~ regex)
+    def pr_repo = match ? match[0][1] : ""
+    match = null
+
+    if (pr_repo == name) {
+        // requires administrator approval for allow access to:
+        // method hudson.plugins.git.GitSCM getBranches
+        // method hudson.plugins.git.GitSCMBackwardCompatibility getExtensions
+        // method hudson.plugins.git.GitSCM getUserRemoteConfigs
+
+        // only reliable way to checkout PR branch seems to use builtin
+        // scm object augmenting it with required options
+        checkout([
+            $class: 'GitSCM',
+            branches: scm.branches,
+            extensions: scm.extensions + [[$class: 'CleanBeforeCheckout']],
+            userRemoteConfigs: scm.userRemoteConfigs
+        ])
+    }
+    else {
+        cleanCheckout "https://github.com/dlang/${name}.git"
+    }
 }
 
 def test (name) {
