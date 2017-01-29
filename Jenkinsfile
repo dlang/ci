@@ -12,8 +12,9 @@
     `git clean -fdx`) in the process.
  **/
 def cleanCheckout (repo_url, git_ref = "master") {
-    git poll: false, branch: "master",
-        extensions: [[$class: 'CleanBeforeCheckout']], url: repo_url
+    checkout poll: false,
+        scm: [$class: 'GitSCM', branches: [[name: git_ref]], doGenerateSubmoduleConfigurations: false,
+              extensions: [[$class: 'CleanBeforeCheckout']], submoduleCfg: [], userRemoteConfigs: [[url: repo_url]]]
 }
 
 /**
@@ -53,9 +54,9 @@ def clone (name) {
 
 def test (name) {
     if (name == 'dmd')
-        sh "make -j 4 -f posix.mak test MODEL=64"
+        sh "make -f posix.mak test MODEL=64 --jobs=4"
     else
-        sh "make -f posix.mak unittest"
+        sh "make -f posix.mak unittest --jobs=4"
 }
 
 /*******************************************************************************
@@ -77,9 +78,10 @@ node { // for now whole pipeline runs on one node because no slaves are present
         // expects previous one to be already built and present in parent
         // folder
 
-        def action = { sh "make -f posix.mak RELEASE=1 AUTO_BOOTSTRAP=1" }
+        def action = { sh "make -f posix.mak AUTO_BOOTSTRAP=1 --jobs=4" }
 
         dir('dmd',      action)
+        dir('dmd/src', { sh 'make -f posix.mak AUTO_BOOTSTRAP=1 dmd.conf' })
         dir('druntime', action)
         dir('phobos',   action)
     }
@@ -101,7 +103,7 @@ node { // for now whole pipeline runs on one node because no slaves are present
             },
             'tools': {
                 withEnv(["PATH=${env.WORKSPACE}/dmd/src:${env.PATH}"]) {
-                    dir ('tools') { sh "make -f posix.mak RELEASE=1" }
+                    dir ('tools') { sh "make -f posix.mak RELEASE=1 --jobs=4" }
                 }
             }
         ]
@@ -110,29 +112,22 @@ node { // for now whole pipeline runs on one node because no slaves are present
     }
 
     stage("Package distribution") {
-        // ideally this step should be in sync with release packaging scripts
-        // but that requires a lot of additional work to set up virtualization
-        // for different platforms and separate manual bits from automatic in
-        // actual packaging script. Thus for now most simple tarball is
-        // generated - just enough to run downstream project tests
+        // ideally this step should be in sync with the release tars
+        sh '''#!/usr/bin/env bash
+            set -ueo pipefail
 
-        sh "mkdir -p distribution/{bin,imports,libs}"
-
-        sh "cp dmd/src/dmd distribution/bin/"
-        writeFile file: 'distribution/bin/dmd.conf', text: '''[Environment]
-    DFLAGS=-I%@P%/../imports -L-L%@P%/../libs -L--export-dynamic -L--export-dynamic -fPIC'''
-        sh "cp dub/bin/dub distribution/bin/"
-        sh "cp tools/generated/linux/64/rdmd distribution/bin/"
-
-        sh "cp -r phobos/{etc,std} distribution/imports/"
-        sh "cp -r druntime/import/* distribution/imports/"
-        sh "cp phobos/generated/linux/release/64/libphobos2.a distribution/libs"
-
-        sh "tar -cf distribution.tar distribution"
-        archiveArtifacts artifacts: 'distribution.tar', onlyIfSuccessful: true
+            rm -rf distribution
+            mkdir -p distribution/{bin,imports,libs}
+            cp --recursive --link dmd/src/dmd dub/bin/dub tools/generated/linux/64/rdmd distribution/bin/
+            cp --recursive --link phobos/etc phobos/std druntime/import/* distribution/imports/
+            cp --recursive --link phobos/generated/linux/release/64/libphobos2.a distribution/libs/
+            echo '[Environment]
+DFLAGS=-I%@P%/../imports -L-L%@P%/../libs -L--export-dynamic -L--export-dynamic -fPIC' > distribution/bin/dmd.conf
+        '''
+        stash name: "dlang-build", includes: "distribution/**"
     }
+
 }
 
-stage("Test downstream projects") {
-    build job: 'dlangci-downstream'
-}
+// executed from workspace root
+load('dlangci/ProjectsJenkinsfile')
