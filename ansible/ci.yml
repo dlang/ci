@@ -1,12 +1,5 @@
 ---
 - hosts: container_hosts
-  gather_facts: False
-  tasks:
-    - name: install python to run ansible
-      raw: |
-        [ -e /usr/bin/python ] || apt-get -q=2 update && apt-get -q=2 install -qq python-minimal python-apt
-
-- hosts: container_hosts
   roles:
     - common
     - lxd_host
