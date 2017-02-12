@@ -131,12 +131,10 @@ def getSources (name) {
 }
 
 def testDownstreamProject (name) {
-    def n = name // to fix issues with closure
-    def repo = name.split('#')[0]
-    echo repo
+    def repo = name // to fix issues with closure
     node {
         unstash name: "dlang-build"
-        dir(n) {
+        dir(repo) {
             cloneLatestTag("https://github.com/${repo}.git")
             withEnv(["PATH=${env.WORKSPACE}/distribution/bin:${env.PATH}"]) {
                 switch (n) {
@@ -148,11 +146,8 @@ def testDownstreamProject (name) {
                     sh 'make -C source test'
                     break;
 
-                case 'rejectedsoftware/vibe.d#libevent':
+                case 'rejectedsoftware/vibe.d':
                     sh 'DC=dmd VIBED_DRIVER=libevent BUILD_EXAMPLE=1 RUN_TEST=1 ./travis-ci.sh'
-                    break;
-
-                case 'rejectedsoftware/vibe.d#libasync':
                     sh 'DC=dmd VIBED_DRIVER=libasync BUILD_EXAMPLE=0 RUN_TEST=0 ./travis-ci.sh'
                     break;
 
@@ -260,8 +255,7 @@ DFLAGS=-I%@P%/../imports -L-L%@P%/../libs -L--export-dynamic -L--export-dynamic 
        "msoucy/dproto",
        "nomad-software/dunit",
        "rejectedsoftware/diet-ng",
-       "rejectedsoftware/vibe.d#libevent",
-       "rejectedsoftware/vibe.d#libasync",
+       "rejectedsoftware/vibe.d",
        "repeatedly/mustache-d",
        "s-ludwig/taggedalgebraic",
     ]
