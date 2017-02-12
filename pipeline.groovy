@@ -23,7 +23,8 @@ def clone (repo_url, git_ref = "master") {
 
 /**
     Function to checkout upstream that has triggerred current
-    pipeline, for example PR branch.
+    pipeline, for example PR branch. For PRs this will already merge
+    with the base branch.
 
     Requires administrator approval for allow access to:
 
@@ -97,19 +98,35 @@ def mapSteps (names, action) {
 *******************************************************************************/
 
 def getSources (name) {
+    def base_branch = 'master'
+    def pr_repo
+    def pr_id
+
     // presence of CHANGE_URL environment variable means this pipeline tests
     // Pull Request and has to checkout PR branch instead of master branch
     // for relevant repository:
     def regex = /https:\/\/github.com\/[^\/]+\/([^\/]+)\/pull\/(\d+)/
     def match = (env.CHANGE_URL =~ regex)
-    def pr_repo = match ? match[0][1] : ""
+    if (match) {
+        pr_repo = match[0][1]
+        pr_id = match[0][2]
+    }
     match = null
+
+    if (pr_repo && pr_id) {
+        def api_url = "https://api.github.com/repos/dlang/$pr_repo/pulls/$pr_id"
+        def extract_cmd = "jq -r '.base.ref'"
+        base_branch = sh(
+            script: "curl -s '$api_url' | $extract_cmd",
+            returnStdout: true
+        ).trim();
+    }
 
     if (pr_repo == name) {
         cloneUpstream()
     }
     else {
-        clone("https://github.com/dlang/${name}.git")
+        clone("https://github.com/dlang/${name}.git", base_branch)
     }
 }
 
