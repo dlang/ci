@@ -179,6 +179,12 @@ def testDownstreamProject (name) {
 *******************************************************************************/
 
 node { // for now whole pipeline runs on one node because no slaves are present
+    /* Use the same workspace, no matter what job (dmd, druntime,...)  triggered
+     * the build.  The workspace step will take care of concurrent test-runs and
+     * allocate additional workspaces if necessary.  This setup avoids to
+     * reclone repos for each test-run.
+     */
+    ws: 'dlangci'
 
     def projects = [ 'dmd', 'druntime', 'phobos', 'dub', 'tools' ]
 
