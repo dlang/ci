@@ -165,7 +165,14 @@ def testDownstreamProject (name) {
                     break;
 
                 default:
-                    sh 'dub test'
+                    def script = 'dub test --compiler=$DC'
+                    if (fileExists('.travis.yml')) {
+                        def travis_script = sh(script: 'get_travis_test_script', returnStdout: true).trim()
+                        if (travis_script)
+                            script = travis_script
+                    }
+                    echo script
+                    sh script
                     break;
                 }
             }
