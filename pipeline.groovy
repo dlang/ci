@@ -232,9 +232,9 @@ node { // for now whole pipeline runs on one node because no slaves are present
 
             rm -rf distribution
             mkdir -p distribution/{bin,imports,libs}
-            cp --recursive --link dmd/src/dmd dub/bin/dub tools/generated/linux/64/rdmd distribution/bin/
-            cp --recursive --link phobos/etc phobos/std druntime/import/* distribution/imports/
-            cp --recursive --link phobos/generated/linux/release/64/libphobos2.a distribution/libs/
+            cp --archive --link dmd/src/dmd dub/bin/dub tools/generated/linux/64/rdmd distribution/bin/
+            cp --archive --link phobos/etc phobos/std druntime/import/* distribution/imports/
+            cp --archive --link phobos/generated/linux/release/64/libphobos2.{a,so,so*[!o]} distribution/libs/
             echo '[Environment]
 DFLAGS=-I%@P%/../imports -L-L%@P%/../libs -L--export-dynamic -L--export-dynamic -fPIC' > distribution/bin/dmd.conf
         '''
