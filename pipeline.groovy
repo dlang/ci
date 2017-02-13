@@ -134,10 +134,17 @@ def testDownstreamProject (name) {
     def repo = name // to fix issues with closure
     node {
         unstash name: "dlang-build"
-        dir(repo) {
-            cloneLatestTag("https://github.com/${repo}.git")
-            withEnv(["PATH=${env.WORKSPACE}/distribution/bin:${env.PATH}"]) {
-                switch (n) {
+        withEnv([
+                    // KEY+UID prepends to EnvVars, see http://javadoc.jenkins.io/hudson/EnvVars.html
+                    "PATH+BIN=${env.WORKSPACE}/distribution/bin",
+                    "LIBRARY_PATH+LIB=${env.WORKSPACE}/distribution/libs",
+                    "LD_LIBRARY_PATH+LIB=${env.WORKSPACE}/distribution/libs",
+                    'DC=dmd',
+                    'DMD=dmd'
+                ]) {
+            dir(repo) {
+                cloneLatestTag("https://github.com/${repo}.git")
+                switch (repo) {
                 case 'higgsjs/Higgx':
                     sh 'make -C source test'
                     break;
