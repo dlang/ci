@@ -140,7 +140,9 @@ def testDownstreamProject (name) {
                     "LIBRARY_PATH+LIB=${env.WORKSPACE}/distribution/libs",
                     "LD_LIBRARY_PATH+LIB=${env.WORKSPACE}/distribution/libs",
                     'DC=dmd',
-                    'DMD=dmd'
+                    'DMD=dmd',
+                    // set HOME to separate concurrent ~/.dub user paths
+                    "HOME=${env.WORKSPACE}"
                 ]) {
             dir(repo) {
                 cloneLatestTag("https://github.com/${repo}.git")
@@ -279,6 +281,6 @@ DFLAGS=-I%@P%/../imports -L-L%@P%/../libs -L--export-dynamic -L--export-dynamic 
     }
 
     stage ('Cleanup') {
-        sh 'find $HOME/.dub/packages -type d -name .dub -exec rm -r {} +'
+        sh "find '${env.WORKSPACE}/.dub/packages' -type d -name .dub -exec rm -r {} +"
     }
 }
