@@ -131,15 +131,22 @@ def getSources (name) {
 }
 
 def testDownstreamProject (name) {
-    def n = name // to fix issues with closure
-    def repo = name.split('#')[0]
-    echo repo
+    def repo = name // to fix issues with closure
     node {
         unstash name: "dlang-build"
-        dir(n) {
-            cloneLatestTag("https://github.com/${repo}.git")
-            withEnv(["PATH=${env.WORKSPACE}/distribution/bin:${env.PATH}"]) {
-                switch (n) {
+        withEnv([
+                    // KEY+UID prepends to EnvVars, see http://javadoc.jenkins.io/hudson/EnvVars.html
+                    "PATH+BIN=${env.WORKSPACE}/distribution/bin",
+                    "LIBRARY_PATH+LIB=${env.WORKSPACE}/distribution/libs",
+                    "LD_LIBRARY_PATH+LIB=${env.WORKSPACE}/distribution/libs",
+                    'DC=dmd',
+                    'DMD=dmd',
+                    // set HOME to separate concurrent ~/.dub user paths
+                    "HOME=${env.WORKSPACE}"
+                ]) {
+            dir(repo) {
+                cloneLatestTag("https://github.com/${repo}.git")
+                switch (repo) {
                 case 'higgsjs/Higgx':
                     sh 'make -C source test'
                     break;
@@ -148,11 +155,8 @@ def testDownstreamProject (name) {
                     sh 'make -C source test'
                     break;
 
-                case 'rejectedsoftware/vibe.d#libevent':
+                case 'rejectedsoftware/vibe.d':
                     sh 'DC=dmd VIBED_DRIVER=libevent BUILD_EXAMPLE=1 RUN_TEST=1 ./travis-ci.sh'
-                    break;
-
-                case 'rejectedsoftware/vibe.d#libasync':
                     sh 'DC=dmd VIBED_DRIVER=libasync BUILD_EXAMPLE=0 RUN_TEST=0 ./travis-ci.sh'
                     break;
 
@@ -163,7 +167,14 @@ def testDownstreamProject (name) {
                     break;
 
                 default:
-                    sh 'dub test'
+                    def script = 'dub test --compiler=$DC'
+                    if (fileExists('.travis.yml')) {
+                        def travis_script = sh(script: 'get_travis_test_script', returnStdout: true).trim()
+                        if (travis_script)
+                            script = travis_script
+                    }
+                    echo script
+                    sh script
                     break;
                 }
             }
@@ -236,9 +247,9 @@ node { // for now whole pipeline runs on one node because no slaves are present
 
             rm -rf distribution
             mkdir -p distribution/{bin,imports,libs}
-            cp --recursive --link dmd/src/dmd dub/bin/dub tools/generated/linux/64/rdmd distribution/bin/
-            cp --recursive --link phobos/etc phobos/std druntime/import/* distribution/imports/
-            cp --recursive --link phobos/generated/linux/release/64/libphobos2.a distribution/libs/
+            cp --archive --link dmd/src/dmd dub/bin/dub tools/generated/linux/64/rdmd distribution/bin/
+            cp --archive --link phobos/etc phobos/std druntime/import/* distribution/imports/
+            cp --archive --link phobos/generated/linux/release/64/libphobos2.{a,so,so*[!o]} distribution/libs/
             echo '[Environment]
 DFLAGS=-I%@P%/../imports -L-L%@P%/../libs -L--export-dynamic -L--export-dynamic -fPIC' > distribution/bin/dmd.conf
         '''
@@ -266,13 +277,16 @@ DFLAGS=-I%@P%/../imports -L-L%@P%/../libs -L--export-dynamic -L--export-dynamic 
        "msoucy/dproto",
        "nomad-software/dunit",
        "rejectedsoftware/diet-ng",
-       "rejectedsoftware/vibe.d#libevent",
-       "rejectedsoftware/vibe.d#libasync",
+       "rejectedsoftware/vibe.d",
        "repeatedly/mustache-d",
        "s-ludwig/taggedalgebraic",
     ]
 
     stage ('Test Projects') {
         parallel mapSteps(dub_projects, this.&testDownstreamProject)
+    }
+
+    stage ('Cleanup') {
+        sh "find '${env.WORKSPACE}/.dub/packages' -type d -name .dub -exec rm -r {} +"
     }
 }
