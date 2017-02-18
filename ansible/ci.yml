@@ -45,6 +45,7 @@
         - pkg-config
         - python-dev
         - python-yaml
+        - python3-nose
         - redis-server
         - unzip
     - name: use ld.gold
