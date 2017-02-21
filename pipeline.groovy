@@ -145,19 +145,47 @@ def testDownstreamProject (name) {
                     "HOME=${env.WORKSPACE}"
                 ]) {
             dir(repo) {
-                cloneLatestTag("https://github.com/${repo}.git")
+                if (repo == 'rejectedsoftware/vibe.d')
+                    // workaround for core.thread.Fiber.state change
+                    clone("https://github.com/${repo}.git", 'v0.7.31-beta.2')
+                else
+                    cloneLatestTag("https://github.com/${repo}.git")
                 switch (repo) {
-                case 'higgsjs/Higgx':
-                    sh 'make -C source test'
+                case ['Hackerpilot/DCD', 'Hackerpilot/dfix']:
+                    sh 'make DMD=$DMD'
+                    break;
+
+                case 'gtkd-developers/GtkD':
+                    sh 'make DC=$DC'
                     break;
 
                 case 'higgsjs/Higgs':
-                    sh 'make -C source test'
+                    sh 'make -C source test DC=$DC'
                     break;
 
                 case 'rejectedsoftware/vibe.d':
+                    // use DC=dmd to workaround https://github.com/dlang/dub/pull/966
                     sh 'DC=dmd VIBED_DRIVER=libevent BUILD_EXAMPLE=1 RUN_TEST=1 ./travis-ci.sh'
                     sh 'DC=dmd VIBED_DRIVER=libasync BUILD_EXAMPLE=0 RUN_TEST=0 ./travis-ci.sh'
+                    break;
+
+                case 'dlang/dub':
+                    sh '''
+                      rm test/issue884-init-defer-file-creation.sh # FIXME
+
+                      jq '.versions["vibe-d"]="0.7.31-beta.2"' < dub.selections.json | sponge dub.selections.json
+                      dub fetch ddox --version=0.15.18
+                      jq '.versions["vibe-d"]="0.7.31-beta.2"' < $HOME/.dub/packages/ddox-0.15.18/ddox/dub.selections.json | sponge $HOME/.dub/packages/ddox-0.15.18/ddox/dub.selections.json
+                    '''
+                    sh 'DC=$DC ./travis-ci.sh'
+                    break;
+
+                case 'msgpack/msgpack-d':
+                    sh 'DMD=$DMD MODEL=64 make -f posix.mak unittest'
+                    break;
+
+                case 'economicmodeling/containers':
+                    sh 'make -B -C test/ || echo failed' // FIXME
                     break;
 
                 case 'BlackEdder/ggplotd':
