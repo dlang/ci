@@ -48,6 +48,7 @@
         - python-yaml
         - python3-nose
         - redis-server
+        - rsync
         - unzip
       tags: deps
     - name: use ld.gold
