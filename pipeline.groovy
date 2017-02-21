@@ -207,6 +207,12 @@ def testDownstreamProject (name) {
                 }
             }
         }
+        sh """
+            rm -r '${env.WORKSPACE}/distribution'
+            if [ -d '${env.WORKSPACE}/.dub/packages' ]; then
+                find '${env.WORKSPACE}/.dub/packages' -type d -name .dub -exec rm -r {} +
+            fi
+        """
     }
 }
 
@@ -312,9 +318,5 @@ DFLAGS=-I%@P%/../imports -L-L%@P%/../libs -L--export-dynamic -L--export-dynamic 
 
     stage ('Test Projects') {
         parallel mapSteps(dub_projects, this.&testDownstreamProject)
-    }
-
-    stage ('Cleanup') {
-        sh "find '${env.WORKSPACE}/.dub/packages' -type d -name .dub -exec rm -r {} +"
     }
 }
