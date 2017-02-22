@@ -201,7 +201,6 @@ def testDownstreamProject (name) {
                         if (travis_script)
                             script = travis_script
                     }
-                    echo script
                     sh script
                     break;
                 }
