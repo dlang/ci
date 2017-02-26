@@ -132,7 +132,7 @@ def getSources (name) {
 
 def testDownstreamProject (name) {
     def repo = name // to fix issues with closure
-    node {
+    node { ws(dir: 'dlang_projects') {
         unstash name: "dlang-build"
         withEnv([
                     // KEY+UID prepends to EnvVars, see http://javadoc.jenkins.io/hudson/EnvVars.html
@@ -212,7 +212,7 @@ def testDownstreamProject (name) {
                 find '${env.WORKSPACE}/.dub/packages' -type d -name .dub -exec rm -r {} +
             fi
         """
-    }
+    }}
 }
 
 
@@ -222,14 +222,12 @@ def testDownstreamProject (name) {
 
 *******************************************************************************/
 
-node { // for now whole pipeline runs on one node because no slaves are present
-    /* Use the same workspace, no matter what job (dmd, druntime,...)  triggered
-     * the build.  The workspace step will take care of concurrent test-runs and
-     * allocate additional workspaces if necessary.  This setup avoids to
-     * reclone repos for each test-run.
-     */
-    ws: 'dlangci'
-
+/* Use the same workspace, no matter what job (dmd, druntime,...)  triggered
+ * the build.  The workspace step will take care of concurrent test-runs and
+ * allocate additional workspaces if necessary.  This setup avoids to
+ * reclone repos for each test-run.
+ */
+node { ws(dir: 'dlang_ci') {
     def projects = [ 'dmd', 'druntime', 'phobos', 'dub', 'tools' ]
 
     stage ('Clone') {
@@ -318,4 +316,4 @@ DFLAGS=-I%@P%/../imports -L-L%@P%/../libs -L--export-dynamic -L--export-dynamic 
     stage ('Test Projects') {
         parallel mapSteps(dub_projects, this.&testDownstreamProject)
     }
-}
+}}
