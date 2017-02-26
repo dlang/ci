@@ -247,13 +247,6 @@ node { ws(dir: 'dlang_ci') {
         dir('phobos',   action)
     }
 
-    stage ('Test Compiler') {
-        parallel mapSteps(
-            [ 'dmd', 'druntime', 'phobos' ],
-            { name -> sh "make -f posix.mak auto-tester-test MODEL=64 --jobs=4" }
-        )
-    }
-
     stage ('Build Tools') {
         def repos = [
             'dub': {
