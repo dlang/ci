@@ -130,6 +130,16 @@ def getSources (name) {
     }
 }
 
+def test_travis_yaml () {
+    def script = 'dub test --compiler=$DC'
+    if (fileExists('.travis.yml')) {
+        def travis_script = sh(script: 'get_travis_test_script', returnStdout: true).trim()
+        if (travis_script)
+            script = travis_script
+    }
+    sh script
+}
+
 def testDownstreamProject (name) {
     def repo = name // to fix issues with closure
     node { ws(dir: 'dlang_projects') {
@@ -191,17 +201,16 @@ def testDownstreamProject (name) {
                 case 'BlackEdder/ggplotd':
                     // workaround https://github.com/BlackEdder/ggplotd/issues/34
                     sh 'sed -i \'s|auto seed = unpredictableSeed|auto seed = 54321|\' source/ggplotd/example.d'
-                    sh 'dub test'
+                    test_travis_yaml()
+                    break;
+
+                case 'rejectedsoftware/diet-ng':
+                    sh 'sed -i \'s|dependency "vibe-d".*|dependency "vibe-d" version="0.7.31-beta.2"|\' examples/htmlserver/dub.sdl'
+                    test_travis_yaml()
                     break;
 
                 default:
-                    def script = 'dub test --compiler=$DC'
-                    if (fileExists('.travis.yml')) {
-                        def travis_script = sh(script: 'get_travis_test_script', returnStdout: true).trim()
-                        if (travis_script)
-                            script = travis_script
-                    }
-                    sh script
+                    test_travis_yaml()
                     break;
                 }
             }
