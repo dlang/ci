@@ -77,7 +77,7 @@ def mapSteps (names, action) {
 
     for (int i = 0; i < names.size(); ++i) {
         def name = names[i];
-        steps[name] = { dir(name, { action(name) }) }
+        steps[name] = { action(name) }
     }
 
     return steps
@@ -97,7 +97,7 @@ def mapSteps (names, action) {
 
 *******************************************************************************/
 
-def getSources (name) {
+def getSources (name) { dir(name) {
     def base_branch = 'master'
     def pr_repo
     def pr_id
@@ -128,7 +128,7 @@ def getSources (name) {
     else {
         clone("https://github.com/dlang/${name}.git", base_branch)
     }
-}
+}}
 
 def test_travis_yaml () {
     def script = 'dub test --compiler=$DC'
@@ -231,51 +231,52 @@ def testDownstreamProject (name) {
 
 *******************************************************************************/
 
-/* Use the same workspace, no matter what job (dmd, druntime,...)  triggered
- * the build.  The workspace step will take care of concurrent test-runs and
- * allocate additional workspaces if necessary.  This setup avoids to
- * reclone repos for each test-run.
- */
-node { ws(dir: 'dlang_ci') {
-    def projects = [ 'dmd', 'druntime', 'phobos', 'dub', 'tools' ]
+def runPipeline() {
+    /* Use the same workspace, no matter what job (dmd, druntime,...)  triggered
+     * the build.  The workspace step will take care of concurrent test-runs and
+     * allocate additional workspaces if necessary.  This setup avoids to
+     * reclone repos for each test-run.
+     */
+    node { ws(dir: 'dlang_ci') {
+        def projects = [ 'dmd', 'druntime', 'phobos', 'dub', 'tools' ]
 
-    stage ('Clone') {
-        parallel mapSteps(projects, this.&getSources)
-    }
+        stage ('Clone') {
+            parallel mapSteps(projects, this.&getSources)
+        }
 
-    stage ('Build Compiler') {
-        // main compilation process can't be parallel because each repo
-        // expects previous one to be already built and present in parent
-        // folder
+        stage ('Build Compiler') {
+            // main compilation process can't be parallel because each repo
+            // expects previous one to be already built and present in parent
+            // folder
 
-        def action = { sh "make -f posix.mak AUTO_BOOTSTRAP=1 --jobs=4" }
+            def action = { sh "make -f posix.mak AUTO_BOOTSTRAP=1 --jobs=4" }
 
-        dir('dmd',      action)
-        dir('dmd/src', { sh "make -f posix.mak AUTO_BOOTSTRAP=1 dmd.conf" })
-        dir('druntime', action)
-        dir('phobos',   action)
-    }
+            dir('dmd',      action)
+            dir('dmd/src', { sh "make -f posix.mak AUTO_BOOTSTRAP=1 dmd.conf" })
+            dir('druntime', action)
+            dir('phobos',   action)
+        }
 
-    stage ('Build Tools') {
-        def repos = [
-            'dub': {
-                withEnv(["PATH=${env.WORKSPACE}/dmd/src:${env.PATH}"]) {
-                    dir ('dub') { sh "./build.sh" }
+        stage ('Build Tools') {
+            def repos = [
+                'dub': {
+                    withEnv(["PATH=${env.WORKSPACE}/dmd/src:${env.PATH}"]) {
+                        dir ('dub') { sh "./build.sh" }
+                    }
+                },
+                'tools': {
+                    withEnv(["PATH=${env.WORKSPACE}/dmd/src:${env.PATH}"]) {
+                        dir ('tools') { sh "make -f posix.mak RELEASE=1 --jobs=4" }
+                    }
                 }
-            },
-            'tools': {
-                withEnv(["PATH=${env.WORKSPACE}/dmd/src:${env.PATH}"]) {
-                    dir ('tools') { sh "make -f posix.mak RELEASE=1 --jobs=4" }
-                }
-            }
-        ]
+            ]
 
-        parallel repos
-    }
+            parallel repos
+        }
 
-    stage ("Package distribution") {
-        // ideally this step should be in sync with the release tars
-        sh '''#!/usr/bin/env bash
+        stage ("Package distribution") {
+            // ideally this step should be in sync with the release tars
+            sh '''#!/usr/bin/env bash
             set -ueo pipefail
 
             rm -rf distribution
@@ -285,37 +286,40 @@ node { ws(dir: 'dlang_ci') {
             cp --archive --link phobos/generated/linux/release/64/libphobos2.{a,so,so*[!o]} distribution/libs/
             echo '[Environment]
 DFLAGS=-I%@P%/../imports -L-L%@P%/../libs -L--export-dynamic -L--export-dynamic -fPIC' > distribution/bin/dmd.conf
-        '''
-        stash name: "dlang-build", includes: "distribution/**"
-    }
+            '''
+            stash name: "dlang-build", includes: "distribution/**"
+        }
+    }}
 
     def dub_projects = [
-       "Abscissa/libInputVisitor",
-       "BlackEdder/ggplotd",
-       "DerelictOrg/DerelictFT",
-       "DerelictOrg/DerelictGL3",
-       "DerelictOrg/DerelictGLFW3",
-       "DerelictOrg/DerelictSDL2",
-       "DlangScience/scid",
-       "Hackerpilot/libdparse",
-       "ariovistus/pyd",
-       "atilaneves/unit-threaded",
-       "d-gamedev-team/gfm",
-       "dlang/dub",
-       "economicmodeling/containers",
-       "higgsjs/Higgs",
-       "kyllingstad/zmqd",
-       "lgvz/imageformats",
-       "msgpack/msgpack-d",
-       "msoucy/dproto",
-       "nomad-software/dunit",
-       "rejectedsoftware/diet-ng",
-       "rejectedsoftware/vibe.d",
-       "repeatedly/mustache-d",
-       "s-ludwig/taggedalgebraic",
+        "Abscissa/libInputVisitor",
+        "BlackEdder/ggplotd",
+        "DerelictOrg/DerelictFT",
+        "DerelictOrg/DerelictGL3",
+        "DerelictOrg/DerelictGLFW3",
+        "DerelictOrg/DerelictSDL2",
+        "DlangScience/scid",
+        "Hackerpilot/libdparse",
+        "ariovistus/pyd",
+        "atilaneves/unit-threaded",
+        "d-gamedev-team/gfm",
+        "dlang/dub",
+        "economicmodeling/containers",
+        "higgsjs/Higgs",
+        "kyllingstad/zmqd",
+        "lgvz/imageformats",
+        "msgpack/msgpack-d",
+        "msoucy/dproto",
+        "nomad-software/dunit",
+        "rejectedsoftware/diet-ng",
+        "rejectedsoftware/vibe.d",
+        "repeatedly/mustache-d",
+        "s-ludwig/taggedalgebraic",
     ]
 
     stage ('Test Projects') {
         parallel mapSteps(dub_projects, this.&testDownstreamProject)
     }
-}}
+}
+
+return this; // return script
