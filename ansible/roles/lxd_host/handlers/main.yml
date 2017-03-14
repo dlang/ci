@@ -1,0 +1,5 @@
+---
+- name: reconfigure lxd
+  command: dpkg-reconfigure --frontend noninteractive lxd
+- name: resolvconf
+  command: resolvconf -u

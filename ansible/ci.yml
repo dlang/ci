@@ -1,0 +1,75 @@
+---
+- hosts: container_hosts
+  roles:
+    - common
+    - lxd_host
+
+- hosts: jenkins.ci2.lxd
+  vars:
+    - jenkins_http_port: 8080
+    - jenkins_slave_agent_port: 55000
+  vars_files:
+    - vars/passwords.yml # jenkins_admin_password
+  roles:
+    - jenkins
+  tasks:
+    - name: tools
+      apt: { name: "{{ item }}", install_recommends: no, update_cache: yes, cache_valid_time: 3600 }
+      with_items: [git, jq]
+
+- hosts: jenkins_slaves
+  vars:
+    - jenkins_addr: ci2.dawg.eu
+  vars_files:
+    - vars/passwords.yml # jenkins_admin_password
+  roles:
+    - jenkins_slave
+  tasks:
+    - name: test dependencies
+      apt: { name: "{{ item }}", install_recommends: no, update_cache: yes, cache_valid_time: 3600 }
+      with_items:
+        - build-essential
+        - curl
+        - gdb
+        - git
+        - jq
+        - libblas-dev
+        - libcairo-dev
+        - libcurl4-gnutls-dev
+        - libevent-dev
+        - libgtk-3-0
+        - liblapack-dev
+        - libssl-dev
+        - libzmq3-dev
+        - mongodb-server
+        - moreutils # sponge et.al.
+        - pkg-config
+        - python-dev
+        - python-yaml
+        - python3-nose
+        - redis-server
+        - rsync
+        - unzip
+      tags: deps
+    - name: use ld.gold
+      alternatives: { name: ld, link: /usr/bin/ld, path: /usr/bin/ld.gold }
+    - name: add load_travis_script command
+      copy:
+        dest: /usr/local/bin/get_travis_test_script
+        mode: 0555
+        content: |
+          #!/usr/bin/env python
+          import sys, yaml
+
+          script = yaml.load(open('.travis.yml', 'r')).get('script', '')
+          if isinstance(script, list):
+            script = '\n'.join(script)
+          print(script)
+
+- hosts: ci2.dawg.eu
+  roles:
+    - role: haproxy
+      backends:
+        ci2.dawg.eu: |
+          mode http
+          server s1 jenkins.ci2.lxd:8080

@@ -1,0 +1,10 @@
+# Created by https://www.gitignore.io/api/ansible,vagrant
+
+### Ansible ###
+*.retry
+
+
+### Vagrant ###
+.vagrant/
+
+# End of https://www.gitignore.io/api/ansible,vagrant

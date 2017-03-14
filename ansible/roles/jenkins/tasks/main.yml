@@ -1,0 +1,31 @@
+---
+# https://wiki.jenkins-ci.org/display/JENKINS/Installing+Jenkins+on+Ubuntu
+- name: add jenkins apt key
+  apt_key: { url: 'https://pkg.jenkins.io/debian-stable/jenkins.io.key' }
+- name: add jenkins apt repo
+  apt_repository: { repo: 'deb https://pkg.jenkins.io/debian-stable binary/', update_cache: yes }
+- name: install jenkins
+  apt: { name: "jenkins={{ jenkins_version }}", install_recommends: no, update_cache: yes, cache_valid_time: 3600 }
+- name: set http port
+  lineinfile:
+    dest: /etc/default/jenkins
+    regexp: ^HTTP_PORT=
+    line: HTTP_PORT={{ jenkins_http_port }}
+  notify: restart jenkins
+- name: java args
+  lineinfile:
+    dest: /etc/default/jenkins
+    insertafter: ^JAVA_ARGS=
+    regexp: '^JAVA_ARGS="\$JAVA_ARGS'
+    # use internal hostname for slave listener http://stackoverflow.com/a/39965700/2371032
+    line: JAVA_ARGS="$JAVA_ARGS -Djenkins.install.runSetupWizard=false -Dhudson.TcpSlaveAgentListener.hostName={{ inventory_hostname }} -Xms512m -Xmx1024m"
+  notify: restart jenkins
+- name: configure jenkins
+  template: { src: init.groovy.j2, dest: /var/lib/jenkins/init.groovy, owner: jenkins, mode: 0400 }
+  notify: restart jenkins
+- name: compress logs
+  cron:
+    name: compress_logs
+    special_time: daily
+    user: jenkins
+    job: find /var/lib/jenkins/jobs/ -name log -exec gzip {} \;

@@ -1,0 +1,6 @@
+---
+# executed in order of declaration!
+- name: systemctl daemon-reload
+  command: systemctl daemon-reload
+- name: restart jenkins
+  service: { name: jenkins, state: restarted }

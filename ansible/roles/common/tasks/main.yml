@@ -1,0 +1,10 @@
+---
+- name: update apt cache
+  apt: { update_cache: yes, cache_valid_time: 3600 }
+- include: hostname.yml
+- include: sshd.yml
+# TODO: firewall on containers?
+- include: firewall.yml
+- name: uninstall unused packages
+  apt: { name: "{{item}}", purge: yes, state: absent }
+  with_items: [mlocate, snapd]

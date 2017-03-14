@@ -1,0 +1,24 @@
+[online_net]
+ci2.dawg.eu
+
+[container_hosts]
+ci2.dawg.eu
+
+# group with all containers
+[containers:children]
+ci2_containers
+
+[ci2_containers]
+jenkins.ci2.lxd
+runner-01.ci2.lxd
+runner-02.ci2.lxd
+
+[ci2_containers:vars]
+# ssh proxy into container (running ssh itself)
+ansible_ssh_common_args=-o ProxyCommand="ssh -W %h:%p ci2.dawg.eu"
+ansible_ssh_user=root
+
+# grouped by purpose
+[jenkins_slaves]
+runner-01.ci2.lxd
+runner-02.ci2.lxd

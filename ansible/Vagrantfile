@@ -1,0 +1,41 @@
+require 'yaml'
+hosts = YAML.load_file('group_vars/all')['host_ids']
+
+Vagrant.configure(2) do |config|
+  config.vm.box = 'ubuntu/xenial64'
+  config.vm.synced_folder '.', '/vagrant', disabled: true
+
+  hosts.each do |hostname, id|
+    config.vm.define hostname do |machine|
+
+      machine.vm.box = 'ubuntu/xenial64'
+      machine.vm.hostname = hostname
+      machine.vm.network 'private_network', ip: "172.16.1.#{id}"
+      # machine.vm.network 'private_network', ip: "fd12:3456:789a:#{id}::1"
+      machine.vm.synced_folder '.', '/vagrant', disabled: true
+      machine.vm.provision('ansible') do |ansible|
+        ansible.verbose = 'v'
+        ansible.raw_arguments = ['--diff']
+        ansible.playbook = 'ci.yml'
+        ansible.limit = 'all' # also provision containers
+        ansible.inventory_path = 'vagrant_inventory'
+      end
+    end
+  end
+end
+
+# Put machine specific vagrant/VirtualBox configuration into ~/.vagrant.d/Vagrantfile.
+=begin
+Vagrant.configure('2') do |config|
+  config.vm.provider :virtualbox do |vb|
+    vb.customize ['modifyvm', :id, '--memory', '8192']
+    vb.customize ['modifyvm', :id, '--cpus', '4']
+    vb.customize ['modifyvm', :id, '--accelerate3d', 'off']
+    vb.customize ['modifyvm', :id, '--audio', 'none']
+    vb.customize ['modifyvm', :id, '--usb', 'off']
+    vb.customize ['modifyvm', :id, '--paravirtprovider', 'kvm']
+    vb.customize ['modifyvm', :id, '--pae', 'on']
+    vb.customize ['modifyvm', :id, '--largepages', 'on']
+  end
+end
+=end
