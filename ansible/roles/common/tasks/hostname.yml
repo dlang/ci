@@ -1,4 +1,6 @@
 ---
+- name: setting hostname
+  hostname: { name: "{{ inventory_hostname_short }}" }
 - name: setting hostnames for IPs
   lineinfile:
     dest: /etc/hosts

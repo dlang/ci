@@ -4,7 +4,7 @@
     - common
     - lxd_host
 
-- hosts: jenkins.ci2.lxd
+- hosts: jenkins.ci.lxd
   vars:
     - jenkins_http_port: 8080
     - jenkins_slave_agent_port: 55000
@@ -19,7 +19,7 @@
 
 - hosts: jenkins_slaves
   vars:
-    - jenkins_addr: ci2.dawg.eu
+    - jenkins_addr: ci.dlang.io
   vars_files:
     - vars/passwords.yml # jenkins_admin_password
   roles:
@@ -66,10 +66,13 @@
             script = '\n'.join(script)
           print(script)
 
-- hosts: ci2.dawg.eu
+- hosts: ci.dlang.io
   roles:
     - role: haproxy
       backends:
-        ci2.dawg.eu: |
+        ci.dlang.io: |
           mode http
-          server s1 jenkins.ci2.lxd:8080
+          server s1 jenkins.ci.lxd:8080
+        ci.dlang.io: |
+          mode http
+          server s1 jenkins.ci.lxd:8080
