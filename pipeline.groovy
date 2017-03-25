@@ -98,9 +98,7 @@ def mapSteps (names, action) {
 *******************************************************************************/
 
 def getSources (name) { dir(name) {
-    def base_branch = 'master'
     def pr_repo
-    def pr_id
 
     // presence of CHANGE_URL environment variable means this pipeline tests
     // Pull Request and has to checkout PR branch instead of master branch
@@ -109,23 +107,15 @@ def getSources (name) { dir(name) {
     def match = (env.CHANGE_URL =~ regex)
     if (match) {
         pr_repo = match[0][1]
-        pr_id = match[0][2]
-    }
-    match = null
-
-    if (pr_repo && pr_id) {
-        def api_url = "https://api.github.com/repos/dlang/$pr_repo/pulls/$pr_id"
-        def extract_cmd = "jq -r '.base.ref'"
-        base_branch = sh(
-            script: "curl -s '$api_url' | $extract_cmd",
-            returnStdout: true
-        ).trim();
     }
 
     if (pr_repo == name) {
         cloneUpstream()
     }
     else {
+        // Checkout matching branches of other repos, either
+        // target branch for PRs or identical branch name.
+        def base_branch = env.CHANGE_TARGET ?: env.BRANCH_NAME
         clone("https://github.com/dlang/${name}.git", base_branch)
     }
 }}
