@@ -108,6 +108,7 @@ def getSources (name) { dir(name) {
     if (match) {
         pr_repo = match[0][1]
     }
+    match = null // need to null match to avoid NotSerializableException
 
     if (pr_repo == name) {
         cloneUpstream()
