@@ -148,7 +148,7 @@ def testDownstreamProject (name) {
             dir(repo) {
                 if (repo == 'rejectedsoftware/vibe.d')
                     // workaround for core.thread.Fiber.state change
-                    clone("https://github.com/${repo}.git", 'v0.7.31-beta.2')
+                    clone("https://github.com/${repo}.git", 'v0.7.31-rc.2')
                 else
                     cloneLatestTag("https://github.com/${repo}.git")
                 switch (repo) {
@@ -174,9 +174,9 @@ def testDownstreamProject (name) {
                     sh '''
                       rm test/issue884-init-defer-file-creation.sh # FIXME
 
-                      jq '.versions["vibe-d"]="0.7.31-beta.2"' < dub.selections.json | sponge dub.selections.json
+                      jq '.versions["vibe-d"]="0.7.31-rc.2"' < dub.selections.json | sponge dub.selections.json
                       dub fetch ddox --version=0.15.18
-                      jq '.versions["vibe-d"]="0.7.31-beta.2"' < $HOME/.dub/packages/ddox-0.15.18/ddox/dub.selections.json | sponge $HOME/.dub/packages/ddox-0.15.18/ddox/dub.selections.json
+                      jq '.versions["vibe-d"]="0.7.31-rc.2"' < $HOME/.dub/packages/ddox-0.15.18/ddox/dub.selections.json | sponge $HOME/.dub/packages/ddox-0.15.18/ddox/dub.selections.json
                     '''
                     sh 'DC=$DC ./travis-ci.sh'
                     break;
@@ -196,7 +196,7 @@ def testDownstreamProject (name) {
                     break;
 
                 case 'rejectedsoftware/diet-ng':
-                    sh 'sed -i \'s|dependency "vibe-d".*|dependency "vibe-d" version="0.7.31-beta.2"|\' examples/htmlserver/dub.sdl'
+                    sh 'sed -i \'s|dependency "vibe-d".*|dependency "vibe-d" version="0.7.31-rc.2"|\' examples/htmlserver/dub.sdl'
                     test_travis_yaml()
                     break;
 
