@@ -1,6 +1,3 @@
-[online_net]
-ci.dlang.io
-
 [container_hosts]
 ci.dlang.io
 
@@ -22,3 +19,8 @@ ansible_ssh_user=root
 [jenkins_slaves]
 runner-01.ci.lxd
 runner-02.ci.lxd
+
+# all running at oneline.net atm
+[online_net:children]
+container_hosts
+containers

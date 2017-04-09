@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+# {{ansible_managed}}
+
+set -ueo pipefail
+umask 077
+cd {{backup_dir}}
+
+# ------------------------------------------------------------------------------
+
+# create a local tmp root that's always cleaned up
+TMP_ROOT=$(mktemp -d '.backup_tmp_XXXXXX')
+
+mkdtemp() {
+    mktemp -d "$TMP_ROOT/XXXXXX"
+}
+
+cleanup() {
+    rm -rf "$TMP_ROOT";
+}
+trap cleanup EXIT
+
+# ------------------------------------------------------------------------------
+
+LOGGER_TAG='{{ inventory_hostname }}_backup'
+LOGGER_FACILITY=user
+
+_log() {
+    logger -t $LOGGER_TAG -p "$LOGGER_FACILITY.$1" "${@:2}"
+}
+
+log() { _log notice "$@"; }
+logV() { _log info "$@"; }
+logE() { _log err "$@"; }
+fatal() { logE "$@"; exit 1; }
+
+# produce some output on failure so cron sends a mail
+trap 'echo backup script failed at line $LINENO' ERR
+
+# ------------------------------------------------------------------------------
+
+TODAY=$(date +%Y-%m-%d)
+DUPLICITY_TARGET='par2+{{ backup_url }}/{{ inventory_hostname }}'
+
+duplicity() {
+    logV "duplicity $*"
+    command trickle -s -u 200000 duplicity --no-print-statistics --verbosity warning --volsize 200 "$@"
+}
+
+# ------------------------------------------------------------------------------
+
+log '=== BACKUP ==='
+
+# wrap partial in function so it can use local variables
+doit() {
+{{ backup_partial }}
+}
+# call script, also log error output (additionally to cron mails)
+doit 2>&1 | tee >(logE)
+
+log '=== DONE ==='
