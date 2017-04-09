@@ -1,5 +1,6 @@
 [Unit]
 Description=Jenkins Slave
+After=local-fs.target network.target
 
 [Service]
 Type=simple
