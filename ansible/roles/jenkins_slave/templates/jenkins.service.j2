@@ -6,6 +6,8 @@ After=local-fs.target network.target
 Type=simple
 ExecStartPre=/usr/bin/wget https://{{ jenkins_addr }}/jnlpJars/slave.jar -O /var/lib/jenkins/slave.jar
 ExecStart=/usr/bin/java -Xms64m -Xmx256m -jar /var/lib/jenkins/slave.jar -jnlpUrl https://{{ jenkins_addr }}/computer/{{ inventory_hostname_short }}/slave-agent.jnlp -secret {{ secret }}
+Restart=on-failure
+RestartSec=10
 
 User=jenkins
 WorkingDirectory=/var/lib/jenkins
