@@ -15,7 +15,7 @@ runner-02.ci.lxd
 
 [ci_containers:vars]
 # ssh proxy into container (running ssh itself)
-ansible_ssh_common_args=-o ProxyCommand="ssh -o IdentityFile=.vagrant/machines/ci/virtualbox/private_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -W %h:%p vagrant@172.16.1.2" -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null
+ansible_ssh_common_args=-o ProxyCommand="ssh -o IdentityFile=.vagrant/machines/ci.dlang.io/virtualbox/private_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -W %h:%p ubuntu@172.16.1.2" -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null
 ansible_ssh_user=root
 
 # grouped by purpose
