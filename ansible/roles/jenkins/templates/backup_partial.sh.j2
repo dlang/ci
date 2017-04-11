@@ -1,0 +1,11 @@
+log 'Running thinBackup'
+curl -fsS --data "script=$(cat backup.groovy)" --user 'admin:{{ jenkins_admin_password }}' http://localhost:{{ jenkins_http_port }}/scriptText
+
+folders=( FULL-* )
+log "Compressing and uploading thinBackup ${folders[0]}"
+mkdir -p duplicity_source
+tar --directory="${folders[0]}" -cf - . | gzip --rsyncable > duplicity_source/jenkins.tar.gz
+rm -r "${folders[@]}"
+
+duplicity --full-if-older-than 1M --encrypt-key '{{ backup_gpg_key }}' duplicity_source $DUPLICITY_TARGET --name jenkins
+duplicity remove-older-than 3M $DUPLICITY_TARGET --name jenkins --force

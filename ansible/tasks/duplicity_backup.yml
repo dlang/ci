@@ -1,0 +1,48 @@
+---
+- name: install backup tools
+  apt: { name: "{{ item }}", install_recommends: no, update_cache: yes, cache_valid_time: 3600 }
+  with_items: [curl, duplicity, lftp, python-pexpect, par2, trickle]
+
+- name: create backup source folder
+  file: { path: "{{ backup_dir }}", state: directory, owner: "{{ backup_user }}", mode: 0700 }
+- name: get user home
+  shell: >
+    getent passwd {{ backup_user }} | cut --delimiter=: --fields=6
+  register: user_home
+  check_mode: no
+  changed_when: False
+# if using system user, user_home might not be writeable by user, e.g. /var/opt/gitlab
+- name: create cache folder
+  file: { path: "{{ user_home.stdout }}/.cache", state: directory, owner: "{{ backup_user }}", mode: 0700 }
+
+- name: check gpg key {{ backup_gpg_key }}
+  command: gpg --list-keys {{ backup_gpg_key }}
+  become: True
+  become_user: "{{ backup_user }}"
+  register: has_key
+  check_mode: no
+  changed_when: False
+  failed_when: False
+- name: add gpg key {{ backup_gpg_key }}
+  shell: |
+    echo "{{ lookup('file', 'files/gpg_keys/' + backup_gpg_key + '.asc') }}" | gpg --import
+    echo "{{ backup_gpg_key }}:6:" | gpg --import-ownertrust
+  when: has_key.rc != 0
+  become: True
+  become_user: "{{ backup_user }}"
+
+- name: render backup script
+  template:
+    src: templates/duplicity_backup_script.sh.j2
+    mode: 0500
+    owner: "{{ backup_user }}"
+    dest: "{{ backup_dir }}/backup.sh"
+- name: add cronjob
+  cron:
+    name: 'backup'
+    special_time: "{{ backup_interval | default('daily')}}"
+    user: "{{ backup_user }}"
+    job: "{{ backup_dir }}/backup.sh"
+    # either in user crontab or in a separate crontab file (for multiple backups)
+    cron_file: "{{ backup_cron_file | default(None) }}"
+  tags: cron

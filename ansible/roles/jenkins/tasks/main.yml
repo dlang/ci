@@ -29,3 +29,13 @@
     special_time: daily
     user: jenkins
     job: find /var/lib/jenkins/jobs/ -name log -exec gzip {} \;
+
+- include: tasks/duplicity_backup.yml
+  tags: backup
+  vars:
+    backup_user: jenkins
+    backup_dir: /var/lib/jenkins/backup
+    backup_partial: "{{ lookup('template', '../templates/backup_partial.sh.j2') }}"
+- name: copy backup.groovy script
+  tags: backup
+  copy: { src: files/backup.groovy, dest: /var/lib/jenkins/backup/backup.groovy, owner: jenkins, mode: 0400 }
