@@ -14,6 +14,7 @@
       script=import hudson.model.Hudson; println(Hudson.instance.slaves.find { it.name == '{{ inventory_hostname_short }}' }.getComputer().getJnlpMac())
     return_content: yes
   register: response
+  check_mode: no
 - set_fact:
     secret: "{{ response.content }}"
 - name: add jenkins slave service
