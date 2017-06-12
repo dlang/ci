@@ -306,6 +306,7 @@ DFLAGS=-I%@P%/../imports -L-L%@P%/../libs -L--export-dynamic -L--export-dynamic 
         "rejectedsoftware/vibe.d",
         "repeatedly/mustache-d",
         "s-ludwig/taggedalgebraic",
+        "dlang-community/D-YAML",
     ]
 
     stage ('Test Projects') {
