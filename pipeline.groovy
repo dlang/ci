@@ -229,6 +229,19 @@ def runPipeline() {
      * reclone repos for each test-run.
      */
     node { ws(dir: 'dlang_ci') {
+        stage ('Toolchain and System information') {
+            sh '''#!/usr/bin/env bash
+            set -xueo pipefail
+
+            uname -a
+            make --version
+            ${SHELL} --version || true
+            c++ --version
+            ld -v
+            ! command -v gdb &>/dev/null || gdb --version
+            '''
+        }
+
         def projects = [ 'dmd', 'druntime', 'phobos', 'dub', 'tools' ]
 
         stage ('Clone') {
