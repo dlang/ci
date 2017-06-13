@@ -200,6 +200,11 @@ def testDownstreamProject (name) {
                     test_travis_yaml()
                     break;
 
+                case 'dlang-community/D-YAML':
+                    sh 'dub build --compiler=$DC'
+                    sh 'dub test --compiler=$DC'
+                    break;
+
                 default:
                     test_travis_yaml()
                     break;
@@ -307,6 +312,7 @@ DFLAGS=-I%@P%/../imports -L-L%@P%/../libs -L--export-dynamic -L--export-dynamic 
         "ariovistus/pyd",
         "atilaneves/unit-threaded",
         "d-gamedev-team/gfm",
+        "dlang-community/D-YAML",
         "dlang/dub",
         "economicmodeling/containers",
         "higgsjs/Higgs",
@@ -319,7 +325,6 @@ DFLAGS=-I%@P%/../imports -L-L%@P%/../libs -L--export-dynamic -L--export-dynamic 
         "rejectedsoftware/vibe.d",
         "repeatedly/mustache-d",
         "s-ludwig/taggedalgebraic",
-        "dlang-community/D-YAML",
     ]
 
     stage ('Test Projects') {
