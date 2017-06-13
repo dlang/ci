@@ -303,6 +303,7 @@ DFLAGS=-I%@P%/../imports -L-L%@P%/../libs -L--export-dynamic -L--export-dynamic 
     def dub_projects = [
         "Abscissa/libInputVisitor",
         "BlackEdder/ggplotd",
+        "CyberShadow/ae",
         "DerelictOrg/DerelictFT",
         "DerelictOrg/DerelictGL3",
         "DerelictOrg/DerelictGLFW3",
