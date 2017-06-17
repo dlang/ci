@@ -17,5 +17,3 @@ node {
     pipeline = load 'dlang/ci/pipeline.groovy'
 }
 pipeline.runPipeline()
-
-deleteDir() // cleanup workspace (dmd/druntime/phobos PR checkout)
