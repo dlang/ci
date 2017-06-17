@@ -146,11 +146,7 @@ def testDownstreamProject (name) {
                     "HOME=${env.WORKSPACE}"
                 ]) {
             dir(repo) {
-                if (repo == 'rejectedsoftware/vibe.d')
-                    // workaround for core.thread.Fiber.state change
-                    clone("https://github.com/${repo}.git", 'v0.7.31-rc.2')
-                else
-                    cloneLatestTag("https://github.com/${repo}.git")
+                cloneLatestTag("https://github.com/${repo}.git")
                 switch (repo) {
                 case ['Hackerpilot/DCD', 'Hackerpilot/dfix']:
                     sh 'make DMD=$DMD'
@@ -166,6 +162,7 @@ def testDownstreamProject (name) {
 
                 case 'rejectedsoftware/vibe.d':
                     // use DC=dmd to workaround https://github.com/dlang/dub/pull/966
+                    sh 'sed -i \'/# test building with Meson/,//d\' ./travis-ci.sh' // strip meson tests
                     sh 'DC=dmd VIBED_DRIVER=libevent BUILD_EXAMPLE=1 RUN_TEST=1 ./travis-ci.sh'
                     sh 'DC=dmd VIBED_DRIVER=libasync BUILD_EXAMPLE=0 RUN_TEST=0 ./travis-ci.sh'
                     break;
@@ -173,10 +170,8 @@ def testDownstreamProject (name) {
                 case 'dlang/dub':
                     sh '''
                       rm test/issue884-init-defer-file-creation.sh # FIXME
-
-                      jq '.versions["vibe-d"]="0.7.31-rc.2"' < dub.selections.json | sponge dub.selections.json
-                      dub fetch ddox --version=0.15.18
-                      jq '.versions["vibe-d"]="0.7.31-rc.2"' < $HOME/.dub/packages/ddox-0.15.18/ddox/dub.selections.json | sponge $HOME/.dub/packages/ddox-0.15.18/ddox/dub.selections.json
+                      jq '.versions["vibe-d"]="0.7.31"' < dub.selections.json | sponge dub.selections.json
+                      dub fetch ddox --version=0.16.0
                     '''
                     sh 'DC=$DC ./travis-ci.sh'
                     break;
@@ -192,11 +187,6 @@ def testDownstreamProject (name) {
                 case 'BlackEdder/ggplotd':
                     // workaround https://github.com/BlackEdder/ggplotd/issues/34
                     sh 'sed -i \'s|auto seed = unpredictableSeed|auto seed = 54321|\' source/ggplotd/example.d'
-                    test_travis_yaml()
-                    break;
-
-                case 'rejectedsoftware/diet-ng':
-                    sh 'sed -i \'s|dependency "vibe-d".*|dependency "vibe-d" version="0.7.31-rc.2"|\' examples/htmlserver/dub.sdl'
                     test_travis_yaml()
                     break;
 
