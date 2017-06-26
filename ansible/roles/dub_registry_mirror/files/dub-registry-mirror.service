@@ -1,0 +1,14 @@
+[Unit]
+Description=dub-registry mirror
+After=network.target remote-fs.target nss-lookup.target
+
+[Service]
+Type=simple
+Group=dub-registry
+User=dub-registry
+ExecStart=/home/dub-registry/dub-registry/dub-registry --mirror=https://code.dlang.org
+WorkingDirectory=/home/dub-registry/dub-registry
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

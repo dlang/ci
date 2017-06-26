@@ -162,7 +162,7 @@ def testDownstreamProject (name) {
 
                 case 'rejectedsoftware/vibe.d':
                     // use DC=dmd to workaround https://github.com/dlang/dub/pull/966
-                    sh 'sed -i \'/# test building with Meson/,//d\' ./travis-ci.sh' // strip meson tests
+                    sh 'sed -i \'/# test building with Meson/,//d\' travis-ci.sh' // strip meson tests
                     sh 'DC=dmd VIBED_DRIVER=libevent BUILD_EXAMPLE=1 RUN_TEST=1 ./travis-ci.sh'
                     sh 'DC=dmd VIBED_DRIVER=libasync BUILD_EXAMPLE=0 RUN_TEST=0 ./travis-ci.sh'
                     break;
@@ -170,7 +170,8 @@ def testDownstreamProject (name) {
                 case 'dlang/dub':
                     sh '''
                       rm test/issue884-init-defer-file-creation.sh # FIXME
-                      jq '.versions["vibe-d"]="0.7.31"' < dub.selections.json | sponge dub.selections.json
+                      sed -i \'s| defaultRegistryURL = .*;| defaultRegistryURL = "https://code-mirror.dlang.io/";|\' source/dub/dub.d
+                      jq \'.versions["vibe-d"]="0.7.31"\' < dub.selections.json | sponge dub.selections.json
                       dub fetch ddox --version=0.16.0
                     '''
                     sh 'DC=$DC ./travis-ci.sh'
@@ -260,7 +261,12 @@ def runPipeline() {
             def repos = [
                 'dub': {
                     withEnv(["PATH=${env.WORKSPACE}/dmd/src:${env.PATH}"]) {
-                        dir ('dub') { sh "./build.sh" }
+                        dir ('dub') {
+                            sh '''#!/usr/bin/env bash
+                            sed -i \'s| defaultRegistryURL = .*;| defaultRegistryURL = "https://code-mirror.dlang.io/";|\' source/dub/dub.d
+                            ./build.sh
+                            '''
+                        }
                     }
                 },
                 'tools': {

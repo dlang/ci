@@ -4,6 +4,12 @@
     - common
     - lxd_host
 
+- hosts: dub-registry.ci.lxd
+  vars:
+    - dub_registry_http_port: 8080
+  roles:
+    - dub_registry_mirror
+
 - hosts: jenkins.ci.lxd
   vars:
     - jenkins_http_port: 8080
@@ -76,3 +82,6 @@
         ci2.dawg.eu: |
           mode http
           server s1 jenkins.ci.lxd:8080
+        code-mirror.dlang.io: |
+          mode http
+          server s1 dub-registry.ci.lxd:8005

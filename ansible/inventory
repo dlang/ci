@@ -9,6 +9,7 @@ ci_containers
 jenkins.ci.lxd
 runner-01.ci.lxd
 runner-02.ci.lxd
+dub-registry.ci.lxd
 
 [ci_containers:vars]
 # ssh proxy into container (running ssh itself)

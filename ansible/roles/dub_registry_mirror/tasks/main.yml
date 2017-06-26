@@ -1,0 +1,35 @@
+---
+- name: install dependencies
+  apt: { name: "{{ item }}", install_recommends: no, update_cache: yes, cache_valid_time: 3600 }
+  with_items: [mongodb-server, libevent-dev, libssl-dev, patch]
+- name: install dmd
+  apt:
+    deb: 'http://downloads.dlang.org/releases/2.x/2.074.1/dmd_2.074.1-0_amd64.deb'
+    install_recommends: no
+    update_cache: yes
+    cache_valid_time: 3600
+- name: create registry user
+  user: { name: dub-registry }
+- name: get dub-registry
+  unarchive:
+    remote_src: yes
+    src: 'https://github.com/dlang/dub-registry/archive/v2.1.0.tar.gz'
+    dest: /home/dub-registry/
+    owner: dub-registry
+    group: dub-registry
+- name: symlink dub-registry
+  file: { dest: /home/dub-registry/dub-registry, src: /home/dub-registry/dub-registry-2.1.0, state: link }
+- name: patch dub-registry bind address
+  patch: { src: dub-registry.patch, dest: /home/dub-registry/dub-registry/source/app.d }
+- name: build dub-registry
+  command: dub build
+  args:
+    chdir: /home/dub-registry/dub-registry
+  become_user: dub-registry
+  register: build
+  changed_when: not build.stdout | search('dub-registry.*up to date')
+  tags: rebuild
+  notify: restart dub-registry-mirror
+- name: install service file
+  copy: { src: dub-registry-mirror.service, dest: /etc/systemd/system/ }
+  notify: [systemctl daemon-reload, enable dub-registry-mirror, restart dub-registry-mirror]

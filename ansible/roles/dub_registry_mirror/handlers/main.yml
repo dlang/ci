@@ -1,0 +1,7 @@
+---
+- name: systemctl daemon-reload
+  command: systemctl daemon-reload
+- name: enable dub-registry-mirror
+  service: { name: dub-registry-mirror, enabled: yes }
+- name: restart dub-registry-mirror
+  service: { name: dub-registry-mirror, enabled: yes, state: restarted }
