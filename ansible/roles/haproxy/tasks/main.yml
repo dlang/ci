@@ -44,7 +44,7 @@
               http-request set-header X-Forwarded-Proto https
               {% for domain in backends.keys() -%}
               use_backend {{ domain }} if { ssl_fc_sni -i {{ domain }} }
-              {%- endfor %}
+              {% endfor %}
 
       {% for domain, backend in backends.iteritems() -%}
       backend {{ domain }}
