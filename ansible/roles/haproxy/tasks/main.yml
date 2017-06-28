@@ -42,6 +42,7 @@
               mode http
               bind :::443 ssl crt /etc/ssl/private
               http-request set-header X-Forwarded-Proto https
+              http-response set-header Strict-Transport-Security max-age=31536000
               {% for domain in backends.keys() -%}
               use_backend {{ domain }} if { ssl_fc_sni -i {{ domain }} }
               {% endfor %}
