@@ -201,13 +201,11 @@ def testDownstreamProject (name) {
                     break;
                 }
             }
-        }
-        sh """
+            sh """
+            dub clean --all-packages
             rm -r '${env.WORKSPACE}/distribution'
-            if [ -d '${env.WORKSPACE}/.dub/packages' ]; then
-                find '${env.WORKSPACE}/.dub/packages' -type d -name .dub -exec rm -r {} +
-            fi
-        """
+            """
+        }
     }}
 }
 
