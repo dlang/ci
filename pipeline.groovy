@@ -145,7 +145,7 @@ def testDownstreamProject (name) {
                     // set HOME to separate concurrent ~/.dub user paths
                     "HOME=${env.WORKSPACE}"
                 ]) {
-            dir(repo) {
+            try { dir(repo) {
                 cloneLatestTag("https://github.com/${repo}.git")
                 switch (repo) {
                 case ['Hackerpilot/DCD', 'Hackerpilot/dfix']:
@@ -200,11 +200,13 @@ def testDownstreamProject (name) {
                     test_travis_yaml()
                     break;
                 }
+            }}
+            finally {
+                sh """
+                dub clean --all-packages
+                rm -r '${env.WORKSPACE}/distribution'
+                """
             }
-            sh """
-            dub clean --all-packages
-            rm -r '${env.WORKSPACE}/distribution'
-            """
         }
     }}
 }
