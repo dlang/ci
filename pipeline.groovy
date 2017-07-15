@@ -42,9 +42,10 @@ def cloneUpstream () {
 }
 
 /**
-    Checks out latest SemVer-compatible tag available in specified repo
+    Checks out latest SemVer-compatible release tag available in specified repo.
+    Tags can be further filtered by passing a regex.
  **/
-def cloneLatestTag (repo_url) {
+def cloneLatestTag (repo_url, filter = '') {
     checkout(
         poll: false,
         scm: [
@@ -56,7 +57,7 @@ def cloneLatestTag (repo_url) {
     )
 
     def LATEST = sh (
-        script: 'git tag -l | egrep "^v?[0-9]+\\.[0-9]+\\.[0-9]+$" | sort --version-sort | tail -n 1',
+        script: "git tag -l | egrep '^v?[0-9]+\\.[0-9]+\\.[0-9]+\$' | egrep '${filter}' | sort --version-sort | tail -n 1",
         returnStdout: true
     ).trim()
 
@@ -146,7 +147,11 @@ def testDownstreamProject (name) {
                     "HOME=${env.WORKSPACE}"
                 ]) {
             try { dir(repo) {
-                cloneLatestTag("https://github.com/${repo}.git")
+                if (repo == 'rejectedsoftware/vibe.d')
+                    // FIXME: https://github.com/rejectedsoftware/vibe.d/issues/1844
+                    cloneLatestTag("https://github.com/${repo}.git", 'v0\\.7\\.')
+                else
+                    cloneLatestTag("https://github.com/${repo}.git")
                 switch (repo) {
                 case ['Hackerpilot/DCD', 'Hackerpilot/dfix']:
                     sh 'make DMD=$DMD'
