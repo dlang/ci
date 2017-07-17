@@ -1,5 +1,5 @@
 ---
-jenkins_version: 2.46.3 # LTS
+jenkins_version: 2.60.1-1 # LTS
 jenkins_admin_username: admin
 jenkins_admin_password:
 jenkins_http_port:
