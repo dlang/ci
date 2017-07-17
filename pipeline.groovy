@@ -147,11 +147,7 @@ def testDownstreamProject (name) {
                     "HOME=${env.WORKSPACE}"
                 ]) {
             try { dir(repo) {
-                if (repo == 'rejectedsoftware/vibe.d')
-                    // FIXME: https://github.com/rejectedsoftware/vibe.d/issues/1844
-                    cloneLatestTag("https://github.com/${repo}.git", 'v0\\.7\\.')
-                else
-                    cloneLatestTag("https://github.com/${repo}.git")
+                cloneLatestTag("https://github.com/${repo}.git")
                 switch (repo) {
                 case ['Hackerpilot/DCD', 'Hackerpilot/dfix']:
                     sh 'make DMD=$DMD'
