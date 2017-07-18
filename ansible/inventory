@@ -13,6 +13,7 @@ dub-registry.ci.lxd
 
 [ci_containers:vars]
 jenkins_url=https://ci.dlang.io/
+jenkins_use_github_auth=True
 
 [ci_containers:vars]
 # ssh proxy into container (running ssh itself)

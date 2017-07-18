@@ -1,5 +1,5 @@
 log 'Running thinBackup'
-curl -fsS --data "script=$(cat backup.groovy)" --user 'admin:{{ jenkins_admin_password }}' http://localhost:{{ jenkins_http_port }}/scriptText
+curl -fsS --data "script=$(cat backup.groovy)" --user '{{ jenkins_admin_username }}:{{ jenkins_admin_password }}' http://localhost:{{ jenkins_http_port }}/scriptText
 
 folders=( FULL-* )
 log "Compressing and uploading thinBackup ${folders[0]}"

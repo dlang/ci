@@ -6,7 +6,7 @@
 - name: get slave secret
   uri:
     url: "{{ jenkins_url}}scriptText"
-    user: admin
+    user: "{{ jenkins_admin_username }}"
     password: "{{ jenkins_admin_password }}"
     force_basic_auth: yes
     method: POST

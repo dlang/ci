@@ -22,11 +22,15 @@
   notify: restart jenkins
 - set_fact:
     jenkins_plugins: "{{ jenkins_plugins + ['thinBackup'] }}"
+- set_fact:
+    jenkins_plugins: "{{ jenkins_plugins + ['github-oauth'] }}"
+  when: jenkins_use_github_auth
 - name: add jenkins init.groovy.d folder
   file: { dest: /var/lib/jenkins/init.groovy.d, state: directory, owner: jenkins, mode: 0500 }
 - name: add jenkins init scripts
-  template: { src: "{{ item }}.groovy.j2", dest: "/var/lib/jenkins/init.groovy.d/{{ item }}.groovy", owner: jenkins, mode: 0400 }
-  with_items: [plugins, password_auth, executors]
+  template: { src: "{{ item.1 }}.groovy.j2", dest: "/var/lib/jenkins/init.groovy.d/{{ item.0 }}-{{ item.1 }}.groovy", owner: jenkins, mode: 0400 }
+  # manually delete scripts when changing order
+  with_indexed_items: [plugins, "{{ 'github_auth' if jenkins_use_github_auth else 'password_auth' }}", executors]
   notify: restart jenkins
 - name: compress logs
   cron:

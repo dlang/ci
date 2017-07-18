@@ -12,6 +12,7 @@ runner-02.ci.lxd
 
 [ci_containers:vars]
 jenkins_url=http://jenkins.ci.lxd:8080/
+jenkins_use_github_auth=False
 
 [ci_containers:vars]
 # ssh proxy into container (running ssh itself)
