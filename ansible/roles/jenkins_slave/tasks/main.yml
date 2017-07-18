@@ -5,7 +5,7 @@
   user: { name: jenkins, system: yes, home: /var/lib/jenkins }
 - name: get slave secret
   uri:
-    url: https://{{ jenkins_addr}}/scriptText
+    url: "{{ jenkins_url}}scriptText"
     user: admin
     password: "{{ jenkins_admin_password }}"
     force_basic_auth: yes

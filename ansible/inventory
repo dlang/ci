@@ -12,6 +12,9 @@ runner-02.ci.lxd
 dub-registry.ci.lxd
 
 [ci_containers:vars]
+jenkins_url=https://ci.dlang.io/
+
+[ci_containers:vars]
 # ssh proxy into container (running ssh itself)
 ansible_ssh_common_args=-o ProxyCommand="ssh -W %h:%p ci.dlang.io"
 ansible_ssh_user=root
