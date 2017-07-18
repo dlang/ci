@@ -20,8 +20,13 @@
     # use internal hostname for slave listener http://stackoverflow.com/a/39965700/2371032
     line: JAVA_ARGS="$JAVA_ARGS -Djenkins.install.runSetupWizard=false -Dhudson.TcpSlaveAgentListener.hostName={{ inventory_hostname }} -Xms512m -Xmx1024m"
   notify: restart jenkins
-- name: configure jenkins
-  template: { src: init.groovy.j2, dest: /var/lib/jenkins/init.groovy, owner: jenkins, mode: 0400 }
+- set_fact:
+    jenkins_plugins: "{{ jenkins_plugins + ['thinBackup'] }}"
+- name: add jenkins init.groovy.d folder
+  file: { dest: /var/lib/jenkins/init.groovy.d, state: directory, owner: jenkins, mode: 0500 }
+- name: add jenkins init scripts
+  template: { src: "{{ item }}.groovy.j2", dest: "/var/lib/jenkins/init.groovy.d/{{ item }}.groovy", owner: jenkins, mode: 0400 }
+  with_items: [plugins, password_auth, executors]
   notify: restart jenkins
 - name: compress logs
   cron:
