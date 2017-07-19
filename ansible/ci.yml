@@ -14,6 +14,8 @@
   vars:
     - jenkins_http_port: 8080
     - jenkins_slave_agent_port: 55000
+    - jenkins_admin_username: MartinNowak
+    - jenkins_github_organizations: [dlang]
   vars_files:
     - vars/passwords.yml # jenkins_admin_password
   roles:
@@ -25,7 +27,7 @@
 
 - hosts: jenkins_slaves
   vars:
-    - jenkins_addr: ci.dlang.io
+    - jenkins_admin_username: MartinNowak
   vars_files:
     - vars/passwords.yml # jenkins_admin_password
   roles:

@@ -23,7 +23,10 @@ For less typing store vault and sudo passwords in [Pass: The Standard Unix Passw
 pass add dlangci/ansible_vault
 pass add dlangci/sudo
 ```
-
+At best also tell git how to diff encrypted files.
+```sh
+git config diff.ansible-vault.textconv 'ansible-vault view --vault-password-file=ansible/query_vault_pass.sh'
+```
 Alternatively comment out `vault_password_file` in [ansible.cfg](ansible.cfg) and `ansible_become_pass` in [group_vars/all](group_vars/all)
 and pass `-K, --ask-become-pass` and `--ask-vault-pass` to `ansible-playbook`.
 

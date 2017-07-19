@@ -3,15 +3,30 @@
   apt: { name: default-jre, install_recommends: no, update_cache: yes, cache_valid_time: 3600 }
 - name: add jenkins slave user
   user: { name: jenkins, system: yes, home: /var/lib/jenkins }
+# see https://wiki.jenkins.io/display/JENKINS/Remote+access+API#RemoteaccessAPI-CSRFProtection
+# and https://support.cloudbees.com/hc/en-us/articles/222520647-How-to-find-slave-secret-key
+- set_fact:
+    script: |-
+      import hudson.model.Hudson;
+      def slave = Hudson.instance.slaves.find { it.name == '{{ inventory_hostname_short }}' }.getComputer()
+      println(slave.getJnlpMac())
+- name: get CSRF token
+  uri:
+    url: "{{ jenkins_url}}crumbIssuer/api/json"
+    user: "{{ jenkins_admin_username }}"
+    password: "{{ jenkins_admin_password }}"
+    force_basic_auth: yes
+    method: GET
+  register: csrf_token
 - name: get slave secret
   uri:
-    url: https://{{ jenkins_addr}}/scriptText
-    user: admin
+    url: "{{ jenkins_url}}scriptText"
+    user: "{{ jenkins_admin_username }}"
     password: "{{ jenkins_admin_password }}"
     force_basic_auth: yes
     method: POST
     body: >-
-      script=import hudson.model.Hudson; println(Hudson.instance.slaves.find { it.name == '{{ inventory_hostname_short }}' }.getComputer().getJnlpMac())
+      {{ csrf_token.json.crumbRequestField }}={{ csrf_token.json.crumb }}&script={{ script | urlencode() }}
     return_content: yes
   register: response
   check_mode: no
