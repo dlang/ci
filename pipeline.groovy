@@ -319,6 +319,7 @@ DFLAGS=-I%@P%/../imports -L-L%@P%/../libs -L--export-dynamic -L--export-dynamic 
         "msgpack/msgpack-d",
         "msoucy/dproto",
         "nomad-software/dunit",
+        "Netflix/vectorflow",
         "rejectedsoftware/diet-ng",
         "rejectedsoftware/vibe.d",
         "repeatedly/mustache-d",
