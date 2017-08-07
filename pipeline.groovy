@@ -219,7 +219,7 @@ def testDownstreamProject (name) {
 
 *******************************************************************************/
 
-def runPipeline() {
+def runPipeline() { timeout(time: 1, unit: 'HOURS') {
     /* Use the same workspace, no matter what job (dmd, druntime,...)  triggered
      * the build.  The workspace step will take care of concurrent test-runs and
      * allocate additional workspaces if necessary.  This setup avoids to
@@ -329,6 +329,6 @@ DFLAGS=-I%@P%/../imports -L-L%@P%/../libs -L--export-dynamic -L--export-dynamic 
     stage ('Test Projects') {
         parallel mapSteps(dub_projects, this.&testDownstreamProject)
     }
-}
+}}
 
 return this; // return script
