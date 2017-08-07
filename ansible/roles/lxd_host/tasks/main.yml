@@ -90,6 +90,9 @@
 
 # deduplicate filesystem and then rebalance sparse btrfs extends to regain unallocated space
 # https://btrfs.wiki.kernel.org/index.php/Problem_FAQ#I_get_.22No_space_left_on_device.22_errors.2C_but_df_says_I.27ve_got_lots_of_space
+- name: add ppa duperemove
+  apt_repository: { repo: 'ppa:lordgaav/duperemove' }
+  when: ansible_mounts[0].fstype == 'btrfs'
 - name: install duperemove
   apt: { name: duperemove, install_recommends: no }
   when: ansible_mounts[0].fstype == 'btrfs'
