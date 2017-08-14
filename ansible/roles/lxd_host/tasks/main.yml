@@ -102,5 +102,5 @@
     minute: 0
     hour: 4
     weekday: 2 # Tue
-    job: duperemove -rdh /bin /boot /etc /lib /lib64 /sbin /usr /var && btrfs balance start -musage=5 -dusage=5 /
+    job: duperemove -rdh /bin /boot /etc /lib /lib64 /sbin /usr /var && btrfs balance start -musage=5 -dusage=5 / >/dev/null
   when: ansible_mounts[0].fstype == 'btrfs'
