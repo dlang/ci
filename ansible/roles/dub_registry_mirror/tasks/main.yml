@@ -1,7 +1,7 @@
 ---
 - name: install dependencies
   apt: { name: "{{ item }}", install_recommends: no, update_cache: yes, cache_valid_time: 3600 }
-  with_items: [mongodb-server, libevent-dev, libssl-dev, patch]
+  with_items: [mongodb-server, libevent-dev, libssl-dev]
 - name: install dmd
   apt:
     deb: 'http://downloads.dlang.org/releases/2.x/2.074.1/dmd_2.074.1-0_amd64.deb'
@@ -13,14 +13,15 @@
 - name: get dub-registry
   unarchive:
     remote_src: yes
-    src: 'https://github.com/dlang/dub-registry/archive/v2.1.0.tar.gz'
-    dest: /home/dub-registry/
+    src: 'https://github.com/dlang/dub-registry/archive/{{ dub_registry_version }}.tar.gz'
+    dest: /home/dub-registry
     owner: dub-registry
     group: dub-registry
 - name: symlink dub-registry
-  file: { dest: /home/dub-registry/dub-registry, src: /home/dub-registry/dub-registry-2.1.0, state: link }
-- name: patch dub-registry bind address
-  patch: { src: dub-registry.patch, dest: /home/dub-registry/dub-registry/source/app.d }
+  file:
+    dest: /home/dub-registry/dub-registry
+    src: "/home/dub-registry/dub-registry-{{ dub_registry_version | regex_replace('^v(\\d+\\.\\d+\\.\\d+)', '\\1') }}"
+    state: link
 - name: build dub-registry
   command: dub build
   args:
