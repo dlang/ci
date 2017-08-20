@@ -8,6 +8,7 @@ Group=dub-registry
 User=dub-registry
 ExecStart=/home/dub-registry/dub-registry/dub-registry --mirror=https://code.dlang.org
 WorkingDirectory=/home/dub-registry/dub-registry
+MemoryLimit=1.5G
 Restart=on-failure
 
 [Install]
