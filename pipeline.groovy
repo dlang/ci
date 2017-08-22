@@ -173,6 +173,11 @@ def testDownstreamProject (name) {
                     sh 'DC=dmd VIBED_DRIVER=libasync BUILD_EXAMPLE=0 RUN_TEST=0 ./travis-ci.sh || echo failed' // FIXME
                     break;
 
+                case 'rejectedsoftware/diet-ng':
+                    sh 'sed -i \'/mkdir build && cd build/,//d\' .travis.yml' // strip meson tests
+                    test_travis_yaml()
+                    break;
+
                 case 'dlang/dub':
                     sh '''
                       rm test/issue884-init-defer-file-creation.sh # FIXME
