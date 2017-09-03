@@ -182,6 +182,7 @@ def testDownstreamProject (name) {
                     sh '''
                       rm test/issue884-init-defer-file-creation.sh # FIXME
                       sed -i \'s| defaultRegistryURL = .*;| defaultRegistryURL = "https://code-mirror.dlang.io/";|\' source/dub/dub.d
+                      sed -i \'/^source.*activate/d\' travis-ci.sh
                       jq \'.versions["vibe-d"]="0.7.31"\' < dub.selections.json | sponge dub.selections.json
                       dub fetch ddox --version=0.16.0
                     '''
