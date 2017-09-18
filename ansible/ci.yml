@@ -1,5 +1,7 @@
 ---
 - hosts: container_hosts
+  vars:
+    - admin_email: code@dawg.eu
   roles:
     - common
     - lxd_host

@@ -76,6 +76,20 @@
   with_items: "{{ groups[inventory_hostname_short + '_containers'] }}"
   when: ansible_virtualization_type != 'virtualbox'
 
+# install MTA
+- name: configure postfix mailname
+  debconf: { name: postfix, question: postfix/mailname, value: "{{ inventory_hostname }}", vtype: string }
+- name: configure postfix mailertype
+  debconf: { name: postfix, question: postfix/main_mailer_type, value: 'Internet Site', vtype: string }
+- name: install postfix and mailx
+  apt: { name: [postfix, heirloom-mailx], install_recommends: no }
+- name: configure postfix interfaces
+  lineinfile: { dest: /etc/postfix/main.cf, regexp: '^inet_interfaces = ',  line: 'inet_interfaces = loopback-only' }
+  notify: restart postfix
+- name: send any local mail to admin
+  lineinfile: { dest: /etc/aliases, regexp: 'root:', line: 'root: {{ admin_email }}' }
+  notify: newaliases
+
 # use the vagrant generated key to access containers
 - name: add authorized_keys (vagrant)
   copy:
