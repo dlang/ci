@@ -272,7 +272,7 @@ def runPipeline() { timeout(time: 1, unit: 'HOURS') {
         stage ('Build Tools') {
             def repos = [
                 'dub': {
-                    withEnv(["PATH=${env.WORKSPACE}/dmd/src:${env.PATH}"]) {
+                    withEnv(["PATH=${env.WORKSPACE}/dmd/generated/linux/release/64:${env.PATH}"]) {
                         dir ('dub') {
                             sh '''#!/usr/bin/env bash
                             sed -i \'s| defaultRegistryURL = .*;| defaultRegistryURL = "https://code-mirror.dlang.io/";|\' source/dub/dub.d
@@ -282,7 +282,7 @@ def runPipeline() { timeout(time: 1, unit: 'HOURS') {
                     }
                 },
                 'tools': {
-                    withEnv(["PATH=${env.WORKSPACE}/dmd/src:${env.PATH}"]) {
+                    withEnv(["PATH=${env.WORKSPACE}/dmd/generated/linux/release/64:${env.PATH}"]) {
                         dir ('tools') { sh "make -f posix.mak RELEASE=1 --jobs=4" }
                     }
                 }
@@ -298,7 +298,7 @@ def runPipeline() { timeout(time: 1, unit: 'HOURS') {
 
             rm -rf distribution
             mkdir -p distribution/{bin,imports,libs}
-            cp --archive --link dmd/src/dmd dub/bin/dub tools/generated/linux/64/rdmd distribution/bin/
+            cp --archive --link dmd/generated/linux/release/64/dmd dub/bin/dub tools/generated/linux/64/rdmd distribution/bin/
             cp --archive --link phobos/etc phobos/std druntime/import/* distribution/imports/
             cp --archive --link phobos/generated/linux/release/64/libphobos2.{a,so,so*[!o]} distribution/libs/
             echo '[Environment]
