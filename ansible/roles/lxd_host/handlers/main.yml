@@ -3,3 +3,7 @@
   command: dpkg-reconfigure --frontend noninteractive lxd
 - name: resolvconf
   command: resolvconf -u
+- name: newaliases
+  command: newaliases
+- name: restart postfix
+  service: { name: postfix, state: restarted }
