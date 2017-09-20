@@ -110,6 +110,13 @@
 - name: install duperemove
   apt: { name: duperemove, install_recommends: no }
   when: ansible_mounts[0].fstype == 'btrfs'
+- name: add /usr/sbin
+  cron:
+    name: PATH
+    env: yes
+    value: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+  when: ansible_mounts[0].fstype == 'btrfs'
+  tags: cron
 - name: run btrfs balance
   cron:
     name: rebalance btrfs
@@ -118,3 +125,4 @@
     weekday: 2 # Tue
     job: duperemove -rdh /bin /boot /etc /lib /lib64 /sbin /usr /var && btrfs balance start -musage=5 -dusage=5 / >/dev/null
   when: ansible_mounts[0].fstype == 'btrfs'
+  tags: cron
