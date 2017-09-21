@@ -216,6 +216,7 @@ def testDownstreamProject (name) {
             finally {
                 sh """
                 dub clean --all-packages
+                git -C '${repo}' clean -dxf
                 rm -r '${env.WORKSPACE}/distribution'
                 """
             }
