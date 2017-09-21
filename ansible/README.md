@@ -18,10 +18,11 @@
 
 ### Passwords
 
-For less typing store vault and sudo passwords in [Pass: The Standard Unix Password Manager](https://www.passwordstore.org/).
+For less typing store vault, sudo, and profitbricks passwords in [Pass: The Standard Unix Password Manager](https://www.passwordstore.org/).
 ```sh
 pass add dlangci/ansible_vault
 pass add dlangci/sudo
+pass add dlangci/profitbricks
 ```
 At best also tell git how to diff encrypted files.
 ```sh

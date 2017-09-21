@@ -1,0 +1,2 @@
+host_start_cmd: "curl -fsSX POST -u 'code+pbricks-jenkins@dawg.eu:{{ lookup('pipe', 'pass dlangci/profitbricks') }}' {{ href }}/start"
+host_stop_cmd: "curl -fsSX POST -u 'code+pbricks-jenkins@dawg.eu:{{ lookup('pipe', 'pass dlangci/profitbricks') }}' {{ href }}/stop"

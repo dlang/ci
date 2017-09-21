@@ -1,0 +1,56 @@
+[lxd_hosts]
+ci.dlang.io
+
+# group with all lxd containers
+[lxd_containers:children]
+ci_containers
+
+[ci_containers]
+jenkins.ci.lxd
+runner-01.ci.lxd
+runner-02.ci.lxd
+dub-registry.ci.lxd
+
+[ci_containers:vars]
+jenkins_use_github_auth=True
+
+[ci_containers:vars]
+# ssh proxy into container (running ssh itself)
+ansible_ssh_common_args=-o ProxyCommand="ssh -W %h:%p ci.dlang.io"
+ansible_ssh_user=root
+
+## Jenkins slaves
+#
+[jenkins_slaves:children]
+jenkins_permanent_slaves
+jenkins_demand_slaves
+
+# permanent jenkins slaves
+[jenkins_permanent_slaves]
+runner-01.ci.lxd
+runner-02.ci.lxd
+
+# on-demand jenkins slaves
+[jenkins_demand_slaves:children]
+jenkins_pbricks_slaves
+
+[jenkins_pbricks_slaves:children]
+# profitbricks - virtual dlang ci data center
+dd6a357d-121a-40f0-85ae-e225e07b3856
+
+# running at online.net
+[online_net:children]
+lxd_hosts
+lxd_containers
+
+# running at profitbricks
+[pbricks_fra:children]
+de_fra
+
+[pbricks_hosts:children]
+pbricks_fra
+
+# all non-containerized host
+[servers:children]
+lxd_hosts
+pbricks_hosts

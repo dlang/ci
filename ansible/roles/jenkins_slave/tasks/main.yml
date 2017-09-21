@@ -8,19 +8,20 @@
 - set_fact:
     script: |-
       import hudson.model.Hudson;
-      def slave = Hudson.instance.slaves.find { it.name == '{{ inventory_hostname_short }}' }.getComputer()
+      def slave = Hudson.instance.slaves.find { it.name == '{{ inventory_hostname }}' }.getComputer()
       println(slave.getJnlpMac())
 - name: get CSRF token
   uri:
-    url: "{{ jenkins_url}}crumbIssuer/api/json"
+    url: "{{ jenkins_url }}crumbIssuer/api/json"
     user: "{{ jenkins_admin_username }}"
     password: "{{ jenkins_admin_password }}"
     force_basic_auth: yes
     method: GET
   register: csrf_token
+  check_mode: no
 - name: get slave secret
   uri:
-    url: "{{ jenkins_url}}scriptText"
+    url: "{{ jenkins_url }}scriptText"
     user: "{{ jenkins_admin_username }}"
     password: "{{ jenkins_admin_password }}"
     force_basic_auth: yes
@@ -31,7 +32,10 @@
   register: response
   check_mode: no
 - set_fact:
-    secret: "{{ response.content }}"
+    secret: "{{ response.content | trim }}"
+# https://github.com/jenkinsci/remoting/blob/ac60160b459bad1802e250de8749a2dbb21e87ad/docs/workDir.md
+- name: remove old slave caches
+  file: { dest: /var/lib/jenkins/.jenkins, state: absent }
 - name: add jenkins slave service
   template: { src: jenkins.service.j2, dest: /etc/systemd/system/jenkins.service }
   vars:

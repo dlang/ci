@@ -7,6 +7,8 @@ import java.util.logging.Logger
 import jenkins.model.Jenkins
 import jenkins.model.JenkinsLocationConfiguration
 import jenkins.security.s2m.AdminWhitelistRule
+import jenkins.slaves.RemotingWorkDirSettings
+import org.jenkinsci.plugins.slave_setup.SetupSlaveLauncher
 
 def logger = Logger.getLogger("")
 def instance = Jenkins.getInstance()
@@ -25,11 +27,25 @@ loccfg.setAdminAddress('{{ jenkins_admin_email }}');
 
 instance.save()
 
-{% for host in groups.jenkins_slaves %}
+{% for host in groups.jenkins_permanent_slaves %}
 instance.addNode(
-new DumbSlave("{{ host.split('.')[0] }}", "", '/var/lib/jenkins', '4',
-              Node.Mode.NORMAL, '',
-              new JNLPLauncher(), new RetentionStrategy.Always(),
-              new ArrayList())
+new DumbSlave("{{ host }}", "", '/var/lib/jenkins', '4',
+        Node.Mode.NORMAL, '',
+        new JNLPLauncher(true), new RetentionStrategy.Always(),
+        new ArrayList())
+)
+{% endfor %}
+
+{% for host in groups.jenkins_demand_slaves %}
+instance.addNode(
+new DumbSlave("{{ host }}", "", '/var/lib/jenkins', '4',
+        Node.Mode.NORMAL, '',
+        new SetupSlaveLauncher(
+            new JNLPLauncher(true),
+            "{{ hostvars[host].host_start_cmd }}",
+            "{{ hostvars[host].host_stop_cmd }}",
+        ),
+        new RetentionStrategy.Demand(0, 1),
+        new ArrayList())
 )
 {% endfor %}

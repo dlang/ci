@@ -1,10 +1,21 @@
 ---
 - name: update apt cache
   apt: { update_cache: yes, cache_valid_time: 3600 }
+- name: add {{ admin_user }} user
+  user:
+    name: "{{ admin_user }}"
+    groups: adm,sudo
+    shell: /bin/bash
+    password: "{{ lookup('pipe', 'pass dlangci/sudo') | password_hash('sha512', 'FNLOKPyHTl3Ai9oy') }}"
+- name: default authorized keys {{ admin_user }}
+  authorized_key:
+    user: "{{ admin_user }}"
+    key: "{{ lookup('file', 'files/default_authorized_keys') }}"
 - include: hostname.yml
 - include: sshd.yml
 # TODO: firewall on containers?
 - include: firewall.yml
+- include: mta.yml
 - name: uninstall unused packages
   apt: { name: "{{item}}", purge: yes, state: absent }
   with_items: [mlocate, snapd]
