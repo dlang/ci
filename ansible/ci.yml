@@ -61,6 +61,12 @@
         - rsync
         - unzip
       tags: deps
+    - name: disable mongodb journaling
+      lineinfile: { dest: /etc/mongodb.conf, regexp: "^{{ item.key }} *=", line: "{{ item.key }} = {{ item.value }}" }
+      with_dict:
+        journal: 'false'
+        nojournal: 'true'
+      notify: restart mongodb
     - name: use ld.gold
       alternatives: { name: ld, link: /usr/bin/ld, path: /usr/bin/ld.gold }
     - name: add load_travis_script command
@@ -75,6 +81,9 @@
           if isinstance(script, list):
             script = '\n'.join(script)
           print(script)
+  handlers:
+    - name: restart mongodb
+      service: { name: mongodb, state: restarted }
 
 - hosts: ci.dlang.io
   roles:

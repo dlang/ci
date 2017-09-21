@@ -1,6 +1,6 @@
 ---
 - name: install java
-  apt: { name: default-jre, install_recommends: no, update_cache: yes, cache_valid_time: 3600 }
+  apt: { name: default-jre-headless, install_recommends: no, update_cache: yes, cache_valid_time: 3600 }
 - name: add jenkins slave user
   user: { name: jenkins, system: yes, home: /var/lib/jenkins }
 # see https://wiki.jenkins.io/display/JENKINS/Remote+access+API#RemoteaccessAPI-CSRFProtection
