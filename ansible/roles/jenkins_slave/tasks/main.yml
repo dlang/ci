@@ -5,11 +5,6 @@
   user: { name: jenkins, system: yes, home: /var/lib/jenkins }
 # see https://wiki.jenkins.io/display/JENKINS/Remote+access+API#RemoteaccessAPI-CSRFProtection
 # and https://support.cloudbees.com/hc/en-us/articles/222520647-How-to-find-slave-secret-key
-- set_fact:
-    script: |-
-      import hudson.model.Hudson;
-      def slave = Hudson.instance.slaves.find { it.name == '{{ inventory_hostname }}' }.getComputer()
-      println(slave.getJnlpMac())
 - name: get CSRF token
   uri:
     url: "{{ jenkins_url }}crumbIssuer/api/json"
@@ -19,7 +14,32 @@
     method: GET
   register: csrf_token
   check_mode: no
-- name: get slave secret
+- set_fact:
+    script: |-
+      import hudson.slaves.DumbSlave
+      import hudson.slaves.JNLPLauncher
+      import hudson.slaves.RetentionStrategy
+      import jenkins.model.Jenkins
+      import org.jenkinsci.plugins.slave_setup.SetupSlaveLauncher
+
+      def slave = Jenkins.instance.slaves.find { it.name == '{{ inventory_hostname }}' }
+      if (slave == null)
+      {
+      {% if host_start_cmd is defined %}
+          def launcher = new SetupSlaveLauncher(new JNLPLauncher(true), '''{{ host_start_cmd }}''', '''{{ host_stop_cmd }}''')
+          def retention = new RetentionStrategy.Demand(0, 1);
+      {% else %}
+          def launcher = new JNLPLauncher(true)
+          def retention = new RetentionStrategy.Always();
+      {% endif %}
+          slave = new DumbSlave("{{ inventory_hostname }}", '/var/lib/jenkins', launcher)
+          slave.setNumExecutors({{ jenkins_num_executors }})
+          slave.setRetentionStrategy(retention)
+          Jenkins.instance.addNode(slave)
+          println('ADDED')
+      }
+- debug: msg="{{ script }}"
+- name: add slave
   uri:
     url: "{{ jenkins_url }}scriptText"
     user: "{{ jenkins_admin_username }}"
@@ -30,7 +50,29 @@
       {{ csrf_token.json.crumbRequestField }}={{ csrf_token.json.crumb }}&script={{ script | urlencode() }}
     return_content: yes
   register: response
+  # endpoint only knows 200 OK :(
+  failed_when: "'Exception' in response.content"
+  changed_when: "'ADDED' in response.content"
+- set_fact:
+    script: |-
+      import jenkins.model.Jenkins
+      def slave = Jenkins.instance.slaves.find { it.name == '{{ inventory_hostname }}' }
+      println(slave.computer.jnlpMac)
+- name: get slave secret
+  uri:
+    url: "{{ jenkins_url }}scriptText"
+    user: "{{ jenkins_admin_username }}"
+    password: "{{ jenkins_admin_password }}"
+    force_basic_auth: yes
+    method: POST
+    body: >-
+      {{ csrf_token.json.crumbRequestField }}={{ csrf_token.json.crumb }}&script={{ script | urlencode() }}
+    return_content: yes
   check_mode: no
+  register: response
+  # endpoint only knows 200 OK :(
+  failed_when: "'Exception' in response.content"
+  ignore_errors: ansible_check_mode
 - set_fact:
     secret: "{{ response.content | trim }}"
 # https://github.com/jenkinsci/remoting/blob/ac60160b459bad1802e250de8749a2dbb21e87ad/docs/workDir.md

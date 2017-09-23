@@ -30,6 +30,9 @@ jenkins_demand_slaves
 runner-01.ci.lxd
 runner-02.ci.lxd
 
+[jenkins_permanent_slaves:vars]
+jenkins_num_executors=4
+
 # on-demand jenkins slaves
 [jenkins_demand_slaves:children]
 jenkins_pbricks_slaves
@@ -37,6 +40,9 @@ jenkins_pbricks_slaves
 [jenkins_pbricks_slaves:children]
 # profitbricks - virtual dlang ci data center
 dd6a357d-121a-40f0-85ae-e225e07b3856
+
+[jenkins_pbricks_slaves:vars]
+jenkins_num_executors="{{ ansible_processor_vcpus }}"
 
 # running at online.net
 [online_net:children]
