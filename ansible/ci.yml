@@ -4,9 +4,6 @@
   gather_facts: True
 
 - hosts: servers
-  vars:
-    - admin_user: dawg
-    - admin_email: code@dawg.eu
   roles:
     - common
 

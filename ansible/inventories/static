@@ -54,3 +54,8 @@ pbricks_fra
 [servers:children]
 lxd_hosts
 pbricks_hosts
+
+# admin setting
+[servers:vars]
+admin_user=dawg
+admin_email=code+hostmaster@dawg.eu
