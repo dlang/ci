@@ -9,3 +9,5 @@
 - name: uninstall unused packages
   apt: { name: "{{item}}", purge: yes, state: absent }
   with_items: [mlocate, snapd]
+- name: enable zram swap
+  apt: { name: zram-config, install_recommends: no }
