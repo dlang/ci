@@ -18,7 +18,7 @@
     insertafter: ^JAVA_ARGS=
     regexp: '^JAVA_ARGS="\$JAVA_ARGS'
     # use internal hostname for slave listener http://stackoverflow.com/a/39965700/2371032
-    line: JAVA_ARGS="$JAVA_ARGS -Djenkins.install.runSetupWizard=false -Dhudson.TcpSlaveAgentListener.hostName={{ inventory_hostname }} -Xms512m -Xmx1024m"
+    line: JAVA_ARGS="$JAVA_ARGS -Djenkins.install.runSetupWizard=false -Dhudson.TcpSlaveAgentListener.hostName={{ inventory_hostname }} -Xms512m -Xmx1024m -XX:+UseG1GC"
   notify: restart jenkins
 - set_fact:
     jenkins_plugins: "{{ jenkins_plugins + ['thinBackup'] }}"
