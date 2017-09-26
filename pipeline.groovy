@@ -216,6 +216,10 @@ def testDownstreamProject (name) {
             finally {
                 sh """
                 dub clean --all-packages
+                # workaround https://github.com/dlang/dub/issues/1256
+                if [ -d '${env.WORKSPACE}/.dub/packages' ]; then
+                    find '${env.WORKSPACE}/.dub/packages' -type d -name '*.a' -delete
+                fi
                 git -C '${repo}' clean -dxf
                 rm -r '${env.WORKSPACE}/distribution'
                 """
@@ -306,6 +310,9 @@ def runPipeline() { timeout(time: 1, unit: 'HOURS') {
 DFLAGS=-I%@P%/../imports -L-L%@P%/../libs -L--export-dynamic -L--export-dynamic -fPIC' > distribution/bin/dmd.conf
             '''
             stash name: "dlang-build", includes: "distribution/**"
+
+            sh 'rm -r distribution'
+            projects.each { p -> dir(p, { sh 'git clean -dxf' }) }
         }
     }}
 
