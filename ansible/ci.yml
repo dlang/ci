@@ -1,9 +1,14 @@
 ---
-- hosts: container_hosts
-  vars:
-    - admin_email: code@dawg.eu
+# refresh fact cache of all servers
+- hosts: all
+  gather_facts: True
+
+- hosts: servers
   roles:
     - common
+
+- hosts: lxd_hosts
+  roles:
     - lxd_host
 
 - hosts: dub-registry.ci.lxd
@@ -14,6 +19,7 @@
 
 - hosts: jenkins.ci.lxd
   vars:
+    - jenkins_url: https://ci.dlang.io/
     - jenkins_http_port: 8080
     - jenkins_slave_agent_port: 55000
     - jenkins_admin_username: MartinNowak
@@ -26,9 +32,46 @@
     - name: tools
       apt: { name: "{{ item }}", install_recommends: no, update_cache: yes, cache_valid_time: 3600 }
       with_items: [git, jq]
+    - name: get pbricks ip blocks (AS51862)
+      uri: { url: 'https://freeapi.robtex.com/asquery/51862' }
+      check_mode: no
+      register: pbricks_ips
+    - name: common firewall setup
+      include: roles/common/tasks/firewall.yml
+    - name: allow http reverse proxy
+      ufw: { rule: allow, src: "{{ item }}", port: "{{ jenkins_http_port }}", proto: tcp }
+      with_items:
+        - "{{ hostvars['ci.dlang.io'].ansible_lxdbr0.ipv4.address }}"
+        - "{{ hostvars['ci.dlang.io'].ansible_lxdbr0.ipv6[0].address }}"
+    - name: allow agent traffic
+      ufw: { rule: allow, src: "{{ item }}", port: "{{ jenkins_slave_agent_port }}", proto: tcp }
+      with_flattened:
+        - "{{ pbricks_ips.json.nets | map(attribute='n') | list }}"
+        # allow access from host (indirectly SNAT) and directly from other containers
+        - ["{{ hostvars['ci.dlang.io'].ansible_default_ipv4.address }}", "{{ ansible_default_ipv4.address }}/24"]
+    - name: enable ufw
+      ufw: { state: enabled }
+
+- hosts: ci.dlang.io
+  tasks:
+    - name: forward jenkins agent port
+      include: tasks/forward_lxc_port.yml
+      vars:
+        protocol: tcp
+        host_ip: "{{ ansible_default_ipv4.address }}"
+        host_port: 55000
+        container_ip: "{{ hostvars['jenkins.ci.lxd'].ansible_default_ipv4.address }}"
+        container_subnet: "{{ hostvars['jenkins.ci.lxd'].ansible_default_ipv4.address }}/24"
+        container_port: 55000
+  handlers:
+    - name: save iptables
+      shell: >
+        iptables-save > /etc/iptables/rules.v4;
+        ip6tables-save > /etc/iptables/rules.v6
 
 - hosts: jenkins_slaves
   vars:
+    - jenkins_url: https://ci.dlang.io/
     - jenkins_admin_username: MartinNowak
   vars_files:
     - vars/passwords.yml # jenkins_admin_password
@@ -61,6 +104,12 @@
         - rsync
         - unzip
       tags: deps
+    - name: disable mongodb journaling
+      lineinfile: { dest: /etc/mongodb.conf, regexp: "^{{ item.key }} *=", line: "{{ item.key }} = {{ item.value }}" }
+      with_dict:
+        journal: 'false'
+        nojournal: 'true'
+      notify: restart mongodb
     - name: use ld.gold
       alternatives: { name: ld, link: /usr/bin/ld, path: /usr/bin/ld.gold }
     - name: add load_travis_script command
@@ -75,6 +124,9 @@
           if isinstance(script, list):
             script = '\n'.join(script)
           print(script)
+  handlers:
+    - name: restart mongodb
+      service: { name: mongodb, state: restarted }
 
 - hosts: ci.dlang.io
   roles:

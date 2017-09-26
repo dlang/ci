@@ -11,8 +11,27 @@
       hostnames: [localhost.localdomain, localhost]
     - ip: ::1
       hostnames: [localhost.localdomain, localhost]
+- name: setting hostnames for IPs
+  lineinfile:
+    dest: /etc/hosts
+    regexp: ^{{ item.ip | replace('.', '\.') }}
+    line: "{{ item.ip }} {{ item.hostnames | join(' ') }}"
+  with_items:
     - ip: "{{ ansible_default_ipv4.address }}"
       hostnames: ["{{ inventory_hostname }}", "{{ inventory_hostname_short }}"]
     # TODO: external IPv6
     #- ip: "{{ ansible_default_ipv6.address }}"
     #  hostnames: ["{{ inventory_hostname }}", "{{ inventory_hostname_short }}"]
+  # when using external resolvable static ip
+  when: ansible_host == inventory_hostname
+- name: setting hostnames for IPs
+  lineinfile:
+    dest: /etc/hosts
+    regexp: ^{{ item.ip | replace('.', '\.') }}
+    line: "{{ item.ip }} {{ item.hostnames | join(' ') }}"
+  with_items:
+    - ip: 127.0.1.1
+      hostnames: ["{{ inventory_hostname }}", "{{ inventory_hostname_short }}"]
+  # when using dynamic external IP
+  when: ansible_host != inventory_hostname
+

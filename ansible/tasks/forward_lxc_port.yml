@@ -1,0 +1,36 @@
+---
+# careful, this allows full access to the port, regardless of any firewall
+# settings on the host, deploy a firewall inside of the container if necessary.
+- name: install iptables-persistent
+  apt: { name: iptables-persistent, install_recommends: no, update_cache: yes, cache_valid_time: 3600 }
+
+- set_fact:
+    rules:
+      - >-
+        PREROUTING --protocol {{protocol}}
+        --destination {{ host_ip }} --dport {{ host_port }} -j DNAT
+        --to-destination '{{ container_ip }}:{{ container_port }}'
+      # nat local traffic originating from host
+      - >-
+        OUTPUT --protocol {{protocol}}
+        --destination {{ host_ip }} --dport {{ host_port }} -j DNAT
+        --to-destination '{{ container_ip }}:{{ container_port }}'
+      # source-nat packets originating from containers, so that response goes over host
+      - >-
+        POSTROUTING --protocol {{protocol}}
+        --source {{ container_subnet }}
+        --destination {{ container_ip }} --dport {{ container_port }} -j SNAT
+        --to-source {{ host_ip }}
+# https://github.com/lxc/lxd/issues/2074
+- name: check whether iptables rules already exists
+  command: iptables -t nat -C {{ item }}
+  register: rules_exist
+  check_mode: no
+  changed_when: no
+  ignore_errors: yes
+  with_items: "{{ rules }}"
+- name: add iptables rules
+  command: iptables -t nat -A {{ item.1 }}
+  when: rules_exist.results[item.0].rc is defined and rules_exist.results[item.0].rc != 0
+  notify: save iptables
+  with_indexed_items: "{{ rules }}"

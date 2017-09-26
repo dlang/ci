@@ -1,17 +1,9 @@
 #!groovy
-import hudson.model.Node
-import hudson.slaves.DumbSlave
-import hudson.slaves.JNLPLauncher
-import hudson.slaves.RetentionStrategy
-import java.util.logging.Logger
 import jenkins.model.Jenkins
 import jenkins.model.JenkinsLocationConfiguration
 import jenkins.security.s2m.AdminWhitelistRule
 
-def logger = Logger.getLogger("")
 def instance = Jenkins.getInstance()
-
-logger.info('configuring executors and slaves')
 
 instance.setNumExecutors(0) // no builds on master
 instance.setSlaveAgentPort([{{ jenkins_slave_agent_port }}])
@@ -24,12 +16,3 @@ loccfg.setAdminAddress('{{ jenkins_admin_email }}');
 {% endif %}
 
 instance.save()
-
-{% for host in groups.jenkins_slaves %}
-instance.addNode(
-new DumbSlave("{{ host.split('.')[0] }}", "", '/var/lib/jenkins', '4',
-              Node.Mode.NORMAL, '',
-              new JNLPLauncher(), new RetentionStrategy.Always(),
-              new ArrayList())
-)
-{% endfor %}

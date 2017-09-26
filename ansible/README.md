@@ -18,10 +18,11 @@
 
 ### Passwords
 
-For less typing store vault and sudo passwords in [Pass: The Standard Unix Password Manager](https://www.passwordstore.org/).
+For less typing store vault, sudo, and profitbricks passwords in [Pass: The Standard Unix Password Manager](https://www.passwordstore.org/).
 ```sh
 pass add dlangci/ansible_vault
 pass add dlangci/sudo
+pass add dlangci/profitbricks
 ```
 At best also tell git how to diff encrypted files.
 ```sh
@@ -29,6 +30,10 @@ git config diff.ansible-vault.textconv 'ansible-vault view --vault-password-file
 ```
 Alternatively comment out `vault_password_file` in [ansible.cfg](ansible.cfg) and `ansible_become_pass` in [group_vars/all](group_vars/all)
 and pass `-K, --ask-become-pass` and `--ask-vault-pass` to `ansible-playbook`.
+
+### Caches
+
+- remove /tmp/ansible-profitbricks.cache when restarting or provisioning hosts
 
 ## [Vagrant](https://www.vagrantup.com/) to setup local VirtualBox (Jenkins on http://172.16.1.2)
 
