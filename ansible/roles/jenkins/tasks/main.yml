@@ -17,7 +17,7 @@
     dest: /etc/default/jenkins
     insertafter: ^JAVA_ARGS=
     regexp: '^JAVA_ARGS="\$JAVA_ARGS'
-    line: JAVA_ARGS="$JAVA_ARGS -Djenkins.install.runSetupWizard=false -Xms512m -Xmx1024m -XX:+UseG1GC"
+    line: JAVA_ARGS="$JAVA_ARGS -Djenkins.install.runSetupWizard=false -Xms512m -Xmx1024m -XX:+UseG1GC -XX:G1HeapRegionSize=32m -Xloggc:/var/log/jenkins/gc-%t.log -XX:NumberOfGCLogFiles=5 -XX:+UseGCLogFileRotation -XX:GCLogFileSize=20m -XX:+PrintGC -XX:+PrintGCDateStamps -XX:+PrintGCDetails -XX:+PrintHeapAtGC -XX:+PrintGCCause -XX:+PrintTenuringDistribution -XX:+PrintReferenceGC -XX:+PrintAdaptiveSizePolicy"
   notify: restart jenkins
 - set_fact:
     jenkins_plugins: "{{ jenkins_plugins + ['thinBackup', 'slave-setup'] }}"
