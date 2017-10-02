@@ -220,7 +220,7 @@ def testDownstreamProject (name) {
                 if [ -d '${env.WORKSPACE}/.dub/packages' ]; then
                     find '${env.WORKSPACE}/.dub/packages' -type f -name '*.a' -delete
                 fi
-                git -C '${repo}' clean -dxf
+                git -C '${repo}' clean -dxf >/dev/null
                 rm -r '${env.WORKSPACE}/distribution'
                 """
             }
@@ -312,7 +312,7 @@ DFLAGS=-I%@P%/../imports -L-L%@P%/../libs -L--export-dynamic -L--export-dynamic 
             stash name: "dlang-build", includes: "distribution/**"
 
             sh 'rm -r distribution'
-            projects.each { p -> dir(p, { sh 'git clean -dxf' }) }
+            projects.each { p -> dir(p, { sh 'git clean -dxf >/dev/null' }) }
         }
     }}
 
