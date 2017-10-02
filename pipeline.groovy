@@ -215,10 +215,10 @@ def testDownstreamProject (name) {
             }}
             finally {
                 sh """
-                dub clean --all-packages
+                dub clean --all-packages >/dev/null
                 # workaround https://github.com/dlang/dub/issues/1256
                 if [ -d '${env.WORKSPACE}/.dub/packages' ]; then
-                    find '${env.WORKSPACE}/.dub/packages' -type d -name '*.a' -delete
+                    find '${env.WORKSPACE}/.dub/packages' -type f -name '*.a' -delete
                 fi
                 git -C '${repo}' clean -dxf
                 rm -r '${env.WORKSPACE}/distribution'
