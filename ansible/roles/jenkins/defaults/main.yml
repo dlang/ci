@@ -1,5 +1,5 @@
 ---
-jenkins_version: 2.73.1 # LTS
+jenkins_version: 2.73.2 # LTS
 jenkins_http_port:
 jenkins_slave_agent_port:
 jenkins_plugins: []

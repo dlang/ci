@@ -5,3 +5,9 @@
   service: { name: dub-registry-mirror, enabled: yes }
 - name: restart dub-registry-mirror
   service: { name: dub-registry-mirror, enabled: yes, state: restarted }
+- name: restart dub-registry-mirror
+  service: { name: dub-registry-mirror, enabled: yes, state: restarted }
+- name: enable mongod
+  service: { name: mongod, enabled: yes }
+- name: restart mongod
+  service: { name: mongod, enabled: yes, state: restarted }

@@ -10,6 +10,7 @@ ExecStart=/home/dub-registry/dub-registry/dub-registry --mirror=https://code.dla
 WorkingDirectory=/home/dub-registry/dub-registry
 MemoryLimit=1.5G
 Restart=on-failure
+RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
