@@ -1,19 +1,5 @@
 #!/bin/env groovy
-
-def cloneUpstream () {
-    checkout(scm: [
-        $class: 'GitSCM',
-        branches: scm.branches,
-        extensions: scm.extensions + [[$class: 'CleanBeforeCheckout']],
-        userRemoteConfigs: scm.userRemoteConfigs
-    ])
-}
-
-def pipeline
-node {
-    dir('dlang/ci') {
-        cloneUpstream()
-    }
-    pipeline = load 'dlang/ci/pipeline.groovy'
-}
-pipeline.runPipeline()
+// use legacy checkout SCM to fetch library, so we test changes froms PRs/branches
+// https://github.com/jenkinsci/workflow-cps-global-lib-plugin/pull/37#issuecomment-311608135
+library identifier: "dlang@master", retriever: legacySCM(scm)
+runPipeline()
