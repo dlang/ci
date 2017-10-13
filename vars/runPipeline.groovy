@@ -278,12 +278,7 @@ def call() { timeout(time: 1, unit: 'HOURS') {
             def repos = [
                 'dub': {
                     withEnv(["PATH=${env.WORKSPACE}/dmd/generated/linux/release/64:${env.PATH}"]) {
-                        dir ('dub') {
-                            sh '''#!/usr/bin/env bash
-                            sed -i \'s| defaultRegistryURL = .*;| defaultRegistryURL = "https://code-mirror.dlang.io/";|\' source/dub/dub.d
-                            ./build.sh
-                            '''
-                        }
+                        dir ('dub') { sh "./build.sh" }
                     }
                 },
                 'tools': {
