@@ -1,7 +1,14 @@
 ---
+- name: install mongodb-3.4 apt key
+  apt_key: { keyserver: keyserver.ubuntu.com, id: 0C49F3730359A14518585931BC711F9BA15703C6 }
+- name: add mongodb-3.4 repo
+  apt_repository: { repo: 'deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse' }
 - name: install dependencies
   apt: { name: "{{ item }}", install_recommends: no, update_cache: yes, cache_valid_time: 3600 }
-  with_items: [mongodb-server, libevent-dev, libssl-dev]
+  with_items: [mongodb-org-server=3.4.*, libevent-dev, libssl-dev]
+- name: configure mongod
+  copy: { src: mongod.conf, dest: /etc/mongod.conf }
+  notify: [enable mongod, restart mongod]
 - name: install dmd
   apt:
     deb: 'http://downloads.dlang.org/releases/2.x/2.074.1/dmd_2.074.1-0_amd64.deb'
