@@ -329,6 +329,7 @@ DFLAGS=-I%@P%/../imports -L-L%@P%/../libs -L--export-dynamic -L--export-dynamic 
         "DerelictOrg/DerelictGL3",
         "DerelictOrg/DerelictGLFW3",
         "DerelictOrg/DerelictSDL2",
+        "dlang/undeaD",
         "DlangScience/scid",
         "Netflix/vectorflow",
         "ariovistus/pyd",
