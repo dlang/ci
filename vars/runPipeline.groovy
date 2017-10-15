@@ -236,6 +236,8 @@ def testDownstreamProject (name) {
 *******************************************************************************/
 
 def call() { timeout(time: 1, unit: 'HOURS') {
+    // https://github.com/MartinNowak/jenkins-cancel-build-on-update
+    cancelPreviousBuild()
     /* Use the same workspace, no matter what job (dmd, druntime,...)  triggered
      * the build.  The workspace step will take care of concurrent test-runs and
      * allocate additional workspaces if necessary.  This setup avoids to
