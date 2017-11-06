@@ -150,9 +150,12 @@ def testDownstreamProject (name) {
 
                 if (repo == 'rejectedsoftware/vibe.d') {
                     clone("https://github.com/${repo}.git", 'v0.8.1-rc.1')
+                } else if (repo == "sociomantic-tsunami/ocean") {
+                    clone("https://github.com/${repo}.git", "v4.x.x")
                 } else {
                     cloneLatestTag("https://github.com/${repo}.git")
                 }
+
                 switch (repo) {
                 case ['Hackerpilot/DCD', 'Hackerpilot/dfix']:
                     sh 'make DMD=$DMD'
@@ -204,6 +207,19 @@ def testDownstreamProject (name) {
                 case 'dlang-community/D-YAML':
                     sh 'dub build --compiler=$DC'
                     sh 'dub test --compiler=$DC'
+                    break;
+
+                case 'sociomantic-tsunami/ocean':
+                    sh """
+                    wget -O libebtree.deb https://bintray.com/sociomantic-tsunami/dlang/download_file?file_path=libebtree6_6.0.socio6-xenial_amd64.deb
+                    dpkg -x libebtree.deb libebtree/
+                    wget -O d1to2fix.deb https://bintray.com/sociomantic-tsunami/dlang/download_file?file_path=d1to2fix_0.10.0-alpha1-xenial_amd64.deb
+                    dpkg -x d1to2fix.deb d1to2fix/
+                    export PATH=$PATH:$PWD/d1to2fix/usr/bin/
+                    git submodule update --init
+                    make d2conv V=1
+                    make test V=1 DVER=2 F=production LDFLAGS=-L./libebtree/usr/lib/
+                    """
                     break;
 
                 default:
@@ -340,6 +356,7 @@ DFLAGS=-I%@P%/../imports -L-L%@P%/../libs -L--export-dynamic -L--export-dynamic 
         "nomad-software/dunit",
         "repeatedly/mustache-d",
         "s-ludwig/taggedalgebraic",
+        "sociomantic-tsunami/ocean",
     ]
 
     stage ('Test Projects') {
