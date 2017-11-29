@@ -24,20 +24,19 @@
 
       def slave = Jenkins.instance.slaves.find { it.name == '{{ inventory_hostname }}' }
       if (slave == null)
-      {
+          slave = new DumbSlave("{{ inventory_hostname }}", '/var/lib/jenkins', null)
       {% if host_start_cmd is defined %}
-          def launcher = new SetupSlaveLauncher(new JNLPLauncher(true), '''{{ host_start_cmd }}''', '''{{ host_stop_cmd }}''')
-          def retention = new RetentionStrategy.Demand(0, 1);
+      def launcher = new SetupSlaveLauncher(new JNLPLauncher(true), '''{{ host_start_cmd }}''', '''{{ host_stop_cmd }}''')
+      def retention = new RetentionStrategy.Demand(3, 0);
       {% else %}
-          def launcher = new JNLPLauncher(true)
-          def retention = new RetentionStrategy.Always();
+      def launcher = new JNLPLauncher(true)
+      def retention = new RetentionStrategy.Always();
       {% endif %}
-          slave = new DumbSlave("{{ inventory_hostname }}", '/var/lib/jenkins', launcher)
-          slave.setNumExecutors({{ jenkins_num_executors }})
-          slave.setRetentionStrategy(retention)
-          Jenkins.instance.addNode(slave)
-          println('ADDED')
-      }
+      slave = new DumbSlave("{{ inventory_hostname }}", '/var/lib/jenkins', launcher)
+      slave.setNumExecutors({{ jenkins_num_executors }})
+      slave.setLauncher(launcher)
+      slave.setRetentionStrategy(retention)
+      Jenkins.instance.addNode(slave)
 - debug: msg="{{ script }}"
 - name: add slave
   uri:
