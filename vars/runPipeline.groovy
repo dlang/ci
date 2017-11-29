@@ -210,11 +210,10 @@ def testDownstreamProject (name) {
                     break;
 
                 case 'sociomantic-tsunami/ocean':
-                    sh '''
-                    git submodule update --init
-                    make d2conv V=1
-                    make test V=1 DVER=2 F=production ALLOW_DEPRECATIONS=1
-                    '''
+                    sh 'git submodule update --init'
+                    withEnv(["PATH+BEAVER=submodules/beaver/bin"]) {
+                        test_travis_yaml()
+                    }
                     break;
 
                 default:
