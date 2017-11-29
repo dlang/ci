@@ -211,14 +211,9 @@ def testDownstreamProject (name) {
 
                 case 'sociomantic-tsunami/ocean':
                     sh """
-                    wget -O libebtree.deb https://bintray.com/sociomantic-tsunami/dlang/download_file?file_path=libebtree6_6.0.socio6-xenial_amd64.deb
-                    dpkg -x libebtree.deb libebtree/
-                    wget -O d1to2fix.deb https://bintray.com/sociomantic-tsunami/dlang/download_file?file_path=d1to2fix_0.10.0-alpha1-xenial_amd64.deb
-                    dpkg -x d1to2fix.deb d1to2fix/
-                    export PATH=\$PATH:\$PWD/d1to2fix/usr/bin/
                     git submodule update --init
                     make d2conv V=1
-                    make test V=1 DVER=2 F=production LDFLAGS=-L./libebtree/usr/lib/
+                    make test V=1 DVER=2 F=production
                     """
                     break;
 

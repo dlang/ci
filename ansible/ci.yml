@@ -78,7 +78,7 @@
   roles:
     - jenkins_slave
   tasks:
-    - name: test dependencies
+    - name: test dependencies (1/2)
       apt: { name: "{{ item }}", install_recommends: no, update_cache: yes, cache_valid_time: 3600 }
       with_items:
         - build-essential
@@ -87,12 +87,19 @@
         - git
         - jq
         - libblas-dev
+        - libbz2-dev
         - libcairo-dev
         - libcurl4-gnutls-dev
         - libevent-dev
+        - libgcrypt20-dev
+        - libgpg-error-dev
         - libgtk-3-0
         - liblapack-dev
+        - liblzo2-dev
+        - libreadline-dev
         - libssl-dev
+        - libxml2-dev
+        - libxslt1-dev
         - libzmq3-dev
         - mongodb-server
         - moreutils # sponge et.al.
@@ -103,6 +110,13 @@
         - redis-server
         - rsync
         - unzip
+      tags: deps
+    - name: test dependencies (2/2)
+      apt: { deb: "{{ item }}", install_recommends: no }
+      with_items:
+        - https://bintray.com/sociomantic-tsunami/dlang/download_file?file_path=libebtree6_6.0.socio6-xenial_amd64.deb
+        - https://bintray.com/sociomantic-tsunami/dlang/download_file?file_path=libebtree6-dev_6.0.socio6-xenial_amd64.deb
+        - https://bintray.com/sociomantic-tsunami/dlang/download_file?file_path=d1to2fix_0.10.0-alpha1-xenial_amd64.deb
       tags: deps
     - name: disable mongodb journaling
       lineinfile: { dest: /etc/mongodb.conf, regexp: "^{{ item.key }} *=", line: "{{ item.key }} = {{ item.value }}" }
