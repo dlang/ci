@@ -151,7 +151,7 @@ def testDownstreamProject (name) {
                 if (repo == 'rejectedsoftware/vibe.d') {
                     clone("https://github.com/${repo}.git", 'v0.8.1-rc.1')
                 } else if (repo == "sociomantic-tsunami/ocean") {
-                    clone("https://github.com/${repo}.git", "v4.0.0-alpha.0")
+                    clone("https://github.com/${repo}.git", 'v4.0.0-alpha.0')
                 } else {
                     cloneLatestTag("https://github.com/${repo}.git")
                 }
@@ -210,11 +210,11 @@ def testDownstreamProject (name) {
                     break;
 
                 case 'sociomantic-tsunami/ocean':
-                    sh """
+                    sh '''
                     git submodule update --init
                     make d2conv V=1
                     make test V=1 DVER=2 F=production
-                    """
+                    '''
                     break;
 
                 default:
