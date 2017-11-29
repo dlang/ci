@@ -150,9 +150,12 @@ def testDownstreamProject (name) {
 
                 if (repo == 'rejectedsoftware/vibe.d') {
                     clone("https://github.com/${repo}.git", 'v0.8.1-rc.1')
+                } else if (repo == "sociomantic-tsunami/ocean") {
+                    clone("https://github.com/${repo}.git", 'v4.0.0-alpha.2')
                 } else {
                     cloneLatestTag("https://github.com/${repo}.git")
                 }
+
                 switch (repo) {
                 case ['Hackerpilot/DCD', 'Hackerpilot/dfix']:
                     sh 'make DMD=$DMD'
@@ -204,6 +207,14 @@ def testDownstreamProject (name) {
                 case 'dlang-community/D-YAML':
                     sh 'dub build --compiler=$DC'
                     sh 'dub test --compiler=$DC'
+                    break;
+
+                case 'sociomantic-tsunami/ocean':
+                    sh '''
+                    git submodule update --init
+                    make d2conv V=1
+                    make test V=1 DVER=2 F=production ALLOW_DEPRECATIONS=1
+                    '''
                     break;
 
                 default:
@@ -315,6 +326,7 @@ DFLAGS=-I%@P%/../imports -L-L%@P%/../libs -L--export-dynamic -L--export-dynamic 
         // sorted by test time slow to fast
         "rejectedsoftware/vibe.d",
         "dlang/dub",
+        "sociomantic-tsunami/ocean",
         "higgsjs/Higgs",
         "BlackEdder/ggplotd",
         "atilaneves/unit-threaded",
