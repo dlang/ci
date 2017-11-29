@@ -327,6 +327,7 @@ DFLAGS=-I%@P%/../imports -L-L%@P%/../libs -L--export-dynamic -L--export-dynamic 
         // sorted by test time slow to fast
         "rejectedsoftware/vibe.d",
         "dlang/dub",
+        "sociomantic-tsunami/ocean",
         "higgsjs/Higgs",
         "BlackEdder/ggplotd",
         "atilaneves/unit-threaded",
@@ -335,7 +336,6 @@ DFLAGS=-I%@P%/../imports -L-L%@P%/../libs -L--export-dynamic -L--export-dynamic 
         "dlang-community/D-YAML",
         "CyberShadow/ae",
         "Hackerpilot/libdparse",
-        "sociomantic-tsunami/ocean",
         // run in under 10s, sorted alphabetically
         "Abscissa/libInputVisitor",
         "DerelictOrg/DerelictFT",
