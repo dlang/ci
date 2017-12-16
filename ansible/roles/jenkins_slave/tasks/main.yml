@@ -77,6 +77,8 @@
 # https://github.com/jenkinsci/remoting/blob/ac60160b459bad1802e250de8749a2dbb21e87ad/docs/workDir.md
 - name: remove old slave caches
   file: { dest: /var/lib/jenkins/.jenkins, state: absent }
+- name: remove old slave.jar
+  file: { dest: /var/lib/jenkins/slave.jar, state: absent }
 - name: add jenkins slave service
   template: { src: jenkins.service.j2, dest: /etc/systemd/system/jenkins.service }
   vars:
