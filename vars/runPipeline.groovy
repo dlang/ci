@@ -281,7 +281,6 @@ def call() { timeout(time: 1, unit: 'HOURS') {
             def action = { sh "make -f posix.mak AUTO_BOOTSTRAP=1 --jobs=4" }
 
             dir('dmd',      action)
-            dir('dmd/src', { sh "make -f posix.mak AUTO_BOOTSTRAP=1 dmd.conf" })
             dir('druntime', action)
             dir('phobos',   action)
         }
