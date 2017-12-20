@@ -36,12 +36,18 @@ jenkins_num_executors=4
 # on-demand jenkins slaves
 [jenkins_demand_slaves:children]
 jenkins_pbricks_slaves
+jenkins_gce_slaves
 
-[jenkins_pbricks_slaves:children]
-# profitbricks - virtual dlang ci data center
-dd6a357d-121a-40f0-85ae-e225e07b3856
+[jenkins_pbricks_slaves]
+runner-[01:01]-pbricks
 
 [jenkins_pbricks_slaves:vars]
+jenkins_num_executors="{{ ansible_processor_vcpus }}"
+
+[jenkins_gce_slaves]
+runner-[01:01]-gce
+
+[jenkins_gce_slaves:vars]
 jenkins_num_executors="{{ ansible_processor_vcpus }}"
 
 # running at online.net
@@ -56,10 +62,15 @@ de_fra
 [pbricks_hosts:children]
 pbricks_fra
 
+# running at GCE
+[gce_hosts:children]
+us-east1-b
+
 # all non-containerized host
 [servers:children]
 lxd_hosts
 pbricks_hosts
+gce_hosts
 
 # admin setting
 [servers:vars]

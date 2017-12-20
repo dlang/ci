@@ -1,0 +1,30 @@
+---
+- hosts: localhost
+  become: false
+  tasks:
+    - set_fact:
+        ssh_keys: "{{ lookup('file', 'files/default_authorized_keys').split('\n') | map('regex_replace', '^ssh-(.*) (.*)@(.*)', '\\2:ssh-\\1 \\2@\\3') | join('\n') }}"
+    - name: install libcloud
+      pip: { name: apache-libcloud, extra_args: --user }
+    - name: read credentials to tmp file
+      shell: pass gcloud/ansible@dlang-ci.iam.gserviceaccount.com > $XDG_RUNTIME_DIR/ansible@dlang-ci.iam.gserviceaccount.com
+    - name: create GCE runner
+      gce:
+        instance_names: runner-01-gce
+        zone: us-east1-b
+        machine_type: n1-standard-8
+        state: present
+        image: ubuntu-1604
+        disk_size: 20
+        persistent_boot_disk: true
+        preemptible: true
+        credentials_file: $XDG_RUNTIME_DIR/ansible@dlang-ci.iam.gserviceaccount.com
+        project_id: dlang-ci
+        # libcloud always uses default service account for VM (see ansible/ansible#21122)
+        service_account_email: ansible@dlang-ci.iam.gserviceaccount.com
+        service_account_permissions: [] # no account permissions for VM
+        metadata:
+          block-project-ssh-keys: true
+          ssh-keys: "{{ ssh_keys }}"
+    - name: remove credentials tmp file
+      file: { dest: $XDG_RUNTIME_DIR/ansible@dlang-ci.iam.gserviceaccount.com, state: absent }
