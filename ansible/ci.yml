@@ -143,8 +143,8 @@
     - name: test dependencies (2/2)
       apt: { deb: "{{ item }}", install_recommends: no }
       with_items:
-        - https://bintray.com/sociomantic-tsunami/dlang/download_file?file_path=libebtree6_6.0.socio6-xenial_amd64.deb
-        - https://bintray.com/sociomantic-tsunami/dlang/download_file?file_path=libebtree6-dev_6.0.socio6-xenial_amd64.deb
+        - https://bintray.com/sociomantic-tsunami/dlang/download_file?file_path=libebtree6_6.0.s7-rc5-xenial_amd64.deb
+        - https://bintray.com/sociomantic-tsunami/dlang/download_file?file_path=libebtree6-dev_6.0.s7-rc5-xenial_amd64.deb
         - https://bintray.com/sociomantic-tsunami/dlang/download_file?file_path=d1to2fix_0.10.0-alpha1-xenial_amd64.deb
       tags: deps
     - name: disable mongodb journaling
