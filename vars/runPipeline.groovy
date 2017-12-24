@@ -65,6 +65,13 @@ def cloneLatestTag (repo_url, filter = '') {
 }
 
 /**
+    Checks whether a specific branch exists at a remote git repository.
+*/
+def doesBranchExist(repo_url, branch) {
+	"git ls-remote --exit-code --heads ${repo_url} ${branch} > /dev/null".execute().exitValue == 0
+}
+
+/**
     Utility to simplify repeating boilerplate of defining parallel steps
     over array of folders. Creates a map from @names array where each value
     is @action called with each name respectively while being wrapped in
@@ -118,7 +125,11 @@ def getSources (name) { dir(name) {
         // Checkout matching branches of other repos, either
         // target branch for PRs or identical branch name.
         def base_branch = env.CHANGE_TARGET ?: env.BRANCH_NAME
-        clone("https://github.com/dlang/${name}.git", base_branch)
+        def repo_url = "https://github.com/dlang/${name}.git"
+		if (doesBranchExist(repo_url, base_branch)) {
+			base_branch = "master"
+		}
+        clone(repo_url, base_branch)
     }
 }}
 
