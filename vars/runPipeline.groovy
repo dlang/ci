@@ -41,27 +41,35 @@ def cloneUpstream () {
     ])
 }
 
-/**
-    Checks out latest SemVer-compatible release tag available in specified repo.
-    Tags can be further filtered by passing a regex.
+/** Checks out latest SemVer-compatible release tag available in specified repo,
+    or master if no tag can be found.
  **/
-def cloneLatestTag (repo_url, filter = '') {
+def cloneLatestTag (repo_url) {
+    def LATEST = sh(
+        script: "git ls-remote --tags ${repo_url} | sed -n 's|.*refs/tags/\\(v\\?[0-9]*\\.[0-9]*\\.[0-9]*\$\\)|\\1|p' | sort --version-sort | tail -n 1",
+        returnStdout: true
+    ).trim()
+
     checkout(
         poll: false,
         scm: [
             $class: 'GitSCM',
-            branches: [[name: "master"]],
+            branches: [[name: LATEST ?: 'master']],
             extensions: [[$class: 'CleanBeforeCheckout']],
             userRemoteConfigs: [[url: repo_url]]
         ]
     )
+}
 
-    def LATEST = sh (
-        script: "git tag -l | egrep '^v?[0-9]+\\.[0-9]+\\.[0-9]+\$' | egrep '${filter}' | sort --version-sort | tail -n 1",
-        returnStdout: true
-    ).trim()
-
-    sh "git checkout ${LATEST}"
+/**
+    Checks whether a specific branch exists at a remote git repository.
+*/
+def branchExists (repo_url, branch) {
+    def status = sh(
+        script: "git ls-remote --exit-code --heads ${repo_url} ${branch} > /dev/null",
+        returnStatus: true
+    )
+    return status == 0
 }
 
 /**
@@ -118,7 +126,11 @@ def getSources (name) { dir(name) {
         // Checkout matching branches of other repos, either
         // target branch for PRs or identical branch name.
         def base_branch = env.CHANGE_TARGET ?: env.BRANCH_NAME
-        clone("https://github.com/dlang/${name}.git", base_branch)
+        def repo_url = "https://github.com/dlang/${name}.git"
+        if (!branchExists(repo_url, base_branch)) {
+            base_branch = 'master'
+        }
+        clone(repo_url, base_branch)
     }
 }}
 
