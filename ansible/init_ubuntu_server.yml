@@ -1,6 +1,5 @@
 ---
 - hosts: servers
-  remote_user: root
   tasks:
     - name: get ubuntu-server dependencies
       shell: >-

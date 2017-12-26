@@ -1,0 +1,11 @@
+---
+- name: enable persistent journal
+  ini_file:
+    path: /etc/systemd/journald.conf
+    section: Journal
+    option: "{{ item.key }}"
+    value: "{{ item.value }}"
+  with_dict:
+    Storage: persistent
+    SystemMaxUse: 256M
+  notify: restart systemd-journald

@@ -32,10 +32,38 @@
     - name: tools
       apt: { name: "{{ item }}", install_recommends: no, update_cache: yes, cache_valid_time: 3600 }
       with_items: [git, jq]
+    - block:
+      - name: download gcloud sdk
+        unarchive:
+          src: https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-183.0.0-linux-x86_64.tar.gz
+          dest: $HOME/
+          remote_src: yes
+      - name: copy service account credentials
+        copy: { src: dlang-ci 2ad4426ddfa9.json, dest: google-cloud-sdk/dlang-ci 2ad4426ddfa9.json, mode: 0400 }
+      - name: activate service account
+        command: google-cloud-sdk/bin/gcloud auth activate-service-account --key-file='google-cloud-sdk/dlang-ci 2ad4426ddfa9.json'
+      - name: configure default project
+        command: google-cloud-sdk/bin/gcloud config set project dlang-ci
+      - name: configure default zone
+        command: google-cloud-sdk/bin/gcloud config set compute/zone us-east1-b
+      become_user: jenkins
+      tags: gcloud-sdk
     - name: get pbricks ip blocks (AS51862)
       uri: { url: 'https://freeapi.robtex.com/asquery/51862' }
       check_mode: no
       register: pbricks_ips
+    # https://cloud.google.com/compute/docs/faq#networking
+    - name: get dns entries to query for GCE netblocks
+      set_fact:
+        gce_netblocks: "{{ lookup('dig', '_cloud-netblocks.googleusercontent.com', 'qtype=TXT') | regex_findall('include:([^ ]+)', '\\1') }}"
+    - name: get cloud netblocks
+      set_fact:
+        tmp: "{{ lookup('dig', item, 'qtype=TXT') | regex_findall('ip4:([^ ]+)', '\\1') }}"
+      with_items: "{{ gce_netblocks }}"
+      register: gce_netblocks
+    - name: extract netblocks
+      set_fact:
+        gce_netblocks: "{{ gce_netblocks.results | sum(attribute='ansible_facts.tmp', start=[]) }}"
     - name: common firewall setup
       include: roles/common/tasks/firewall.yml
     - name: allow http reverse proxy
@@ -47,6 +75,7 @@
       ufw: { rule: allow, src: "{{ item }}", port: "{{ jenkins_slave_agent_port }}", proto: tcp }
       with_flattened:
         - "{{ pbricks_ips.json.nets | map(attribute='n') | list }}"
+        - "{{ gce_netblocks }}"
         # allow access from host (indirectly SNAT) and directly from other containers
         - ["{{ hostvars['ci.dlang.io'].ansible_default_ipv4.address }}", "{{ ansible_default_ipv4.address }}/24"]
     - name: enable ufw
@@ -114,8 +143,8 @@
     - name: test dependencies (2/2)
       apt: { deb: "{{ item }}", install_recommends: no }
       with_items:
-        - https://bintray.com/sociomantic-tsunami/dlang/download_file?file_path=libebtree6_6.0.socio6-xenial_amd64.deb
-        - https://bintray.com/sociomantic-tsunami/dlang/download_file?file_path=libebtree6-dev_6.0.socio6-xenial_amd64.deb
+        - https://bintray.com/sociomantic-tsunami/dlang/download_file?file_path=libebtree6_6.0.s7-rc5-xenial_amd64.deb
+        - https://bintray.com/sociomantic-tsunami/dlang/download_file?file_path=libebtree6-dev_6.0.s7-rc5-xenial_amd64.deb
         - https://bintray.com/sociomantic-tsunami/dlang/download_file?file_path=d1to2fix_0.10.0-alpha1-xenial_amd64.deb
       tags: deps
     - name: disable mongodb journaling
