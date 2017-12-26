@@ -41,27 +41,24 @@ def cloneUpstream () {
     ])
 }
 
-/**
-    Checks out latest SemVer-compatible release tag available in specified repo.
-    Tags can be further filtered by passing a regex.
+/** Checks out latest SemVer-compatible release tag available in specified repo,
+    or master if no tag can be found.
  **/
-def cloneLatestTag (repo_url, filter = '') {
+def cloneLatestTag (repo_url) {
+    def LATEST = sh(
+        script: "git ls-remote --tags ${repo_url} | sed -n 's|.*refs/tags/\\(v\\?[0-9]*\\.[0-9]*\\.[0-9]*\$\\)|\\1|p' | sort --version-sort | tail -n 1",
+        returnStdout: true
+    ).trim()
+
     checkout(
         poll: false,
         scm: [
             $class: 'GitSCM',
-            branches: [[name: "master"]],
+            branches: [[name: LATEST ?: 'master']],
             extensions: [[$class: 'CleanBeforeCheckout']],
             userRemoteConfigs: [[url: repo_url]]
         ]
     )
-
-    def LATEST = sh (
-        script: "git tag -l | egrep '^v?[0-9]+\\.[0-9]+\\.[0-9]+\$' | egrep '${filter}' | sort --version-sort | tail -n 1",
-        returnStdout: true
-    ).trim()
-
-    sh "git checkout ${LATEST}"
 }
 
 /**
