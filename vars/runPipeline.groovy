@@ -67,8 +67,12 @@ def cloneLatestTag (repo_url, filter = '') {
 /**
     Checks whether a specific branch exists at a remote git repository.
 */
-def doesBranchExist(repo_url, branch) {
-	"git ls-remote --exit-code --heads ${repo_url} ${branch} > /dev/null".execute().exitValue == 0
+def branchExists (repo_url, branch) {
+    def status = sh(
+        script: "git ls-remote --exit-code --heads ${repo_url} ${branch} > /dev/null",
+        returnStatus: true
+    )
+    return status == 0
 }
 
 /**
@@ -126,9 +130,9 @@ def getSources (name) { dir(name) {
         // target branch for PRs or identical branch name.
         def base_branch = env.CHANGE_TARGET ?: env.BRANCH_NAME
         def repo_url = "https://github.com/dlang/${name}.git"
-		if (doesBranchExist(repo_url, base_branch)) {
-			base_branch = "master"
-		}
+        if (!branchExists(repo_url, base_branch)) {
+            base_branch = 'master'
+        }
         clone(repo_url, base_branch)
     }
 }}
