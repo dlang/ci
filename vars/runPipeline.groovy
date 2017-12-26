@@ -230,6 +230,10 @@ def testDownstreamProject (name) {
                     '''
                     break;
 
+                case 'eBay/tsv-utils-dlang':
+                    sh 'make test DCOMPILER=$DC'
+                    break;
+
                 default:
                     test_travis_yaml()
                     break;
@@ -339,8 +343,9 @@ DFLAGS=-I%@P%/../imports -L-L%@P%/../libs -L--export-dynamic -L--export-dynamic 
         "rejectedsoftware/vibe.d",
         "dlang/dub",
         "sociomantic-tsunami/ocean",
-        "higgsjs/Higgs",
+        "higgsjs/Higgs", // 3m10s
         "BlackEdder/ggplotd", // 1m56s
+         "eBay/tsv-utils-dlang", // 1m41s
         "dlang-community/D-Scanner", // 1m40s
         "rejectedsoftware/diet-ng", // 56s
         "atilaneves/unit-threaded", //36s
@@ -366,6 +371,7 @@ DFLAGS=-I%@P%/../imports -L-L%@P%/../libs -L--export-dynamic -L--export-dynamic 
         "msgpack/msgpack-d",
         "msoucy/dproto",
         "nomad-software/dunit",
+        "PhilippeSigaud/Pegged",
         "repeatedly/mustache-d",
         "s-ludwig/taggedalgebraic",
     ]
