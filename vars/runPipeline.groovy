@@ -169,10 +169,6 @@ def testDownstreamProject (name) {
                 }
 
                 switch (repo) {
-                case ['Hackerpilot/DCD', 'Hackerpilot/dfix']:
-                    sh 'make DMD=$DMD'
-                    break;
-
                 case 'gtkd-developers/GtkD':
                     sh 'make DC=$DC'
                     break;
@@ -231,6 +227,17 @@ def testDownstreamProject (name) {
                     git submodule update --init
                     make d2conv V=1
                     make test V=1 DVER=2 F=production ALLOW_DEPRECATIONS=1
+                    '''
+                    break;
+
+                case 'dlang-community/libdparse':
+                    sh 'cd test && DMD=$DC ./run_tests.sh'
+                    break;
+
+                case 'dlang-community/dcd':
+                    sh '''
+                    git submodule update --init --recursive
+                    make test -j2 DMD=$DC
                     '''
                     break;
 
@@ -344,13 +351,16 @@ DFLAGS=-I%@P%/../imports -L-L%@P%/../libs -L--export-dynamic -L--export-dynamic 
         "dlang/dub",
         "sociomantic-tsunami/ocean",
         "higgsjs/Higgs",
-        "BlackEdder/ggplotd",
-        "atilaneves/unit-threaded",
-        "d-gamedev-team/gfm",
-        "rejectedsoftware/diet-ng",
-        "dlang-community/D-YAML",
-        "CyberShadow/ae",
-        "Hackerpilot/libdparse",
+        "BlackEdder/ggplotd", // 1m56s
+        "dlang-community/D-Scanner", // 1m40s
+        "rejectedsoftware/diet-ng", // 56s
+        "atilaneves/unit-threaded", //36s
+        "d-gamedev-team/gfm", // 28s
+        "dlang-community/DCD", // 23s
+        "CyberShadow/ae", // 22s
+        "dlang-community/D-YAML", // 15s
+        "dlang-community/libdparse", // 13s
+        "dlang-community/dfmt", // 11s
         // run in under 10s, sorted alphabetically
         "Abscissa/libInputVisitor",
         "DerelictOrg/DerelictFT",
