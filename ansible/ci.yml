@@ -39,11 +39,12 @@
           dest: $HOME/
           remote_src: yes
       - name: copy service account credentials
-        copy: { src: dlang-ci 2ad4426ddfa9.json, dest: google-cloud-sdk/dlang-ci 2ad4426ddfa9.json, mode: 0400 }
+        copy: { src: dlang-ci 2ad4426ddfa9.json, dest: /var/lib/jenkins/google-cloud-sdk/dlang-ci 2ad4426ddfa9.json, mode: 0400, owner: jenkins, group: jenkins }
+        become_user: root
       - name: activate service account
-        command: google-cloud-sdk/bin/gcloud auth activate-service-account --key-file='google-cloud-sdk/dlang-ci 2ad4426ddfa9.json'
+        command: $HOME/google-cloud-sdk/bin/gcloud auth activate-service-account --key-file='$HOME/google-cloud-sdk/dlang-ci 2ad4426ddfa9.json'
       - name: configure default project
-        command: google-cloud-sdk/bin/gcloud config set project dlang-ci
+        command: $HOME/google-cloud-sdk/bin/gcloud config set project dlang-ci
       become_user: jenkins
       tags: gcloud-sdk
     - name: get pbricks ip blocks (AS51862)
