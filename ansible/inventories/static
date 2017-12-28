@@ -45,7 +45,7 @@ runner-[01:01]-pbricks
 jenkins_num_executors="{{ ansible_processor_vcpus }}"
 
 [jenkins_gce_slaves]
-runner-[01:01]-gce
+runner-[01:02]-gce
 
 [jenkins_gce_slaves:vars]
 jenkins_num_executors="{{ ansible_processor_vcpus }}"

@@ -10,8 +10,8 @@
       shell: pass gcloud/ansible@dlang-ci.iam.gserviceaccount.com > $XDG_RUNTIME_DIR/ansible@dlang-ci.iam.gserviceaccount.com
     - name: create GCE runner
       gce:
-        instance_names: runner-01-gce
-        zone: us-east1-b
+        instance_names: "{{ item.name }}"
+        zone: "{{ item.zone }}"
         machine_type: n1-standard-8
         state: present
         image: ubuntu-1604
@@ -26,5 +26,9 @@
         metadata:
           block-project-ssh-keys: true
           ssh-keys: "{{ ssh_keys }}"
+      with_items:
+        # use multiple zones because of GCE's per-zone CPU limit during trial
+        - { name: runner-01-gce, zone: europe-west1-c }
+        - { name: runner-02-gce, zone: europe-west3-b }
     - name: remove credentials tmp file
       file: { dest: $XDG_RUNTIME_DIR/ansible@dlang-ci.iam.gserviceaccount.com, state: absent }

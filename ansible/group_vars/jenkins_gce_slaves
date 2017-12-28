@@ -1,2 +1,2 @@
-host_start_cmd: ~/google-cloud-sdk/bin/gcloud compute instances start {{ inventory_hostname }}
-host_stop_cmd: ~/google-cloud-sdk/bin/gcloud compute instances stop {{ inventory_hostname }}
+host_start_cmd: ~/google-cloud-sdk/bin/gcloud compute instances start {{ inventory_hostname }} --zone {{ gce_zone }}
+host_stop_cmd: ~/google-cloud-sdk/bin/gcloud compute instances stop {{ inventory_hostname }} --zone {{ gce_zone }}
