@@ -230,17 +230,6 @@ def testDownstreamProject (name) {
                     '''
                     break;
 
-                case 'dlang-community/libdparse':
-                    sh 'cd test && DMD=$DC ./run_tests.sh'
-                    break;
-
-                case 'dlang-community/dcd':
-                    sh '''
-                    git submodule update --init --recursive
-                    make test -j2 DMD=$DC
-                    '''
-                    break;
-
                 default:
                     test_travis_yaml()
                     break;
