@@ -114,6 +114,7 @@
         - gdb
         - git
         - jq
+        - libasan2
         - libblas-dev
         - libbz2-dev
         - libcairo-dev
@@ -126,6 +127,7 @@
         - liblzo2-dev
         - libreadline-dev
         - libssl-dev
+        - libubsan0
         - libxml2-dev
         - libxslt1-dev
         - libzmq3-dev

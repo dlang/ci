@@ -155,6 +155,7 @@ def testDownstreamProject (name) {
                     "LD_LIBRARY_PATH+LIB=${env.WORKSPACE}/distribution/libs",
                     'DC=dmd',
                     'DMD=dmd',
+                    'ASAN_OPTIONS=detect_leaks=0',
                     // set HOME to separate concurrent ~/.dub user paths
                     "HOME=${env.WORKSPACE}"
                 ]) {
@@ -264,7 +265,7 @@ def call() { timeout(time: 1, unit: 'HOURS') {
      * allocate additional workspaces if necessary.  This setup avoids to
      * reclone repos for each test-run.
      */
-    node { ws(dir: 'dlang_ci') {
+    node { withEnv(["ASAN_OPTIONS=detect_leaks=0"]) { ws(dir: 'dlang_ci') {
         stage ('Toolchain and System information') {
             sh '''#!/usr/bin/env bash
             set -xueo pipefail
@@ -285,15 +286,11 @@ def call() { timeout(time: 1, unit: 'HOURS') {
         }
 
         stage ('Build Compiler') {
-            // main compilation process can't be parallel because each repo
-            // expects previous one to be already built and present in parent
-            // folder
-
-            def action = { sh "make -f posix.mak AUTO_BOOTSTRAP=1 --jobs=4" }
-
-            dir('dmd',      action)
-            dir('druntime', action)
-            dir('phobos',   action)
+            // must be built in this order
+            // need >=2.077.0 host compiler for gcc link driver args (-fsanitizers=*), see dlang/dmd#7190
+            dir('dmd', { sh "make -f posix.mak AUTO_BOOTSTRAP=1 ENABLE_SANITIZERS=address,undefined HOST_DMD_VER=2.077.1 -j4" })
+            dir('druntime', { sh "make -f posix.mak -j4" })
+            dir('phobos', { sh "make -f posix.mak -j4" })
         }
 
         stage ('Build Tools') {
@@ -331,7 +328,7 @@ DFLAGS=-I%@P%/../imports -L-L%@P%/../libs -L--export-dynamic -L--export-dynamic 
             sh 'rm -r distribution'
             projects.each { p -> dir(p, { sh 'git clean -dxf >/dev/null' }) }
         }
-    }}
+    }}}
 
     def dub_projects = [
         // sorted by test time slow to fast
