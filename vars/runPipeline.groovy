@@ -196,7 +196,6 @@ def testDownstreamProject (name) {
                 case 'dlang/dub':
                     sh '''
                       rm test/issue884-init-defer-file-creation.sh # FIXME
-                      sed -i \'s| defaultRegistryURL = .*;| defaultRegistryURL = "https://code-mirror.dlang.io/";|\' source/dub/dub.d
                       sed -i \'/^source.*activate/d\' travis-ci.sh
                     '''
                     sh 'DC=$DC ./travis-ci.sh'
