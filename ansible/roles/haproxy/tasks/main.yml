@@ -1,7 +1,9 @@
 ---
 # setup haproxy and letsencrypt certificates
+- name: add haproxy-1.8 repo
+  apt_repository: { repo: 'ppa:vbernat/haproxy-1.8', update_cache: yes }
 - name: install haproxy
-  apt: { name: haproxy, install_recommends: no, update_cache: yes, cache_valid_time: 3600 }
+  apt: { name: haproxy=1.8.*, install_recommends: no, update_cache: yes, cache_valid_time: 3600 }
 
 - name: configure http frontend
   blockinfile:
@@ -40,7 +42,7 @@
     block: |
       frontend https
               mode http
-              bind :::443 ssl {%- for domain in backends.keys() %} crt /etc/ssl/private/{{ domain }}.pem{%- endfor %}
+              bind :::443 ssl {%- for domain in backends.keys() %} crt /etc/ssl/private/{{ domain }}.pem{%- endfor %} alpn h2,http/1.1
 
               http-request set-header X-Forwarded-Proto https
               http-response set-header Strict-Transport-Security max-age=31536000

@@ -173,11 +173,9 @@
 - hosts: ci.dlang.io
   roles:
     - role: haproxy
+      tags: haproxy
       backends:
         ci.dlang.io: |
-          mode http
-          server s1 jenkins.ci.lxd:8080
-        ci2.dawg.eu: |
           mode http
           server s1 jenkins.ci.lxd:8080
         code-mirror.dlang.io: |
