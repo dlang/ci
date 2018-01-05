@@ -222,7 +222,6 @@ def testDownstreamProject (name) {
 
                 case 'sociomantic-tsunami/ocean':
                     sh '''
-                    echo '\nTEST_FILTER_OUT += $C/test/sysstats/main.d' >> Build.mak
                     git submodule update --init
                     make d2conv V=1
                     make test V=1 DVER=2 F=production ALLOW_DEPRECATIONS=1
