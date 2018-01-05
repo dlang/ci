@@ -27,7 +27,7 @@
           slave = new DumbSlave("{{ inventory_hostname }}", '/var/lib/jenkins', null)
       {% if host_start_cmd is defined %}
       def launcher = new SetupSlaveLauncher(new JNLPLauncher(true), '''{{ host_start_cmd }}''', '''{{ host_stop_cmd }}''')
-      def retention = new RetentionStrategy.Demand(3, 0);
+      def retention = new RetentionStrategy.Demand({{ in_demand_delay }}, 0);
       {% else %}
       def launcher = new JNLPLauncher(true)
       def retention = new RetentionStrategy.Always();
