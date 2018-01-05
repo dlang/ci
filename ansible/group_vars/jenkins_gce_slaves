@@ -1,2 +1,3 @@
 host_start_cmd: ~/google-cloud-sdk/bin/gcloud compute instances start {{ inventory_hostname }} --zone {{ gce_zone }}
 host_stop_cmd: ~/google-cloud-sdk/bin/gcloud compute instances stop {{ inventory_hostname }} --zone {{ gce_zone }}
+in_demand_delay: "{{ inventory_hostname | regex_replace('^runner-(\\d\\d)-gce$', '\\1') | int * 2 }}"
