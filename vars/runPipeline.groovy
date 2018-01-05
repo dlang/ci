@@ -1,3 +1,5 @@
+import java.nio.channels.ClosedChannelException
+
 /*******************************************************************************
 
     Utils
@@ -90,6 +92,23 @@ def mapSteps (names, action) {
     }
 
     return steps
+}
+
+/**
+ Retries action up to `times` if it fails due to executor preemption.
+ **/
+def retryOnPreemption (action, times = 1) {
+    while (times--)
+    {
+        try {
+            action()
+            return
+        // Jenkins looses contact to executor
+        } catch (ClosedChannelException e) {
+            echo "${e.toString()}"
+        }
+    }
+    action();
 }
 
 /*******************************************************************************
@@ -252,16 +271,7 @@ def testDownstreamProject (name) {
     }}
 }
 
-
-/*******************************************************************************
-
-    Stages
-
-*******************************************************************************/
-
-def call() { timeout(time: 1, unit: 'HOURS') {
-    // https://github.com/MartinNowak/jenkins-cancel-build-on-update
-    cancelPreviousBuild()
+def buildDlang() {
     /* Use the same workspace, no matter what job (dmd, druntime,...)  triggered
      * the build.  The workspace step will take care of concurrent test-runs and
      * allocate additional workspaces if necessary.  This setup avoids to
@@ -335,6 +345,19 @@ DFLAGS=-I%@P%/../imports -L-L%@P%/../libs -L--export-dynamic -L--export-dynamic 
             projects.each { p -> dir(p, { sh 'git clean -dxf >/dev/null' }) }
         }
     }}
+}
+
+/*******************************************************************************
+
+    Stages
+
+*******************************************************************************/
+
+def call() { timeout(time: 1, unit: 'HOURS') {
+    // https://github.com/MartinNowak/jenkins-cancel-build-on-update
+    cancelPreviousBuild()
+
+    retryOnPreemption({ buildDlang(); });
 
     def dub_projects = [
         // sorted by test time slow to fast
@@ -375,7 +398,7 @@ DFLAGS=-I%@P%/../imports -L-L%@P%/../libs -L--export-dynamic -L--export-dynamic 
     ]
 
     stage ('Test Projects') {
-        parallel mapSteps(dub_projects, this.&testDownstreamProject)
+        parallel mapSteps(dub_projects, { p -> retryOnPreemption({ testDownstreamProject(p); }); })
     }
 }}
 
