@@ -36,6 +36,12 @@
   when: ansible_virtualization_type != 'virtualbox'
 
 - name: configure haproxy
+  lineinfile:
+    dest: /etc/haproxy/haproxy.cfg
+    insertafter: 'ssl-default-bind-options'
+    line: '	tune.ssl.default-dh-param 2048'
+  notify: restart haproxy
+- name: configure haproxy
   blockinfile:
     dest: /etc/haproxy/haproxy.cfg
     marker: "# {mark} https"
