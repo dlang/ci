@@ -182,7 +182,7 @@ def testDownstreamProject (name) {
                 if (repo == 'rejectedsoftware/vibe.d') {
                     clone("https://github.com/${repo}.git", 'v0.8.3-alpha.1')
                 } else if (repo == "sociomantic-tsunami/ocean") {
-                    clone("https://github.com/${repo}.git", 'v4.0.0-alpha.4')
+                    clone("https://github.com/${repo}.git", 'v3.5.x')
                 } else {
                     cloneLatestTag("https://github.com/${repo}.git")
                 }
