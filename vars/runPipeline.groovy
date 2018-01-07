@@ -182,7 +182,7 @@ def testDownstreamProject (name) {
                 if (repo == 'rejectedsoftware/vibe.d') {
                     clone("https://github.com/${repo}.git", 'v0.8.3-alpha.1')
                 } else if (repo == "sociomantic-tsunami/ocean") {
-                    clone("https://github.com/${repo}.git", 'v4.0.0-alpha.4')
+                    clone("https://github.com/${repo}.git", 'v3.5.x')
                 } else {
                     cloneLatestTag("https://github.com/${repo}.git")
                 }
@@ -248,6 +248,7 @@ def testDownstreamProject (name) {
                 case 'sociomantic-tsunami/ocean':
                     sh '''
                     git submodule update --init
+                    sed -i 's/override\\ DFLAGS\\ +=\\ \\-de/override\\ DFLAGS\\ +=\\ -d/' Build.mak
                     make d2conv V=1
                     make test V=1 DVER=2 F=production ALLOW_DEPRECATIONS=1
                     '''
