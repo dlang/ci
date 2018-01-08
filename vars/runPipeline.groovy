@@ -182,7 +182,7 @@ def testDownstreamProject (name) {
                 if (repo == 'rejectedsoftware/vibe.d') {
                     clone("https://github.com/${repo}.git", 'v0.8.3-alpha.1')
                 } else if (repo == "sociomantic-tsunami/ocean") {
-                    clone("https://github.com/${repo}.git", 'v4.0.0-alpha.4')
+                    clone("https://github.com/${repo}.git", 'v4.0.0-alpha.5')
                 } else {
                     cloneLatestTag("https://github.com/${repo}.git")
                 }
@@ -246,11 +246,8 @@ def testDownstreamProject (name) {
                     break;
 
                 case 'sociomantic-tsunami/ocean':
-                	// FIXME: https://github.com/sociomantic-tsunami/ocean/pull/427 is only applied for 3.x.x
-                	// See also: https://github.com/dlang/dmd/pull/7617
                     sh '''
                     git submodule update --init
-                    sed "/this.outer.occupied = false;/d" -i src/ocean/net/http/HttpResponse.d # FIXME
                     make d2conv V=1
                     make test V=1 DVER=2 F=production ALLOW_DEPRECATIONS=1
                     '''
