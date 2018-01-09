@@ -207,12 +207,6 @@ def testDownstreamProject (name) {
                     sh 'DC=dmd VIBED_DRIVER=libasync BUILD_EXAMPLE=0 RUN_TEST=0 ./travis-ci.sh || echo failed' // FIXME
                     break;
 
-                case 'atilaneves/unit-threaded':
-                    // FIXME: temporarily remove failing unit-threaded tests until they can be investigated
-                    // see: https://github.com/dlang/ci/pull/111
-                    sh './test.sh || echo failed' // FIXME
-                    break;
-
                 case 'rejectedsoftware/diet-ng':
                     sh 'sed -i \'/mkdir build && cd build/,//d\' .travis.yml' // strip meson tests
                     test_travis_yaml()
