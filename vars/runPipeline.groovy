@@ -251,6 +251,11 @@ def testDownstreamProject (name) {
                     sh 'make test DCOMPILER=$DC'
                     break;
 
+                case 'dlang-tour/core':
+                    sh 'git submodule update --init public/content/en'
+                    sh 'dub test --compiler=$DC'
+                    break;
+
                 default:
                     test_travis_yaml()
                     break;
@@ -368,6 +373,7 @@ def call() { timeout(time: 1, unit: 'HOURS') {
         "BlackEdder/ggplotd", // 1m56s
         "eBay/tsv-utils-dlang", // 1m41s
         "dlang-community/D-Scanner", // 1m40s
+        "dlang-tour/core", // 1m17s
         "rejectedsoftware/diet-ng", // 56s
         "atilaneves/unit-threaded", //36s
         "d-gamedev-team/gfm", // 28s
