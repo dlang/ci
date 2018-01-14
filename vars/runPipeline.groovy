@@ -183,10 +183,6 @@ def testDownstreamProject (name) {
                     clone("https://github.com/${repo}.git", 'v0.8.3-alpha.1')
                 } else if (repo == "sociomantic-tsunami/ocean") {
                     clone("https://github.com/${repo}.git", 'v4.0.0-alpha.5')
-                } else if (repo == "kyllingstad/zmqd") {
-                    // see: https://github.com/dlang/ci/issues/121
-                    // see: https://github.com/kyllingstad/zmqd/pull/21
-                    clone("https://github.com/${repo}.git", 'master')
                 } else {
                     cloneLatestTag("https://github.com/${repo}.git")
                 }
