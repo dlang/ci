@@ -24,7 +24,7 @@ def clone (repo_url, git_ref = "master") {
 }
 
 /**
-    Function to checkout upstream that has triggerred current
+    Function to checkout upstream that has triggered current
     pipeline, for example PR branch. For PRs this will already merge
     with the base branch.
 
