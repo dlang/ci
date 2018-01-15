@@ -97,8 +97,8 @@ def mapSteps (names, action) {
 /**
  Retries action up to `times` if it fails due to executor preemption.
  **/
-def retryOnPreemption (action, times = 1) {
-    while (times--)
+def retryOnPreemption (action, nretries = 1) {
+    while (nretries--)
     {
         try {
             action()
