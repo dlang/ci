@@ -97,15 +97,22 @@ def mapSteps (names, action) {
 /**
  Retries action up to `times` if it fails due to executor preemption.
  **/
-def retryOnPreemption (action, times = 1) {
-    while (times--)
+def retryOnPreemption (action, nretries = 1) {
+    while (nretries--)
     {
         try {
             action()
             return
-        // Jenkins looses contact to executor
+        // Jenkins might lose contact to preemptible executors
         } catch (ClosedChannelException e) {
-            echo "${e.toString()}"
+            echo e.toString()
+        // Nested exception caught somewhere in Channel object (see #118)
+        } catch (IOException e) {
+            def msg = e.toString()
+            if (!msg.contains('ChannelClosedException')) {
+                throw e
+            }
+            echo msg
         }
     }
     action();
