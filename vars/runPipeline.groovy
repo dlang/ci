@@ -103,9 +103,16 @@ def retryOnPreemption (action, times = 1) {
         try {
             action()
             return
-        // Jenkins looses contact to executor
+        // Jenkins might lose contact to preemptible executors
         } catch (ClosedChannelException e) {
-            echo "${e.toString()}"
+            echo e.toString()
+        // Nested exception caught somewhere in Channel object (see #118)
+        } catch (IOException e) {
+            def msg = e.toString()
+            if (!msg.contains('ChannelClosedException')) {
+                throw e
+            }
+            echo msg
         }
     }
     action();
