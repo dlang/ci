@@ -125,20 +125,8 @@ def retryOnPreemption (action, times = 1) {
 
 *******************************************************************************/
 
-def getSources (name) { dir(name) {
-    def pr_repo
-
-    // workaround unset CHANGE_URL by using GitSCM's RemoteConfig, which contains testee's origin URI.
-    // see dlang/ci#122
-    //
-    // match either
-    // https://github.com/dlang/dmd/pull/123 (env.CHANGE_URL)
-    // https://github.com/dlang/dmd.git (scm.key repo URI)
-    def regex = /github.com\/[^\/]+\/([^\/\.]+)/
-    remote_url = env.CHANGE_URL ?: scm.repositories[0].URIs[0].toString()
-    def remote_repo = (remote_url =~ regex)[0][1] // e.g. dmd
-    echo "used '${remote_url}' to determine '${remote_repo}' as testee"
-    if (remote_repo == name) {
+def getSources (name, isTestee) { dir(name) {
+    if (isTestee) {
         cloneTestee()
     } else {
         // Checkout matching branches of other repos, either
@@ -290,10 +278,21 @@ def buildDlang() {
             '''
         }
 
+        // workaround unset CHANGE_URL by using GitSCM's RemoteConfig, which contains testee's origin URI.
+        // see dlang/ci#122
+        //
+        // match either
+        // https://github.com/dlang/dmd/pull/123 (env.CHANGE_URL)
+        // or
+        // https://github.com/dlang/dmd.git (scm origin URI)
+        def remote_url = env.CHANGE_URL ?: scm.repositories[0].URIs[0].toString()
+        def testee = (remote_url =~ /github.com\/[^\/]+\/([^\/\.]+)/)[0][1] // e.g. dmd
+        echo "Used ${env.CHANGE_URL ? 'CHANGE_URL' : 'scm repo URI'} '${remote_url}' to determine '${testee}' as testee."
+
         def projects = [ 'dmd', 'druntime', 'phobos', 'dub', 'tools' ]
 
         stage ('Clone') {
-            parallel mapSteps(projects, this.&getSources)
+            parallel mapSteps(projects, { p -> getSources(p, p == testee); })
         }
 
         stage ('Build Compiler') {
