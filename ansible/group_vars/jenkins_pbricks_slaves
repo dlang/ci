@@ -6,4 +6,4 @@ host_stop_cmd: |-
   #!/bin/sh -eu
   curl -fsSX POST -u code+pbricks-jenkins@dawg.eu:{{ lookup('pipe', 'pass dlangci/profitbricks') | urlencode }} {{ href }}/stop
   echo stop requested
-in_demand_delay: "{{ inventory_hostname | regex_replace('^runner-(\\d\\d)-pbricks$', '\\1') | int * 2 + 4 }}"
+in_demand_delay: "{{ inventory_hostname | regex_replace('^runner-(\\d\\d)-pbricks$', '\\1') | int * 3 + 6 }}"
