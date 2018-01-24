@@ -415,6 +415,7 @@ def call() { timeout(time: 1, unit: 'HOURS') {
         "dlang-community/DCD", // 23s
         "d-gamedev-team/gfm", // 28s
         "atilaneves/unit-threaded", //36s
+        "dlang/tools", // 40s
         "rejectedsoftware/diet-ng", // 56s
         "jacob-carlborg/dstep", // 1m16s
         "dlang-tour/core", // 1m17s
