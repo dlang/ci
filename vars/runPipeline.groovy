@@ -398,7 +398,7 @@ def call() { timeout(time: 1, unit: 'HOURS') {
         "dlang/dub",
         "sociomantic-tsunami/ocean",
         "higgsjs/Higgs", // 3m10s
-        "BlackEdder/ggplotd", // 1m56s
+        //"BlackEdder/ggplotd", // 1m56s
         "eBay/tsv-utils-dlang", // 1m41s
         "dlang-community/D-Scanner", // 1m40s
         "dlang-tour/core", // 1m17s
