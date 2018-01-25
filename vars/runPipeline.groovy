@@ -379,7 +379,7 @@ def call() { timeout(time: 1, unit: 'HOURS') {
         "eBay/tsv-utils-dlang", // 1m41s
         "dlang-community/D-Scanner", // 1m40s
         "dlang-tour/core", // 1m17s
-        //"rejectedsoftware/diet-ng", // 56s
+        "rejectedsoftware/diet-ng", // 56s
         "atilaneves/unit-threaded", //36s
         "d-gamedev-team/gfm", // 28s
         "dlang-community/DCD", // 23s
