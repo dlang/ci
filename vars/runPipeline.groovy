@@ -358,6 +358,9 @@ def buildDlang() {
             sh '''#!/usr/bin/env bash
             set -ueo pipefail
 
+			# Nuking ~/.dub is required to always fetch the latest package
+            rm -rf $HOME/.dub
+
             rm -rf distribution
             mkdir -p distribution/{bin,imports,libs}
             cp --archive --link dmd/generated/linux/release/64/dmd dub/bin/dub tools/generated/linux/64/rdmd distribution/bin/
