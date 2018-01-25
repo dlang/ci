@@ -158,7 +158,7 @@ def test_travis_yaml () {
 }
 
 def testDownstreamProject (name) {
-    def repo = name // to fix issues with closure
+    def repo = name.tokenize('+')[0]
     node { ws(dir: 'dlang_projects') {
         unstash name: "dlang-build"
         withEnv([
@@ -171,17 +171,17 @@ def testDownstreamProject (name) {
                     // set HOME to separate concurrent ~/.dub user paths
                     "HOME=${env.WORKSPACE}"
                 ]) {
-            try { dir(repo) {
+            try { dir(name) {
 
-                if (repo == 'rejectedsoftware/vibe.d') {
-                    clone("https://github.com/${repo}.git", 'v0.8.3-alpha.1')
+                if (repo == 'vibe-d/vibe.d') {
+					 clone("https://github.com/${repo}.git", 'v0.8.3-alpha.3')
                 } else if (repo == "sociomantic-tsunami/ocean") {
                     clone("https://github.com/${repo}.git", 'v4.0.0-alpha.5')
                 } else {
                     cloneLatestTag("https://github.com/${repo}.git")
                 }
 
-                switch (repo) {
+                switch (name) {
                 case 'gtkd-developers/GtkD':
                     sh 'make DC=$DC'
                     break;
@@ -190,15 +190,32 @@ def testDownstreamProject (name) {
                     sh 'make -C source test DC=$DC'
                     break;
 
-                case 'rejectedsoftware/vibe.d':
-                    // use DC=dmd to workaround https://github.com/dlang/dub/pull/966
-                    sh 'sed -i \'/# test building with Meson/,//d\' travis-ci.sh' // strip meson tests
+                case 'vibe-d/vibe.d+libevent-base':
+                    sh 'VIBED_DRIVER=libevent PARTS=builds,unittests ./travis-ci.sh'
+                    break;
+                case 'vibe-d/vibe.d+libevent-examples':
+                    sh 'VIBED_DRIVER=libevent PARTS=examples ./travis-ci.sh'
+                    break;
+                case 'vibe-d/vibe.d+libevent-tests':
                     // temporarily disable failing tests, see: https://github.com/dlang/ci/pull/96
                     sh 'rm -rf tests/vibe.core.net.1726' // FIXME
                     sh 'rm -rf tests/std.concurrency' // FIXME
-
-                    sh 'DC=dmd VIBED_DRIVER=libevent BUILD_EXAMPLE=1 RUN_TEST=1 ./travis-ci.sh'
-                    sh 'DC=dmd VIBED_DRIVER=libasync BUILD_EXAMPLE=0 RUN_TEST=0 ./travis-ci.sh || echo failed' // FIXME
+                    sh 'VIBED_DRIVER=libevent PARTS=tests ./travis-ci.sh'
+                    break;
+                case 'vibe-d/vibe.d+vibe-core-base':
+                    sh 'VIBED_DRIVER=vibe-core PARTS=builds,unittests ./travis-ci.sh'
+                    break;
+                case 'vibe-d/vibe.d+vibe-core-examples':
+                    sh 'VIBED_DRIVER=vibe-core PARTS=examples ./travis-ci.sh'
+                    break;
+                case 'vibe-d/vibe.d+vibe-core-tests':
+                    // temporarily disable failing tests, see: https://github.com/dlang/ci/pull/96
+                    sh 'rm -rf tests/vibe.core.net.1726' // FIXME
+                    sh 'rm -rf tests/std.concurrency' // FIXME
+                    sh 'VIBED_DRIVER=vibe-core PARTS=tests ./travis-ci.sh'
+                    break;
+                case 'vibe-d/vibe.d+libasync-base':
+                    sh 'VIBED_DRIVER=libasync PARTS=builds,unittests ./travis-ci.sh'
                     break;
 
                 case 'rejectedsoftware/diet-ng':
@@ -262,7 +279,7 @@ def testDownstreamProject (name) {
                 if [ -d '${env.WORKSPACE}/.dub/packages' ]; then
                     find '${env.WORKSPACE}/.dub/packages' -type f -name '*.a' -delete
                 fi
-                git -C '${repo}' clean -dxf >/dev/null
+                git -C '${name}' clean -dxf >/dev/null
                 rm -r '${env.WORKSPACE}/distribution'
                 """
             }
@@ -371,7 +388,13 @@ def call() { timeout(time: 1, unit: 'HOURS') {
 
     def dub_projects = [
         // sorted by test time slow to fast
-        "rejectedsoftware/vibe.d",
+        "vibe-d/vibe.d+libevent-base",
+        "vibe-d/vibe.d+libevent-examples",
+        "vibe-d/vibe.d+libevent-tests",
+        "vibe-d/vibe.d+vibe-core-base",
+        "vibe-d/vibe.d+vibe-core-examples",
+        "vibe-d/vibe.d+vibe-core-tests",
+        "vibe-d/vibe.d+libasync-base",
         "dlang/dub",
         "sociomantic-tsunami/ocean",
         "higgsjs/Higgs", // 3m10s
