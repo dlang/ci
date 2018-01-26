@@ -86,3 +86,17 @@
   notify: [systemctl daemon-reload, restart jenkins]
 - name: enable jenkins slave
   service: { name: jenkins, state: started, enabled: yes }
+# build cache cleanups
+# also see https://github.com/dlang/dub/issues/631
+- name: cron to cleanup dub build cache on reboot
+  cron:
+    name: 'cleanup dub build cache daily'
+    special_time: daily
+    user: jenkins
+    job: find $HOME -maxdepth 4 -path '*/.dub/packages/*' -type d -mtime +7 -exec rm -r {} +
+- name: cron to cleanup dub build cache on reboot
+  cron:
+    name: 'cleanup dub build cache on reboot'
+    special_time: reboot
+    user: jenkins
+    job: find $HOME -maxdepth 4 -path '*/.dub/packages/*' -type d -mtime +7 -exec rm -r {} +
