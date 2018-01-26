@@ -232,6 +232,12 @@ def testDownstreamProject (name) {
                     sh 'DC=$DC ./travis-ci.sh'
                     break;
 
+                case 'dlang/tools':
+                    // explicit test to avoid Digger setup, see dlang/tools#298 and dlang/tools#301
+                    sh "make -f posix.mak all DMD='${env.WORKSPACE}/distribution/bin/dmd'"
+                    sh "make -f posix.mak test DMD='${env.WORKSPACE}/distribution/bin/dmd' DFLAGS="
+                    break;
+
                 case 'msgpack/msgpack-d':
                     sh 'DMD=$DMD MODEL=64 make -f posix.mak unittest'
                     break;
