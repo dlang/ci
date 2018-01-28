@@ -232,6 +232,12 @@ def testDownstreamProject (name) {
                     sh 'DC=$DC ./travis-ci.sh'
                     break;
 
+                case 'dlang/tools':
+                    // explicit test to avoid Digger setup, see dlang/tools#298 and dlang/tools#301
+                    sh "make -f posix.mak all DMD='${env.WORKSPACE}/distribution/bin/dmd'"
+                    sh "make -f posix.mak test DMD='${env.WORKSPACE}/distribution/bin/dmd' DFLAGS="
+                    break;
+
                 case 'msgpack/msgpack-d':
                     sh 'DMD=$DMD MODEL=64 make -f posix.mak unittest'
                     break;
@@ -415,6 +421,7 @@ def call() { timeout(time: 1, unit: 'HOURS') {
         "dlang-community/DCD", // 23s
         "d-gamedev-team/gfm", // 28s
         "atilaneves/unit-threaded", //36s
+        "dlang/tools", // 40s
         "rejectedsoftware/diet-ng", // 56s
         "dlang-tour/core", // 1m17s
         "dlang-community/D-Scanner", // 1m40s
