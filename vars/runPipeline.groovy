@@ -388,49 +388,49 @@ def call() { timeout(time: 1, unit: 'HOURS') {
     retryOnPreemption({ buildDlang(); });
 
     def dub_projects = [
-        // sorted by test time slow to fast
-        "vibe-d/vibe.d+libevent-base",
-        "vibe-d/vibe.d+libevent-examples",
-        "vibe-d/vibe.d+libevent-tests",
-        "vibe-d/vibe.d+vibe-core-base",
-        "vibe-d/vibe.d+vibe-core-examples",
-        "vibe-d/vibe.d+vibe-core-tests",
-        "vibe-d/vibe.d+libasync-base",
-        "dlang/dub",
-        "sociomantic-tsunami/ocean",
-        "higgsjs/Higgs", // 3m10s
-        "BlackEdder/ggplotd", // 1m56s
-        "eBay/tsv-utils-dlang", // 1m41s
-        "dlang-community/D-Scanner", // 1m40s
-        "dlang-tour/core", // 1m17s
-        "jacob-carlborg/dstep", // 1m16s
-        "rejectedsoftware/diet-ng", // 56s
-        "atilaneves/unit-threaded", //36s
-        "d-gamedev-team/gfm", // 28s
-        "dlang-community/DCD", // 23s
-        "CyberShadow/ae", // 22s
-        "dlang-community/D-YAML", // 15s
-        "dlang-community/libdparse", // 13s
-        "dlang-community/dfmt", // 11s
         // run in under 10s, sorted alphabetically
         "Abscissa/libInputVisitor",
         "DerelictOrg/DerelictFT",
         "DerelictOrg/DerelictGL3",
         "DerelictOrg/DerelictGLFW3",
         "DerelictOrg/DerelictSDL2",
-        "dlang/undeaD",
         "DlangScience/scid",
         "Netflix/vectorflow",
+        "PhilippeSigaud/Pegged",
         "ariovistus/pyd",
+        "dlang/undeaD",
         "economicmodeling/containers",
         "kyllingstad/zmqd",
         "lgvz/imageformats",
         "msgpack/msgpack-d",
         "msoucy/dproto",
         "nomad-software/dunit",
-        "PhilippeSigaud/Pegged",
         "repeatedly/mustache-d",
         "s-ludwig/taggedalgebraic",
+        // sorted by test time fast to slow (to minimize pending queue length)
+        "dlang-community/dfmt", // 11s
+        "dlang-community/libdparse", // 13s
+        "dlang-community/D-YAML", // 15s
+        "CyberShadow/ae", // 22s
+        "dlang-community/DCD", // 23s
+        "d-gamedev-team/gfm", // 28s
+        "atilaneves/unit-threaded", //36s
+        "rejectedsoftware/diet-ng", // 56s
+        "jacob-carlborg/dstep", // 1m16s
+        "dlang-tour/core", // 1m17s
+        "dlang-community/D-Scanner", // 1m40s
+        "eBay/tsv-utils-dlang", // 1m41s
+        "BlackEdder/ggplotd", // 1m56s
+        "higgsjs/Higgs", // 3m10s
+        "dlang/dub", // 3m55s
+        "sociomantic-tsunami/ocean", // 4m49s
+        "vibe-d/vibe.d+libasync-base", // 3m45s
+        "vibe-d/vibe.d+vibe-core-base", // 4m31s
+        "vibe-d/vibe.d+libevent-base", // 4m20s
+        "vibe-d/vibe.d+vibe-core-tests", // 6m44s
+        "vibe-d/vibe.d+libevent-tests", // 8m35s
+        "vibe-d/vibe.d+vibe-core-examples", // 9m51s
+        "vibe-d/vibe.d+libevent-examples", // 12m1s
     ]
 
     stage ('Test Projects') {
