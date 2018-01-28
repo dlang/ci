@@ -57,14 +57,14 @@ lxd_containers
 
 # running at profitbricks
 [pbricks_fra:children]
-de_fra
+jenkins_pbricks_slaves
 
 [pbricks_hosts:children]
 pbricks_fra
 
 # running at GCE
 [gce_hosts:children]
-us-east1-b
+jenkins_gce_slaves
 
 # all non-containerized host
 [servers:children]
