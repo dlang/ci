@@ -160,7 +160,8 @@ def test_travis_yaml () {
 def testDownstreamProject (name) {
     def repo = name.tokenize('+')[0]
     node { ws(dir: 'dlang_projects') {
-        unstash name: "dlang-build"
+        echo "Running on ${env.NODE_NAME} in ${env.WORKSPACE}"
+        unstash name: 'dlang-build'
         withEnv([
                     // KEY+UID prepends to EnvVars, see http://javadoc.jenkins.io/hudson/EnvVars.html
                     "PATH+BIN=${env.WORKSPACE}/distribution/bin",
