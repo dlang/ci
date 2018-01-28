@@ -174,7 +174,7 @@ def testDownstreamProject (name) {
             try { dir(name) {
 
                 if (repo == 'vibe-d/vibe.d') {
-					 clone("https://github.com/${repo}.git", 'v0.8.3-alpha.3')
+                    clone("https://github.com/${repo}.git", 'v0.8.3-alpha.3')
                 } else if (repo == "sociomantic-tsunami/ocean") {
                     clone("https://github.com/${repo}.git", 'v4.0.0-alpha.5')
                 } else {
@@ -402,6 +402,7 @@ def call() { timeout(time: 1, unit: 'HOURS') {
         "eBay/tsv-utils-dlang", // 1m41s
         "dlang-community/D-Scanner", // 1m40s
         "dlang-tour/core", // 1m17s
+        "jacob-carlborg/dstep", // 1m16s
         "rejectedsoftware/diet-ng", // 56s
         "atilaneves/unit-threaded", //36s
         "d-gamedev-team/gfm", // 28s
