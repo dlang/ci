@@ -174,7 +174,7 @@ def testDownstreamProject (name) {
             try { dir(name) {
 
                 if (repo == 'vibe-d/vibe.d') {
-					 clone("https://github.com/${repo}.git", 'v0.8.3-alpha.3')
+                    clone("https://github.com/${repo}.git", 'v0.8.3-alpha.3')
                 } else if (repo == "sociomantic-tsunami/ocean") {
                     clone("https://github.com/${repo}.git", 'v4.0.0-alpha.5')
                 } else {
