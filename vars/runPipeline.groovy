@@ -274,6 +274,12 @@ def testDownstreamProject (name) {
                     sh 'dub test --compiler=$DC'
                     break;
 
+                case 'CyberShadow/ae':
+                	// remove network tests (they tend to timeout)
+                	sh 'rm -f sys/net/test.d'
+                    test_travis_yaml()
+                    break;
+
                 default:
                     test_travis_yaml()
                     break;
