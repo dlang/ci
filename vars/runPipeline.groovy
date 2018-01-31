@@ -305,6 +305,7 @@ def buildDlang() {
             sh '''#!/usr/bin/env bash
             set -xueo pipefail
 
+			echo ${JENKINS_URL}
             uname -a
             make --version
             ${SHELL} --version || true
