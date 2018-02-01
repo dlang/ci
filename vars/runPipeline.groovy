@@ -275,8 +275,14 @@ def testDownstreamProject (name) {
                     break;
 
                 case 'CyberShadow/ae':
-                	// remove network tests (they tend to timeout)
-                	sh 'rm -f sys/net/test.d'
+                    // remove network tests (they tend to timeout)
+                    sh 'rm -f sys/net/test.d'
+                    test_travis_yaml()
+                    break;
+
+                case 'atilaneves/unit-threaded':
+                    // workaround https://github.com/atilaneves/unit-threaded/issues/104
+                    sh 'sed -i \'/dub run.*unittest-unthreaded.*/d\' test.sh'
                     test_travis_yaml()
                     break;
 
