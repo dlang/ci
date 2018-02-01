@@ -170,7 +170,9 @@ def testDownstreamProject (name) {
                     'DC=dmd',
                     'DMD=dmd',
                     // set HOME to separate concurrent ~/.dub user paths
-                    "HOME=${env.WORKSPACE}"
+                    "HOME=${env.WORKSPACE}",
+                    // give projects a hint that we don't want to test anything remotely flaky
+                    'DETERMINISTIC_HINT=1'
                 ]) {
             try { dir(name) {
 
