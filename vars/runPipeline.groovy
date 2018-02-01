@@ -280,12 +280,6 @@ def testDownstreamProject (name) {
                     test_travis_yaml()
                     break;
 
-                case 'atilaneves/unit-threaded':
-                    // workaround https://github.com/atilaneves/unit-threaded/issues/104
-                    sh 'sed -i \'/dub run.*unittest-unthreaded.*/d\' test.sh'
-                    test_travis_yaml()
-                    break;
-
                 default:
                     test_travis_yaml()
                     break;
