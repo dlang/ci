@@ -157,6 +157,21 @@ def test_travis_yaml () {
     sh script
 }
 
+// these vibe.d tests tend to timeout or fail often
+def removeSpuriousVibedTests() {
+    // temporarily disable failing tests, see: https://github.com/dlang/ci/pull/96
+    sh 'rm -rf tests/vibe.core.net.1726' // FIXME
+    sh 'rm -rf tests/std.concurrency' // FIXME
+    // temporarily disable failing tests, see: https://github.com/vibe-d/vibe-core/issues/55
+    sh 'rm -rf tests/vibe.core.net.1429' // FIXME
+    // temporarily disable failing tests, see: https://github.com/vibe-d/vibe-core/issues/54
+    sh 'rm -rf tests/vibe.core.concurrency.1408' // FIXME
+    // temporarily disable failing tests, see: https://github.com/vibe-d/vibe.d/issues/2057
+    sh 'rm -rf tests/vibe.http.client.1389' // FIXME
+    // temporarily disable failing tests, see: https://github.com/vibe-d/vibe.d/issues/2054
+    sh 'rm -rf tests/tcp' // FIXME
+}
+
 def testDownstreamProject (name) {
     def repo = name.tokenize('+')[0]
     node { ws(dir: 'dlang_projects') {
@@ -200,9 +215,7 @@ def testDownstreamProject (name) {
                     sh 'VIBED_DRIVER=libevent PARTS=examples ./travis-ci.sh'
                     break;
                 case 'vibe-d/vibe.d+libevent-tests':
-                    // temporarily disable failing tests, see: https://github.com/dlang/ci/pull/96
-                    sh 'rm -rf tests/vibe.core.net.1726' // FIXME
-                    sh 'rm -rf tests/std.concurrency' // FIXME
+                    removeSpuriousVibedTests()
                     sh 'VIBED_DRIVER=libevent PARTS=tests ./travis-ci.sh'
                     break;
                 case 'vibe-d/vibe.d+vibe-core-base':
@@ -212,9 +225,7 @@ def testDownstreamProject (name) {
                     sh 'VIBED_DRIVER=vibe-core PARTS=examples ./travis-ci.sh'
                     break;
                 case 'vibe-d/vibe.d+vibe-core-tests':
-                    // temporarily disable failing tests, see: https://github.com/dlang/ci/pull/96
-                    sh 'rm -rf tests/vibe.core.net.1726' // FIXME
-                    sh 'rm -rf tests/std.concurrency' // FIXME
+                    removeSpuriousVibedTests()
                     sh 'VIBED_DRIVER=vibe-core PARTS=tests ./travis-ci.sh'
                     break;
                 case 'vibe-d/vibe.d+libasync-base':
