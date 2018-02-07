@@ -293,6 +293,12 @@ def testDownstreamProject (name) {
                     test_travis_yaml()
                     break;
 
+                case "ikod/dlang-requests":
+                    // vibe-d is currently disabled
+                    // see https://github.com/dlang/ci/pull/166
+                    sh 'dub build -c std'
+                    break;
+
                 default:
                     test_travis_yaml()
                     break;
@@ -425,6 +431,7 @@ def call() { timeout(time: 1, unit: 'HOURS') {
         "ariovistus/pyd",
         "dlang/undeaD",
         "economicmodeling/containers",
+        "ikod/dlang-requests",
         "kyllingstad/zmqd",
         "lgvz/imageformats",
         "msgpack/msgpack-d",
