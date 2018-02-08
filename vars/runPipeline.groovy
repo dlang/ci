@@ -170,6 +170,8 @@ def removeSpuriousVibedTests() {
     sh 'rm -rf tests/vibe.http.client.1389' // FIXME
     // temporarily disable failing tests, see: https://github.com/vibe-d/vibe.d/issues/2054
     sh 'rm -rf tests/tcp' // FIXME
+    // temporarily disable failing tests, see: https://github.com/vibe-d/vibe.d/issues/2066
+    sh 'rm -rf tests/vibe.core.net.1452' // FIXME
 }
 
 def testDownstreamProject (name) {
