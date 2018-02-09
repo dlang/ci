@@ -159,7 +159,7 @@ def test_travis_yaml () {
 
 // these vibe.d tests tend to timeout or fail often
 def removeSpuriousVibedTests() {
-    // temporarily disable failing tests, see: https://github.com/dlang/ci/pull/96
+    // temporarily disable failing tests, see: https://github.com/vibe-d/vibe-core/issues/56
     sh 'rm -rf tests/vibe.core.net.1726' // FIXME
     sh 'rm -rf tests/std.concurrency' // FIXME
     // temporarily disable failing tests, see: https://github.com/vibe-d/vibe-core/issues/55
