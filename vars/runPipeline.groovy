@@ -427,6 +427,7 @@ def call() { timeout(time: 1, unit: 'HOURS') {
         "Netflix/vectorflow",
         "PhilippeSigaud/Pegged",
         "ariovistus/pyd",
+        "atilaneves/automem",
         "dlang/undeaD",
         "economicmodeling/containers",
         "kyllingstad/zmqd",
