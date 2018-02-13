@@ -303,6 +303,14 @@ def testDownstreamProject (name) {
                     sh 'dub build -c std'
                     break;
 
+                case 'libmir/mir-algorithm':
+                    sh 'dub test --compiler=$DC'
+                    break;
+
+                case 'libmir/mir':
+                    sh 'dub test --compiler=$DC'
+                    break;
+
                 default:
                     test_travis_yaml()
                     break;
@@ -445,10 +453,13 @@ def call() { timeout(time: 1, unit: 'HOURS') {
         "nomad-software/dunit",
         "repeatedly/mustache-d",
         "s-ludwig/taggedalgebraic",
+        "libmir/mir",
         // sorted by test time fast to slow (to minimize pending queue length)
         "dlang-community/dfmt", // 11s
         "dlang-community/libdparse", // 13s
+        "libmir/mir-random", // 13s
         "dlang-community/D-YAML", // 15s
+        "libmir/mir-algorithm", // 17s
         "CyberShadow/ae", // 22s
         "dlang-community/DCD", // 23s
         "d-gamedev-team/gfm", // 28s
