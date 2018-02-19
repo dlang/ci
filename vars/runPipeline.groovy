@@ -268,6 +268,10 @@ def testDownstreamProject (name) {
                     sh 'sed -i \'s|auto seed = unpredictableSeed|auto seed = 54321|\' source/ggplotd/example.d'
                     test_travis_yaml()
                     break;
+                    
+                case 'BBasile/iz':
+                    sh 'cd scripts && sh ./test.sh'
+                    break;
 
                 case 'dlang-community/D-YAML':
                     sh 'dub build --compiler=$DC'
@@ -462,6 +466,7 @@ def call() { timeout(time: 1, unit: 'HOURS') {
         "libmir/mir-algorithm", // 17s
         "CyberShadow/ae", // 22s
         "dlang-community/DCD", // 23s
+        "BBasile/iz",
         "d-gamedev-team/gfm", // 28s
         "atilaneves/unit-threaded", //36s
         "dlang/tools", // 40s
