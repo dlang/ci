@@ -460,13 +460,13 @@ def call() { timeout(time: 1, unit: 'HOURS') {
         "libmir/mir",
         // sorted by test time fast to slow (to minimize pending queue length)
         "dlang-community/dfmt", // 11s
+        "BBasile/iz", // 12s
         "dlang-community/libdparse", // 13s
         "libmir/mir-random", // 13s
         "dlang-community/D-YAML", // 15s
         "libmir/mir-algorithm", // 17s
         "CyberShadow/ae", // 22s
         "dlang-community/DCD", // 23s
-        "BBasile/iz",
         "d-gamedev-team/gfm", // 28s
         "atilaneves/unit-threaded", //36s
         "dlang/tools", // 40s
