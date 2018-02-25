@@ -198,7 +198,7 @@ def testDownstreamProject (name) {
             try { dir(name) {
 
                 if (repo == 'vibe-d/vibe.d') {
-                    clone("https://github.com/${repo}.git", 'v0.8.3-alpha.3')
+                    clone("https://github.com/${repo}.git", 'v0.8.3-alpha.5')
                 } else if (repo == "sociomantic-tsunami/ocean") {
                     clone("https://github.com/${repo}.git", 'v4.0.0-alpha.5')
                 } else {
@@ -270,7 +270,7 @@ def testDownstreamProject (name) {
                     sh 'sed -i \'s|auto seed = unpredictableSeed|auto seed = 54321|\' source/ggplotd/example.d'
                     test_travis_yaml()
                     break;
-                    
+
                 case 'BBasile/iz':
                     sh 'cd scripts && sh ./test.sh'
                     break;
