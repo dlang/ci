@@ -473,6 +473,7 @@ def call() { timeout(time: 1, unit: 'HOURS') {
         "atilaneves/unit-threaded", //36s
         "dlang/tools", // 40s
         "rejectedsoftware/diet-ng", // 56s
+        "d-widget-toolkit/dwt", // 1m16s
         "dlang-tour/core", // 1m17s
         "dlang-community/D-Scanner", // 1m40s
         "eBay/tsv-utils-dlang", // 1m41s
