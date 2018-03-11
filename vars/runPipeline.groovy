@@ -196,10 +196,7 @@ def testDownstreamProject (name) {
                     'DETERMINISTIC_HINT=1'
                 ]) {
             try { dir(name) {
-
-                if (repo == 'vibe-d/vibe.d') {
-                    clone("https://github.com/${repo}.git", 'v0.8.3-beta.1')
-                } else if (repo == "sociomantic-tsunami/ocean") {
+                if (repo == "sociomantic-tsunami/ocean") {
                     clone("https://github.com/${repo}.git", 'v4.0.0-alpha.5')
                 } else {
                     cloneLatestTag("https://github.com/${repo}.git")
