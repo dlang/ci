@@ -441,6 +441,7 @@ def call() { timeout(time: 1, unit: 'HOURS') {
         "DerelictOrg/DerelictGLFW3",
         "DerelictOrg/DerelictSDL2",
         "dlang-bots/dlang-bot",
+        "kaleidicassociates/excel-d",
         "DlangScience/scid",
         "Netflix/vectorflow",
         "PhilippeSigaud/Pegged",
