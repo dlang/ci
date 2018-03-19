@@ -196,11 +196,7 @@ def testDownstreamProject (name) {
                     'DETERMINISTIC_HINT=1'
                 ]) {
             try { dir(name) {
-                if (repo == "sociomantic-tsunami/ocean") {
-                    clone("https://github.com/${repo}.git", 'v4.0.0-alpha.5')
-                } else {
-                    cloneLatestTag("https://github.com/${repo}.git")
-                }
+                cloneLatestTag("https://github.com/${repo}.git")
 
                 switch (name) {
                 case 'gtkd-developers/GtkD':
