@@ -383,7 +383,7 @@ def buildDlang() {
             def repos = [
                 'dub': {
                     withEnv(["PATH=${env.WORKSPACE}/dmd/generated/linux/release/64:${env.PATH}"]) {
-                        dir ('dub') { sh "./build.sh" }
+                        dir ('dub') { sh "DMD='gdb -return-child-result -q -ex run -ex bt -batch --args dmd' ./build.sh" }
                     }
                 },
                 'tools': {
