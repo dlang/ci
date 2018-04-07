@@ -446,7 +446,7 @@ def call() { timeout(time: 1, unit: 'HOURS') {
         "atilaneves/automem",
         "dlang/undeaD",
         "economicmodeling/containers",
-        //"ikod/dlang-requests",
+        "ikod/dlang-requests",
         "kyllingstad/zmqd",
         "lgvz/imageformats",
         "msgpack/msgpack-d",
@@ -475,7 +475,7 @@ def call() { timeout(time: 1, unit: 'HOURS') {
         // temporarily disabled - see https://github.com/BlackEdder/ggplotd/pull/45
         //"BlackEdder/ggplotd", // 1m56s
         "higgsjs/Higgs", // 3m10s
-        //"dlang/dub", // 3m55s
+        "dlang/dub", // 3m55s
         "sociomantic-tsunami/ocean", // 4m49s
         //"vibe-d/vibe.d+libasync-base", // 3m45s
         //"vibe-d/vibe.d+vibe-core-base", // 4m31s
