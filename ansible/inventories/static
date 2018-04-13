@@ -35,14 +35,7 @@ jenkins_num_executors=4
 
 # on-demand jenkins slaves
 [jenkins_demand_slaves:children]
-jenkins_pbricks_slaves
 jenkins_gce_slaves
-
-[jenkins_pbricks_slaves]
-runner-[01:01]-pbricks
-
-[jenkins_pbricks_slaves:vars]
-jenkins_num_executors="{{ ansible_processor_vcpus }}"
 
 [jenkins_gce_slaves]
 runner-[01:02]-gce
@@ -55,13 +48,6 @@ jenkins_num_executors="{{ ansible_processor_vcpus }}"
 lxd_hosts
 lxd_containers
 
-# running at profitbricks
-[pbricks_fra:children]
-jenkins_pbricks_slaves
-
-[pbricks_hosts:children]
-pbricks_fra
-
 # running at GCE
 [gce_hosts:children]
 jenkins_gce_slaves
@@ -69,7 +55,6 @@ jenkins_gce_slaves
 # all non-containerized host
 [servers:children]
 lxd_hosts
-pbricks_hosts
 gce_hosts
 
 # admin setting

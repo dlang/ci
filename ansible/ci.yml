@@ -47,10 +47,6 @@
         command: $HOME/google-cloud-sdk/bin/gcloud config set project dlang-ci
       become_user: jenkins
       tags: gcloud-sdk
-    - name: get pbricks ip blocks (AS51862)
-      uri: { url: 'https://freeapi.robtex.com/asquery/51862' }
-      check_mode: no
-      register: pbricks_ips
     # https://cloud.google.com/compute/docs/faq#networking
     - name: get dns entries to query for GCE netblocks
       set_fact:
@@ -73,7 +69,6 @@
     - name: allow agent traffic
       ufw: { rule: allow, src: "{{ item }}", port: "{{ jenkins_slave_agent_port }}", proto: tcp }
       with_flattened:
-        - "{{ pbricks_ips.json.nets | map(attribute='n') | list }}"
         - "{{ gce_netblocks }}"
         # allow access from host (indirectly SNAT) and directly from other containers
         - ["{{ hostvars['ci.dlang.io'].ansible_default_ipv4.address }}", "{{ ansible_default_ipv4.address }}/24"]
