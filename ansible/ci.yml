@@ -59,7 +59,8 @@
     - name: extract netblocks
       set_fact:
         gce_netblocks: "{{ gce_netblocks.results | sum(attribute='ansible_facts.tmp', start=[]) }}"
-    - name: common firewall setup
+
+    - name: reset to default firewall setup
       include: roles/common/tasks/firewall.yml
     - name: allow http reverse proxy
       ufw: { rule: allow, src: "{{ item }}", port: "{{ jenkins_http_port }}", proto: tcp }
