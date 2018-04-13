@@ -22,7 +22,6 @@ For less typing store vault, sudo, and profitbricks passwords in [Pass: The Stan
 ```sh
 pass add dlangci/ansible_vault
 pass add dlangci/sudo
-pass add dlangci/profitbricks
 ```
 At best also tell git how to diff encrypted files.
 ```sh
@@ -33,7 +32,7 @@ and pass `-K, --ask-become-pass` and `--ask-vault-pass` to `ansible-playbook`.
 
 ### Caches
 
-- remove /tmp/ansible-profitbricks.cache when restarting or provisioning hosts
+- remove host facts caches under .cache/ in case major properties (e.g. IP address, hostname) change
 
 ## [Vagrant](https://www.vagrantup.com/) to setup local VirtualBox (Jenkins on http://172.16.1.2)
 
