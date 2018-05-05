@@ -463,8 +463,7 @@ def call() { timeout(time: 1, unit: 'HOURS') {
         "dlang-community/D-YAML", // 15s
         "libmir/mir-algorithm", // 17s
         "CyberShadow/ae", // 22s
-        // fails too often with TCP tests timing out, see https://github.com/dlang-community/DCD/issues/455
-        //"dlang-community/DCD", // 23s
+        "dlang-community/DCD", // 23s
         "d-gamedev-team/gfm", // 28s
         "atilaneves/unit-threaded", //36s
         "dlang/tools", // 40s
