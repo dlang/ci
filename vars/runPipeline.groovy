@@ -457,8 +457,7 @@ def call() { timeout(time: 1, unit: 'HOURS') {
         // sorted by test time fast to slow (to minimize pending queue length)
         "dlang-community/dfmt", // 11s
         "BBasile/iz", // 12s
-        // see https://github.com/dlang/ci/pull/205
-        //"dlang-community/libdparse", // 13s
+        "dlang-community/libdparse", // 13s
         "libmir/mir-random", // 13s
         "dlang-community/D-YAML", // 15s
         "libmir/mir-algorithm", // 17s
