@@ -457,7 +457,8 @@ def call() { timeout(time: 1, unit: 'HOURS') {
         // sorted by test time fast to slow (to minimize pending queue length)
         "dlang-community/dfmt", // 11s
         "BBasile/iz", // 12s
-        "dlang-community/libdparse", // 13s
+        // see https://github.com/dlang/ci/pull/205
+        //"dlang-community/libdparse", // 13s
         "libmir/mir-random", // 13s
         "dlang-community/D-YAML", // 15s
         "libmir/mir-algorithm", // 17s
@@ -466,22 +467,21 @@ def call() { timeout(time: 1, unit: 'HOURS') {
         "d-gamedev-team/gfm", // 28s
         "atilaneves/unit-threaded", //36s
         "dlang/tools", // 40s
-        "rejectedsoftware/diet-ng", // 56s
+        //"rejectedsoftware/diet-ng", // 56s
         "d-widget-toolkit/dwt", // 1m16s
         "dlang-tour/core", // 1m17s
         "dlang-community/D-Scanner", // 1m40s
         "eBay/tsv-utils-dlang", // 1m41s
-        // temporarily disabled - see https://github.com/BlackEdder/ggplotd/pull/45
-        //"BlackEdder/ggplotd", // 1m56s
+        "BlackEdder/ggplotd", // 1m56s
         "higgsjs/Higgs", // 3m10s
-        "dlang/dub", // 3m55s
+        //"dlang/dub", // 3m55s
         "sociomantic-tsunami/ocean", // 4m49s
         "vibe-d/vibe.d+libasync-base", // 3m45s
-        "vibe-d/vibe.d+vibe-core-base", // 4m31s
+        //"vibe-d/vibe.d+vibe-core-base", // 4m31s
         "vibe-d/vibe.d+libevent-base", // 4m20s
-        "vibe-d/vibe.d+vibe-core-tests", // 6m44s
+        //"vibe-d/vibe.d+vibe-core-tests", // 6m44s
         "vibe-d/vibe.d+libevent-tests", // 8m35s
-        "vibe-d/vibe.d+vibe-core-examples", // 9m51s
+        //"vibe-d/vibe.d+vibe-core-examples", // 9m51s
         "vibe-d/vibe.d+libevent-examples", // 12m1s
     ]
 
