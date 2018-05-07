@@ -472,8 +472,7 @@ def call() { timeout(time: 1, unit: 'HOURS') {
         //"dlang-tour/core", // 1m17s
         "dlang-community/D-Scanner", // 1m40s
         "eBay/tsv-utils-dlang", // 1m41s
-        // temporarily disabled - see https://github.com/BlackEdder/ggplotd/pull/45
-        //"BlackEdder/ggplotd", // 1m56s
+        "BlackEdder/ggplotd", // 1m56s
         "higgsjs/Higgs", // 3m10s
         //"dlang/dub", // 3m55s
         "sociomantic-tsunami/ocean", // 4m49s
