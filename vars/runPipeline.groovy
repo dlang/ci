@@ -476,8 +476,9 @@ def call() { timeout(time: 1, unit: 'HOURS') {
         //"dlang/dub", // 3m55s
         "sociomantic-tsunami/ocean", // 4m49s
         "vibe-d/vibe.d+libasync-base", // 3m45s
+        // https://github.com/vibe-d/vibe.d/issues/2157
         //"vibe-d/vibe.d+vibe-core-base", // 4m31s
-        "vibe-d/vibe.d+libevent-base", // 4m20s
+        //"vibe-d/vibe.d+libevent-base", // 4m20s
         //"vibe-d/vibe.d+vibe-core-tests", // 6m44s
         "vibe-d/vibe.d+libevent-tests", // 8m35s
         //"vibe-d/vibe.d+vibe-core-examples", // 9m51s
