@@ -2,6 +2,7 @@
 - name: update apt cache
   apt: { update_cache: yes, cache_valid_time: 3600 }
 - include: hostname.yml
+  tags: hostname
 - include: journald.yml
 - include: sshd.yml
 # TODO: firewall on containers?
