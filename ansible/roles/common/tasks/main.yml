@@ -1,6 +1,8 @@
 ---
 - name: update apt cache
   apt: { update_cache: yes, cache_valid_time: 3600 }
+- name: set timezone to UTC
+  timezone: { name: Etc/UTC }
 - include: hostname.yml
   tags: hostname
 - include: journald.yml
