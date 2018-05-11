@@ -11,6 +11,8 @@
 # TODO: firewall on containers?
 - include: firewall.yml
 - include: mta.yml
+- include: tools.yml
+  tags: tools
 - name: uninstall unused packages
   apt: { name: "{{item}}", purge: yes, state: absent }
   with_items: [mlocate, snapd]
