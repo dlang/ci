@@ -1,8 +1,6 @@
 ---
 - name: install ufw
   apt: { name: ufw }
-- name: reset ufw
-  ufw: { state: reset }
 - name: rate limit ssh connections
   ufw: { rule: limit, port: ssh, proto: tcp }
 - name: enable ufw
