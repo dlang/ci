@@ -474,8 +474,7 @@ def call() { timeout(time: 1, unit: 'HOURS') {
         "BlackEdder/ggplotd", // 1m56s
         "higgsjs/Higgs", // 3m10s
         //"dlang/dub", // 3m55s
-        // temporarily disabled
-        //"sociomantic-tsunami/ocean", // 4m49s
+        "sociomantic-tsunami/ocean", // 4m49s
         "vibe-d/vibe.d+libasync-base", // 3m45s
         // https://github.com/vibe-d/vibe.d/issues/2157
         //"vibe-d/vibe.d+vibe-core-base", // 4m31s
