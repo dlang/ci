@@ -448,7 +448,6 @@ def call() { timeout(time: 1, unit: 'HOURS') {
         "ikod/dlang-requests",
         "kyllingstad/zmqd",
         "lgvz/imageformats",
-        "msgpack/msgpack-d",
         "msoucy/dproto",
         "nomad-software/dunit",
         "repeatedly/mustache-d",
