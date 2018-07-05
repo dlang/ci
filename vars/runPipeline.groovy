@@ -248,6 +248,7 @@ def testDownstreamProject (name) {
                 case 'dlang/dub':
                     sh '''
                       rm test/issue884-init-defer-file-creation.sh # FIXME
+                      sed 's/"stdx-allocator": "2.77.0",/"stdx-allocator": "2.77.2",/' -i dub.selections.json # upgrade stdx-allocator (can be removed once v1.11 gets released)
                       sed -i \'/^source.*activate/d\' travis-ci.sh
                     '''
                     sh 'DC=$DC ./travis-ci.sh'
@@ -474,7 +475,7 @@ def call() { timeout(time: 1, unit: 'HOURS') {
         "d-gamedev-team/gfm", // 28s
         "atilaneves/unit-threaded", //36s
         "dlang/tools", // 40s
-        //"rejectedsoftware/diet-ng", // 56s
+        "rejectedsoftware/diet-ng", // 56s
         "d-widget-toolkit/dwt", // 1m16s
         "dlang-tour/core", // 1m17s
         "dlang-community/D-Scanner", // 1m40s
@@ -483,15 +484,15 @@ def call() { timeout(time: 1, unit: 'HOURS') {
         "higgsjs/Higgs", // 3m10s
         "vibe-d/vibe-core+select", // 3m 30s
         "vibe-d/vibe-core+epoll", // 3m 38s
-        //"dlang/dub", // 3m55s
+        "dlang/dub", // 3m55s
         "sociomantic-tsunami/ocean", // 4m49s
         "vibe-d/vibe.d+libasync-base", // 3m45s
         // https://github.com/vibe-d/vibe.d/issues/2157
-        //"vibe-d/vibe.d+vibe-core-base", // 4m31s
-        //"vibe-d/vibe.d+libevent-base", // 4m20s
-        //"vibe-d/vibe.d+vibe-core-tests", // 6m44s
+        "vibe-d/vibe.d+vibe-core-base", // 4m31s
+        "vibe-d/vibe.d+libevent-base", // 4m20s
+        "vibe-d/vibe.d+vibe-core-tests", // 6m44s
         "vibe-d/vibe.d+libevent-tests", // 8m35s
-        //"vibe-d/vibe.d+vibe-core-examples", // 9m51s
+        "vibe-d/vibe.d+vibe-core-examples", // 9m51s
         "vibe-d/vibe.d+libevent-examples", // 12m1s
     ]
 
