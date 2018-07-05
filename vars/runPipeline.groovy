@@ -452,6 +452,7 @@ def call() { timeout(time: 1, unit: 'HOURS') {
         "nomad-software/dunit",
         "repeatedly/mustache-d",
         "s-ludwig/taggedalgebraic",
+        "s-ludwig/taggedalgebraic",
         "libmir/mir",
         // sorted by test time fast to slow (to minimize pending queue length)
         "dlang-community/dfmt", // 11s
@@ -461,6 +462,7 @@ def call() { timeout(time: 1, unit: 'HOURS') {
         "dlang-community/D-YAML", // 15s
         "libmir/mir-algorithm", // 17s
         "CyberShadow/ae", // 22s
+        "weka-io/mecca", // 22s
         "dlang-community/DCD", // 23s
         "d-gamedev-team/gfm", // 28s
         "atilaneves/unit-threaded", //36s
