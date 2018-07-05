@@ -231,6 +231,15 @@ def testDownstreamProject (name) {
                     sh 'VIBED_DRIVER=libasync PARTS=builds,unittests ./travis-ci.sh'
                     break;
 
+                case 'vibe-d/vibe-core+epoll':
+                    sh 'rm tests/issue-58-task-already-scheduled.d # https://github.com/vibe-d/vibe-core/issues/84'
+                    sh 'CONFIG=epoll ./travis-ci.sh'
+                    break;
+
+                case 'vibe-d/vibe-core+select':
+                    sh 'CONFIG=select ./travis-ci.sh'
+                    break;
+
                 case 'rejectedsoftware/diet-ng':
                     sh 'sed -i \'/mkdir build && cd build/,//d\' .travis.yml' // strip meson tests
                     test_travis_yaml()
@@ -472,6 +481,8 @@ def call() { timeout(time: 1, unit: 'HOURS') {
         "eBay/tsv-utils-dlang", // 1m41s
         "BlackEdder/ggplotd", // 1m56s
         "higgsjs/Higgs", // 3m10s
+        "vibe-d/vibe-core+select", // 3m 30s
+        "vibe-d/vibe-core+epoll", // 3m 38s
         //"dlang/dub", // 3m55s
         "sociomantic-tsunami/ocean", // 4m49s
         "vibe-d/vibe.d+libasync-base", // 3m45s
