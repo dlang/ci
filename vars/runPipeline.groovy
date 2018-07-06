@@ -307,9 +307,10 @@ def testDownstreamProject (name) {
                     break;
 
                 case "ikod/dlang-requests":
-                    // vibe-d is currently disabled
+                    // full test suite is currently disabled
                     // see https://github.com/dlang/ci/pull/166
                     sh 'dub build -c std'
+                    sh 'dub build -c vibed'
                     break;
 
                 case 'libmir/mir-algorithm':
