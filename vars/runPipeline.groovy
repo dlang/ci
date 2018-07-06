@@ -320,6 +320,12 @@ def testDownstreamProject (name) {
                     sh 'dub test --compiler=$DC'
                     break;
 
+                case 'rejectedsoftware/ddox':
+                    // remove once https://github.com/rejectedsoftware/ddox/pull/212 is merged and released
+                    sh 'sed \'s/bridgeip.*/exit $failure/\' -i travis-ci.sh' // build without the phantomcss tester
+                    test_travis_yaml()
+                    break;
+
                 default:
                     test_travis_yaml()
                     break;
@@ -481,9 +487,10 @@ def call() { timeout(time: 1, unit: 'HOURS') {
         "dlang-community/D-Scanner", // 1m40s
         "eBay/tsv-utils-dlang", // 1m41s
         "BlackEdder/ggplotd", // 1m56s
+        "rejectedsoftware/ddox", // 2m42s
         "higgsjs/Higgs", // 3m10s
-        "vibe-d/vibe-core+select", // 3m 30s
-        "vibe-d/vibe-core+epoll", // 3m 38s
+        "vibe-d/vibe-core+select", // 3m30s
+        "vibe-d/vibe-core+epoll", // 3m38s
         "dlang/dub", // 3m55s
         "sociomantic-tsunami/ocean", // 4m49s
         "vibe-d/vibe.d+libasync-base", // 3m45s
