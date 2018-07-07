@@ -237,6 +237,7 @@ def testDownstreamProject (name) {
                     break;
 
                 case 'vibe-d/vibe-core+select':
+                    sh 'rm tests/issue-58-task-already-scheduled.d # https://github.com/vibe-d/vibe-core/issues/84'
                     sh 'CONFIG=select ./travis-ci.sh'
                     break;
 
@@ -249,6 +250,7 @@ def testDownstreamProject (name) {
                     sh '''
                       rm test/issue884-init-defer-file-creation.sh # FIXME
                       sed 's/"stdx-allocator": "2.77.0",/"stdx-allocator": "2.77.2",/' -i dub.selections.json # upgrade stdx-allocator (can be removed once v1.11 gets released)
+                      rm test/ddox.sh # can be removed once v1.11 gets released
                       sed -i \'/^source.*activate/d\' travis-ci.sh
                     '''
                     sh 'DC=$DC ./travis-ci.sh'
