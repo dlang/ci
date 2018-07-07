@@ -237,6 +237,7 @@ def testDownstreamProject (name) {
                     break;
 
                 case 'vibe-d/vibe-core+select':
+                    sh 'rm tests/issue-58-task-already-scheduled.d # https://github.com/vibe-d/vibe-core/issues/84'
                     sh 'CONFIG=select ./travis-ci.sh'
                     break;
 
