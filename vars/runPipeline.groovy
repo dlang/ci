@@ -468,6 +468,7 @@ def call() { timeout(time: 1, unit: 'HOURS') {
         "msoucy/dproto",
         "nomad-software/dunit",
         "repeatedly/mustache-d",
+        "s-ludwig/std_data_json",
         "s-ludwig/taggedalgebraic",
         "s-ludwig/taggedalgebraic",
         "libmir/mir",
