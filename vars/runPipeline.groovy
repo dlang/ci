@@ -465,6 +465,7 @@ def call() { timeout(time: 1, unit: 'HOURS') {
         "dlang/undeaD",
         "economicmodeling/containers",
         "ikod/dlang-requests",
+        "kaleidicassociates/lubeck",
         "kyllingstad/zmqd",
         "lgvz/imageformats",
         "msoucy/dproto",
