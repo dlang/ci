@@ -451,6 +451,7 @@ def call() { timeout(time: 1, unit: 'HOURS') {
     def dub_projects = [
         // run in under 10s, sorted alphabetically
         "Abscissa/libInputVisitor",
+        "AuburnSounds/intel-intrinsics",
         "DerelictOrg/DerelictFT",
         "DerelictOrg/DerelictGL3",
         "DerelictOrg/DerelictGLFW3",
