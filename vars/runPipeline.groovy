@@ -474,7 +474,6 @@ def call() { timeout(time: 1, unit: 'HOURS') {
         "repeatedly/mustache-d",
         "s-ludwig/std_data_json",
         "s-ludwig/taggedalgebraic",
-        "s-ludwig/taggedalgebraic",
         "libmir/mir",
         // sorted by test time fast to slow (to minimize pending queue length)
         "dlang-community/dfmt", // 11s
