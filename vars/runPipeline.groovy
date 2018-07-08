@@ -464,7 +464,7 @@ def call() { timeout(time: 1, unit: 'HOURS') {
         "ariovistus/pyd",
         "atilaneves/automem",
         "dlang/undeaD",
-        "economicmodeling/containers",
+        "dlang-community/containers",
         "ikod/dlang-requests",
         "kaleidicassociates/lubeck",
         "kyllingstad/zmqd",
