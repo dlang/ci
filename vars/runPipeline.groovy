@@ -266,7 +266,7 @@ def testDownstreamProject (name) {
                     sh 'DMD=$DMD MODEL=64 make -f posix.mak unittest'
                     break;
 
-                case 'economicmodeling/containers':
+                case 'dlang-community/containers':
                     sh 'make -B -C test/ || echo failed' // FIXME
                     break;
 
