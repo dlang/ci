@@ -15,13 +15,15 @@ steps:
   - command: |
         git clean -ffdxq .
         # make sure the entire CI folder is loaded
-        if [ [ "$BUILDKITE_PULL_REQUEST" == "false" ] && [ "${BUILDKITE_PULL_REQUEST_REPO:-}" != "git://github.com/dlang/ci.git" ] ] ; then
-           mkdir -p buildkite
+        if [ -d buildkite ] ; then
+           mkdir -p buildkite && cd buildkite
            wget https://github.com/dlang/ci/archive/master.tar.gz
-           tar --strip-components=1 --overwrite xvfz master.tar.gz
+           tar xvfz master.tar.gz --strip-components=2 ci-master/buildkite
            rm -rf master.tar.gz
+        else
+            cd buildkite
         fi
-        ./buildkite/build_distribution.sh
+        ./build_distribution.sh
     label: "Build"
     artifact_paths: "distribution.tar.xz"
 
