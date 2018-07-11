@@ -15,7 +15,7 @@ steps:
   - command: |
         git clean -ffdxq .
         # make sure the entire CI folder is loaded
-        if [ -d buildkite ] ; then
+        if [ ! -d buildkite ] ; then
            mkdir -p buildkite && cd buildkite
            wget https://github.com/dlang/ci/archive/master.tar.gz
            tar xvfz master.tar.gz --strip-components=2 ci-master/buildkite
