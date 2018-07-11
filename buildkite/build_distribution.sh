@@ -4,6 +4,8 @@ set -uexo pipefail
 
 # Builds DMD, DRuntime, Phobos, tools and DUB + creates a "distribution" archive for latter usage.
 
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 origin_repo="$(echo "$BUILDKITE_REPO" | sed "s/.*\/\([^\]*\)[.]git/\1/")"
 origin_target_branch="$BUILDKITE_PULL_REQUEST_BASE_BRANCH"
 if [ -z "$origin_target_branch" ] ; then
@@ -44,5 +46,8 @@ cp --archive --link phobos/etc phobos/std druntime/import/* distribution/imports
 cp --archive --link phobos/generated/linux/release/64/libphobos2.{a,so,so*[!o]} distribution/libs/
 echo '[Environment]' >> distribution/bin/dmd.conf
 echo 'DFLAGS=-I%@P%/../imports -L-L%@P%/../libs -L--export-dynamic -L--export-dynamic -fPIC' >> distribution/bin/dmd.conf
+
+# add buildkite files to the archive
+cp -R "$DIR" distribution
 
 XZ_OPT=-0 tar cfJ distribution.tar.xz distribution

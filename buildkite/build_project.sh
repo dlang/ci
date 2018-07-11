@@ -9,13 +9,6 @@ export HOME="$PWD"
 export LIBRARY_PATH="$PWD/distribution/libs:${LIBRARY_PATH:-}"
 export LD_LIBRARY_PATH="$PWD/distribution/libs:${LD_LIBRARY_PATH:-}"
 
-# just to be sure there isn't anything old left
-git clean -ffdxq .
-
-# download the distribution archive
-buildkite-agent artifact download distribution.tar.xz .
-tar xfJ distribution.tar.xz
-
 # clone the latest tag
 latest_tag=$(git ls-remote --tags ""${REPO_URL}"" | \
     sed -n 's|.*refs/tags/\(v\?[0-9]*\.[0-9]*\.[0-9]*$\)|\1|p' | \
