@@ -19,8 +19,7 @@ steps:
            mkdir -p buildkite && pushd buildkite
            wget https://github.com/dlang/ci/archive/master.tar.gz
            tar xvfz master.tar.gz --strip-components=2 ci-master/buildkite
-           rm -rf master.tar.gz
-           popd
+           rm -rf master.tar.gz && popd
         fi
         ./buildkite/build_distribution.sh
     label: "Build"
@@ -114,6 +113,14 @@ for project_name in "${projects[@]}" ; do
     project="$(echo "$project_name" | sed "s/\([^+]*\)+.*/\1/")"
 cat << EOF
   - command: |
+      git clean -ffdxq .
+      # make sure the entire CI folder is loaded
+      if [ ! -d buildkite ] ; then
+         mkdir -p buildkite && pushd buildkite
+         wget https://github.com/dlang/ci/archive/master.tar.gz
+         tar xvfz master.tar.gz --strip-components=2 ci-master/buildkite
+         rm -rf master.tar.gz && popd
+      fi
       export REPO_URL="https://github.com/${project}"
       export REPO_DIR="$(basename "$project")"
       export REPO_FULL_NAME="${project_name}"
