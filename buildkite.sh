@@ -34,61 +34,66 @@ EOF
 # If a different action is preferred, set it in buildkite/build_project.sh
 ################################################################################
 projects=(
-    "vibe-d/vibe.d+libevent-examples"
-    "vibe-d/vibe.d+vibe-core-examples"
-    "vibe-d/vibe.d+libevent-tests"
-    "vibe-d/vibe.d+vibe-core-tests"
-    "vibe-d/vibe.d+libevent-base"
-    "vibe-d/vibe.d+vibe-core-base"
-    "vibe-d/vibe.d+libasync-base"
-    "sociomantic-tsunami/ocean"
-    "dlang/dub"
-    "vibe-d/vibe-core+epoll"
-    "vibe-d/vibe-core+select"
-    "higgsjs/Higgs"
-    "rejectedsoftware/ddox"
-    "BlackEdder/ggplotd"
-    "eBay/tsv-utils"
-    "dlang-community/D-Scanner"
-    "dlang-tour/core"
-    "d-widget-toolkit/dwt"
-    "rejectedsoftware/diet-ng"
-    "mbierlee/poodinis"
-    #"dlang/tools"
-    "atilaneves/unit-threaded"
-    "d-gamedev-team/gfm"
-    "dlang-community/DCD"
-    "weka-io/mecca"
-    "CyberShadow/ae"
-    "libmir/mir-algorithm"
-    "dlang-community/D-YAML"
-    "libmir/mir-random"
-    "dlang-community/libdparse"
-    "BBasile/iz"
-    "dlang-community/dfmt"
-    "libmir/mir"
-    "s-ludwig/taggedalgebraic"
-    "s-ludwig/std_data_json"
-    "repeatedly/mustache-d"
-    "nomad-software/dunit"
-    "msoucy/dproto"
-    "lgvz/imageformats"
-    "kyllingstad/zmqd"
-    "ikod/dlang-requests"
-    "economicmodeling/containers"
-    "dlang/undeaD"
-    "atilaneves/automem"
-    "ariovistus/pyd"
-    "PhilippeSigaud/Pegged"
-    "Netflix/vectorflow"
-    "DlangScience/scid"
-    "kaleidicassociates/excel-d"
-    "dlang-bots/dlang-bot"
-    "DerelictOrg/DerelictSDL2"
-    "DerelictOrg/DerelictGLFW3"
-    "DerelictOrg/DerelictGL3"
-    "DerelictOrg/DerelictFT"
+    # sorted by test time fast to slow (to minimize pending queue length)
+    "vibe-d/vibe.d+libevent-examples" # 12m1s
+    "vibe-d/vibe.d+vibe-core-examples" # 9m51s
+    "vibe-d/vibe.d+libevent-tests" # 8m35s
+    "vibe-d/vibe.d+vibe-core-tests" # 6m44s
+    "vibe-d/vibe.d+libevent-base" # 4m20s
+    "vibe-d/vibe.d+vibe-core-base" # 4m31s
+    # https://github.com/vibe-d/vibe.d/issues/2157
+    "vibe-d/vibe.d+libasync-base" # 3m45s
+    "sociomantic-tsunami/ocean" # 4m49s
+    "dlang/dub" # 3m55s
+    "vibe-d/vibe-core+epoll" # 3m38s
+    "vibe-d/vibe-core+select" # 3m30s
+    "higgsjs/Higgs" # 3m10s
+    "rejectedsoftware/ddox" # 2m42s
+    "BlackEdder/ggplotd" # 1m56s
+    "eBay/tsv-utils" # 1m41s
+    "dlang-community/D-Scanner" # 1m40s
+    "dlang-tour/core" # 1m17s
+    "d-widget-toolkit/dwt" # 1m16s
+    "rejectedsoftware/diet-ng" # 56s
+    "mbierlee/poodinis" # 40s
+   #"dlang/tools" # 40s
+    "atilaneves/unit-threaded" #36s
+    "d-gamedev-team/gfm" # 28s
+    "dlang-community/DCD" # 23s
+    "weka-io/mecca" # 22s
+    "CyberShadow/ae" # 22s
+    "libmir/mir-algorithm" # 17s
+    "dlang-community/D-YAML" # 15s
+    "libmir/mir-random" # 13s
+    "dlang-community/libdparse" # 13s
+    "BBasile/iz" # 12s
+    "dlang-community/dfmt" # 11s
+    # run in under 10s sorted alphabetically
     "Abscissa/libInputVisitor"
+    "ariovistus/pyd"
+    "atilaneves/automem"
+    "AuburnSounds/intel-intrinsics"
+    "DerelictOrg/DerelictFT"
+    "DerelictOrg/DerelictGL3"
+    "DerelictOrg/DerelictGLFW3"
+    "DerelictOrg/DerelictSDL2"
+    "dlang-bots/dlang-bot"
+    "dlang-community/containers"
+    "dlang/undeaD"
+    "DlangScience/scid"
+    "ikod/dlang-requests"
+    "kaleidicassociates/excel-d"
+    "kaleidicassociates/lubeck"
+    "kyllingstad/zmqd"
+    "lgvz/imageformats"
+    "libmir/mir"
+    "msoucy/dproto"
+    "Netflix/vectorflow"
+    "nomad-software/dunit"
+    "PhilippeSigaud/Pegged"
+    "repeatedly/mustache-d"
+    "s-ludwig/std_data_json"
+    "s-ludwig/taggedalgebraic"
 )
 # Add all projects that require more than 3GB of memory to build
 declare -A memory_req
