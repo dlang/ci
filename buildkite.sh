@@ -16,14 +16,13 @@ steps:
         git clean -ffdxq .
         # make sure the entire CI folder is loaded
         if [ ! -d buildkite ] ; then
-           mkdir -p buildkite && cd buildkite
+           mkdir -p buildkite && pushd buildkite
            wget https://github.com/dlang/ci/archive/master.tar.gz
            tar xvfz master.tar.gz --strip-components=2 ci-master/buildkite
            rm -rf master.tar.gz
-        else
-            cd buildkite
+           popd
         fi
-        ./build_distribution.sh
+        ./buildkite/build_distribution.sh
     label: "Build"
     artifact_paths: "distribution.tar.xz"
 
