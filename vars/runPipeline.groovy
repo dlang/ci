@@ -337,6 +337,7 @@ def testDownstreamProject (name) {
             finally {
                 sh """
                 dub clean --all-packages >/dev/null
+                rm -rf ~/.dub # remove the invalid vibe-core 1.4.1 package
                 # workaround https://github.com/dlang/dub/issues/1256
                 if [ -d '${env.WORKSPACE}/.dub/packages' ]; then
                     find '${env.WORKSPACE}/.dub/packages' -type f -name '*.a' -delete
