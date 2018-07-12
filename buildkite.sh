@@ -54,7 +54,7 @@ projects=(
     "d-widget-toolkit/dwt"
     "rejectedsoftware/diet-ng"
     "mbierlee/poodinis"
-    "dlang/tools"
+    #"dlang/tools"
     "atilaneves/unit-threaded"
     "d-gamedev-team/gfm"
     "dlang-community/DCD"
@@ -102,6 +102,8 @@ memory_req["vibe-d/vibe.d+libevent-base"]=high
 memory_req["vibe-d/vibe.d+libasync-base"]=high
 memory_req["libmir/mir-algorithm"]=high
 memory_req["sociomantic-tsunami/ocean"]=high
+memory_req["dlang-bots/dlang-bot"]=high
+memory_req["dlang/dub"]=high
 # Force long-running tasks to be on the low-end machines
 memory_req["vibe-d/vibe.d+libevent-examples"]=low
 memory_req["vibe-d/vibe.d+vibe-core-examples"]=low
@@ -123,10 +125,11 @@ cat << EOF
       export REPO_URL="https://github.com/${project}"
       export REPO_DIR="$(basename "$project")"
       export REPO_FULL_NAME="${project_name}"
-      ./distribution/buildkite/build_project.sh
+      rm -rf buildkite
+      mv distribution/buildkite buildkite
+      ./buildkite/build_project.sh
     label: "${project_name}"
     env:
-      DETERMINISTIC_HINT: 1
       DC: dmd
       DMD: dmd
 EOF

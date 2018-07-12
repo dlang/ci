@@ -8,6 +8,12 @@ export PATH="$PWD/distribution/bin:${PATH:-}"
 export HOME="$PWD"
 export LIBRARY_PATH="$PWD/distribution/libs:${LIBRARY_PATH:-}"
 export LD_LIBRARY_PATH="$PWD/distribution/libs:${LD_LIBRARY_PATH:-}"
+export DETERMINISTIC_HINT=1
+
+# Make sure there are no overlaps of the build files by putting them in the current directory
+export TMP=$PWD
+export TMPDIR=$PWD
+export TEMP=$PWD
 
 # clone the latest tag
 latest_tag=$(git ls-remote --tags ""${REPO_URL}"" | \
