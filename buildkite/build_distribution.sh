@@ -3,6 +3,7 @@
 set -uexo pipefail
 
 # Builds DMD, DRuntime, Phobos, tools and DUB + creates a "distribution" archive for latter usage.
+echo "--- Setting build variables"
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
@@ -11,8 +12,9 @@ origin_target_branch="$BUILDKITE_PULL_REQUEST_BASE_BRANCH"
 if [ -z "$origin_target_branch" ] ; then
   origin_target_branch="$BUILDKITE_BRANCH"
 fi
-echo "$origin_target_branch"
+echo "origin_target_branch: $origin_target_branch"
 
+echo "--- Cloning all core repositories"
 for dir in dmd druntime phobos tools dub ; do
     if [ "$origin_repo" == "$dir" ] ; then
       # we have already cloned this repo, so let's use this data
@@ -25,10 +27,11 @@ for dir in dmd druntime phobos tools dub ; do
 done
 
 for dir in dmd druntime phobos ; do
+    echo "--- Building $dir"
     make -C $dir -f posix.mak AUTO_BOOTSTRAP=1 --jobs=4
 done
 
-# build dub
+echo "--- Building dub"
 # TODO: doesn't build with master
 (cd dub;
     . $(curl --retry 5 https://dlang.org/install.sh | bash -s dmd-2.079.1 -a)
@@ -36,10 +39,10 @@ done
     #DMD='gdb -return-child-result -q -ex run -ex bt -batch --args ../dmd/generated/linux/release/64/dmd' ./build.sh
 )
 
-# build tools
+echo "--- Building tools"
 make -C tools -f posix.mak RELEASE=1 --jobs=4
 
-# distribution
+echo "--- Building distribution"
 mkdir -p distribution/{bin,imports,libs}
 cp --archive --link dmd/generated/linux/release/64/dmd dub/bin/dub tools/generated/linux/64/rdmd distribution/bin/
 cp --archive --link phobos/etc phobos/std druntime/import/* distribution/imports/

@@ -2,6 +2,8 @@
 
 set -uexo pipefail
 
+echo "--- Setting build variables"
+
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 export PATH="$PWD/distribution/bin:${PATH:-}"
 # set HOME to separate concurrent ~/.dub user paths
@@ -20,8 +22,10 @@ latest_tag=$(git ls-remote --tags ""${REPO_URL}"" | \
     sed -n 's|.*refs/tags/\(v\?[0-9]*\.[0-9]*\.[0-9]*$\)|\1|p' | \
     sort --version-sort | \
     tail -n 1)
+latest_tag="${latest_tag:-master}"
 
-git clone -b "${latest_tag:-master}" --depth 1 "${REPO_URL}"
+echo "--- Cloning the ${REPO_URL} (tag: $latest_tag)"
+git clone -b "${latest_tag}" --depth 1 "${REPO_URL}"
 cd "${REPO_DIR}"
 
 
@@ -56,6 +60,7 @@ remove_spurious_vibed_tests()
 # Add custom build instructions here
 ################################################################################
 
+echo "--- Running the testsuite"
 case "$REPO_FULL_NAME" in
 
     gtkd-developers/GtkD)
