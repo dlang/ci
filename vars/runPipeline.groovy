@@ -293,7 +293,7 @@ def testDownstreamProject (name) {
                     '''
                     break;
 
-                case 'eBay/tsv-utils-dlang':
+                case 'eBay/tsv-utils':
                     sh 'make test DCOMPILER=$DC'
                     break;
 
