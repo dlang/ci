@@ -24,8 +24,18 @@ latest_tag=$(git ls-remote --tags ""${REPO_URL}"" | \
     tail -n 1)
 latest_tag="${latest_tag:-master}"
 
+case "$REPO_URL" in
+    https://github.com/vibe-d/vibe.d)
+        # for https://github.com/vibe-d/vibe.d/pull/2183, required until 0.8.5 is released
+        latest_tag=master
+        ;;
+    *)
+        ;;
+esac
+
 echo "--- Cloning the ${REPO_URL} (tag: $latest_tag)"
 git clone -b "${latest_tag}" --depth 1 "${REPO_URL}"
+
 cd "${REPO_DIR}"
 
 

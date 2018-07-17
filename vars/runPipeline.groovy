@@ -196,7 +196,12 @@ def testDownstreamProject (name) {
                     'DETERMINISTIC_HINT=1'
                 ]) {
             try { dir(name) {
-                cloneLatestTag("https://github.com/${repo}.git")
+                // for https://github.com/vibe-d/vibe.d/pull/2183, required until 0.8.5 is released
+                if (repo == "vibe-d/vibe.d") {
+                    clone("https://github.com/${repo}.git", 'master')
+                } else {
+                    cloneLatestTag("https://github.com/${repo}.git")
+                }
 
                 switch (name) {
                 case 'gtkd-developers/GtkD':
