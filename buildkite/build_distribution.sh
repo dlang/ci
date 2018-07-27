@@ -32,12 +32,9 @@ for dir in dmd druntime phobos ; do
 done
 
 echo "--- Building dub"
-# TODO: doesn't build with master
-(cd dub;
-    . $(curl --retry 5 https://dlang.org/install.sh | bash -s dmd-2.079.1 -a)
-    DMD='gdb -return-child-result -q -ex run -ex bt -batch --args dmd' ./build.sh
-    #DMD='gdb -return-child-result -q -ex run -ex bt -batch --args ../dmd/generated/linux/release/64/dmd' ./build.sh
-)
+cd dub
+DMD="../dmd/generated/linux/release/64/dmd" ./build.sh
+cd ..
 
 echo "--- Building tools"
 make -C tools -f posix.mak RELEASE=1 --jobs=4
