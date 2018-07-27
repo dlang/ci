@@ -101,6 +101,14 @@
     - vars/passwords.yml # jenkins_admin_password
   roles:
     - jenkins_slave
+
+- hosts: buildkite_agents
+  vars_files:
+    - vars/passwords.yml # buildkite_agent_token
+  roles:
+    - buildkite_agent
+
+- hosts: jenkins_slaves,buildkite_agents
   tasks:
     - name: test dependencies (1/2)
       apt: { name: "{{ item }}", install_recommends: no, update_cache: yes, cache_valid_time: 3600 }
