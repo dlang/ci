@@ -16,6 +16,13 @@
       User accountname
   ```
 
+- Each container runs it's own sshd server which can be accessed by proxing through the host.
+  The following setting in your `~/.ssh/config` is recommended so that you can e.g. run `ssh root@jenkins.ci.lxd`.
+  ```
+  Host *.ci.lxd
+     ProxyCommand ssh -W %h:%p ci.dlang.io
+  ```
+
 ### Passwords
 
 For less typing store vault, sudo, and profitbricks passwords in [Pass: The Standard Unix Password Manager](https://www.passwordstore.org/).
