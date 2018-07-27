@@ -48,7 +48,7 @@ projects=(
     "higgsjs/Higgs"
     "rejectedsoftware/ddox"
     "BlackEdder/ggplotd"
-    "eBay/tsv-utils-dlang"
+    "eBay/tsv-utils"
     "dlang-community/D-Scanner"
     "dlang-tour/core"
     "d-widget-toolkit/dwt"

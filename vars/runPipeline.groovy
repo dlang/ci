@@ -499,7 +499,7 @@ def call() { timeout(time: 1, unit: 'HOURS') {
         "d-widget-toolkit/dwt", // 1m16s
         "dlang-tour/core", // 1m17s
         "dlang-community/D-Scanner", // 1m40s
-        "eBay/tsv-utils-dlang", // 1m41s
+        "eBay/tsv-utils", // 1m41s
         "BlackEdder/ggplotd", // 1m56s
         "rejectedsoftware/ddox", // 2m42s
         "higgsjs/Higgs", // 3m10s
