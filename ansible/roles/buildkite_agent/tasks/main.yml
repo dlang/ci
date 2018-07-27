@@ -1,0 +1,18 @@
+---
+- name: add buildkite-agent apt key
+  apt_key: { keyserver: keyserver.ubuntu.com, id: 32A37959C2FA5C3C99EFBC32A79206696452D198 }
+- name: add buildkite-agent apt repo
+  apt_repository: { repo: 'deb https://apt.buildkite.com/buildkite-agent stable main' }
+- name: install buildkite-agent
+  apt: { name: buildkite-agent, install_recommends: no, update_cache: yes, cache_valid_time: 3600 }
+- name: configure buildkite agent
+  lineinfile:
+    dest: /etc/buildkite-agent/buildkite-agent.cfg
+    regexp: "^(# )?{{ item.key }}="
+    line: "{{ item.key }}={{item.value}}"
+  with_dict:
+    token: '"{{ buildkite_agent_token }}"'
+    tags: '"queue=default,memory=high"'
+  notify: restart buildkite-agent
+- name: enable buildkite-agent
+  service: { name: buildkite-agent, enabled: yes, state: started }
