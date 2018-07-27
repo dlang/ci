@@ -1,0 +1,4 @@
+---
+- include_tasks: create-users.yml
+  with_items: "{{ groups_for_roles }}"
+  loop_control: { loop_var: groups_for_role }

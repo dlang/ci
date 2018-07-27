@@ -1,0 +1,21 @@
+---
+- name: create {{ groups_for_role.role }} users
+  user:
+    name: "{{ username }}"
+    comment: "{{ user_details[username].name }}"
+    password: "{{ user_details[username].passwd }}"
+    state: "{{ user_details[username].state | default('present') }}"
+    groups: "{{ groups_for_role.groups }}"
+    shell: /bin/bash
+  with_items: "{{ users_for_role[groups_for_role.role] }}"
+  loop_control: { loop_var: username }
+  tags: loop
+- name: authorized keys for {{ groups_for_role.role }} users
+  authorized_key:
+    user: "{{ username }}"
+    key: "{{ user_details[username].public_keys }}"
+  when: user_details[username].get('state', 'present') == 'present'
+  with_items: "{{ users_for_role[groups_for_role.role] }}"
+  loop_control: { loop_var: username }
+  ignore_errors: "{{ ansible_check_mode }}"
+  tags: loop

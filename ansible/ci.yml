@@ -10,6 +10,11 @@
 - hosts: lxd_hosts
   roles:
     - lxd_host
+    - role: users
+      tags: users
+      groups_for_roles:
+        - role: admin
+          groups: sudo,adm,lxd
 
 - hosts: dub-registry.ci.lxd
   vars:
