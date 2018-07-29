@@ -128,7 +128,7 @@ cat << EOF
       tar xfJ distribution.tar.xz
 
       export REPO_URL="https://github.com/${project}"
-      export REPO_DIR="$(basename "$project")"
+      export REPO_DIR="$(echo "${project_name}" | tr '/' '-')"
       export REPO_FULL_NAME="${project_name}"
       rm -rf buildkite
       mv distribution/buildkite buildkite
