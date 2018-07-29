@@ -34,7 +34,7 @@ case "$REPO_URL" in
 esac
 
 echo "--- Cloning the ${REPO_URL} (tag: $latest_tag)"
-git clone -b "${latest_tag}" --depth 1 "${REPO_URL}"
+git clone -b "${latest_tag}" --depth 1 "${REPO_URL}" "${REPO_DIR}"
 
 cd "${REPO_DIR}"
 
