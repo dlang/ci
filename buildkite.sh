@@ -118,6 +118,9 @@ cat << EOF
       # just to be sure there isn't anything old left
       git clean -ffdxq .
 
+      # don't build everything from the root folder
+      mkdir build && cd build
+
       # download the distribution archive
       buildkite-agent artifact download distribution.tar.xz .
       tar xfJ distribution.tar.xz
