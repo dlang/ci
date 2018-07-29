@@ -13,6 +13,7 @@
   with_dict:
     token: '"{{ buildkite_agent_token }}"'
     tags: '"queue=default,memory=high"'
+    priority: 6
   notify: restart buildkite-agent
 - name: enable buildkite-agent
   service: { name: buildkite-agent, enabled: yes, state: started }
