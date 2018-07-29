@@ -51,3 +51,6 @@ echo 'DFLAGS=-I%@P%/../imports -L-L%@P%/../libs -L--export-dynamic -L--export-dy
 cp -R "$DIR" distribution
 
 XZ_OPT=-0 tar cfJ distribution.tar.xz distribution
+
+# final cleanup
+git clean -ffdxq --exclude "distribution.tar.xz" .
