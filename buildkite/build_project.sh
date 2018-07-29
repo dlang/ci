@@ -139,7 +139,7 @@ case "$REPO_FULL_NAME" in
         make -f posix.mak unittest "DMD=$DMD" MODEL=64
         ;;
 
-    economicmodeling/containers)
+    dlang-community/containers)
         make -B -C test/ || echo failed # FIXME
         ;;
 

@@ -78,7 +78,7 @@ projects=(
     "DerelictOrg/DerelictGLFW3"
     "DerelictOrg/DerelictSDL2"
     "dlang-bots/dlang-bot"
-   #"dlang-community/containers"
+    "dlang-community/containers"
     "dlang/undeaD"
     "DlangScience/scid"
     "ikod/dlang-requests"
