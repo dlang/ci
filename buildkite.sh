@@ -13,6 +13,7 @@ steps:
     label: "Print envs"
 
   - command: |
+        # just to be sure there isn't anything old left
         git clean -ffdxq .
         # make sure the entire CI folder is loaded
         if [ ! -d buildkite ] ; then
