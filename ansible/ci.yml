@@ -119,6 +119,7 @@
       apt: { name: "{{ item }}", install_recommends: no, update_cache: yes, cache_valid_time: 3600 }
       with_items:
         - build-essential
+        - cmake
         - curl
         - gdb
         - git
