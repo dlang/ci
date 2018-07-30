@@ -3,16 +3,15 @@
 cat << 'EOF'
 steps:
   - command: |
-      uname -a
-      make --version
-      \${SHELL} --version || true
-      c++ --version
-      ld -v
-      ! command -v gdb &>/dev/null || gdb --version
-      dmd --version || true
-    label: "Print envs"
-
-  - command: |
+        echo "--- Print environment"
+        uname -a
+        make --version
+        \${SHELL} --version || true
+        c++ --version
+        ld -v
+        ! command -v gdb &>/dev/null || gdb --version
+        ! dmd --version # ensure that no dmd is the current environment
+        echo "--- Load CI folder"
         # just to be sure there isn't anything old left
         git clean -ffdxq .
         # make sure the entire CI folder is loaded
