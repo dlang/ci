@@ -24,6 +24,9 @@ steps:
         ./buildkite/build_distribution.sh
     label: "Build"
     artifact_paths: "distribution.tar.xz"
+    retry:
+      automatic:
+        limit: 2
 
   - wait
 EOF
@@ -137,6 +140,9 @@ cat << EOF
       mv distribution/buildkite buildkite
       ./buildkite/build_project.sh
     label: "${project_name}"
+    retry:
+      automatic:
+        limit: 2
     env:
       DC: dmd
       DMD: dmd
