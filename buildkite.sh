@@ -56,7 +56,7 @@ projects=(
     "d-widget-toolkit/dwt" # 1m16s
     "rejectedsoftware/diet-ng" # 56s
     "mbierlee/poodinis" # 40s
-   #"dlang/tools" # 40s
+    "dlang/tools" # 40s
     "atilaneves/unit-threaded" #36s
     "d-gamedev-team/gfm" # 28s
     "dlang-community/DCD" # 23s

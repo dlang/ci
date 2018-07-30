@@ -18,6 +18,20 @@ export TMP=$PWD/tmp
 export TMPDIR=$PWD/tmp
 export TEMP=$PWD/tmp
 
+# set environment configs and allow build_project to be conveniently used in standalone
+if [ -z "$REPO_FULL_NAME" ] ; then
+    echo 'ERROR: You must set $REPO_FULL_NAME'
+    exit 1
+fi
+if [ -z "${REPO_URL:-}" ] ; then
+    REPO_URL="https://github.com/$REPO_FULL_NAME"
+    echo "WARNING: \$REPO_URL not set. Falling back to $REPO_URL"
+fi
+if [ -z "${REPO_DIR:-}" ] ; then
+    REPO_DIR="$(basename $REPO_FULL_NAME)"
+    echo "WARNING: \$REPO_DIR not set. Falling back to $REPO_DIR"
+fi
+
 # clone the latest tag
 latest_tag=$(git ls-remote --tags ""${REPO_URL}"" | \
     sed -n 's|.*refs/tags/\(v\?[0-9]*\.[0-9]*\.[0-9]*$\)|\1|p' | \
@@ -132,7 +146,7 @@ case "$REPO_FULL_NAME" in
 
     dlang/tools)
         # explicit test to avoid Digger setup, see dlang/tools#298 and dlang/tools#301
-        make -f posix.mak all DMD='dmd'
+        make -f posix.mak all DMD='dmd' DFLAGS=
         make -f posix.mak test DMD='dmd' DFLAGS=
         ;;
 
