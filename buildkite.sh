@@ -69,6 +69,7 @@ projects=(
     "dlang-community/libdparse" # 13s
     "BBasile/iz" # 12s
     "dlang-community/dfmt" # 11s
+    "ldc-developers/ldc" # TODO
     # run in under 10s sorted alphabetically
     "Abscissa/libInputVisitor"
     "ariovistus/pyd"
