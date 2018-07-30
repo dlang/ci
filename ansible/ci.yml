@@ -140,6 +140,7 @@
         - libxml2-dev
         - libxslt1-dev
         - libzmq3-dev
+        - llvm
         - mongodb-server
         - moreutils # sponge et.al.
         - pkg-config
