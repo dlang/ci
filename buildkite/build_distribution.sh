@@ -1,5 +1,6 @@
 #!/bin/bash
 
+PS4="~> " # needed to avoid accidentally generating collapsed output
 set -uexo pipefail
 
 # Builds DMD, DRuntime, Phobos, tools and DUB + creates a "distribution" archive for latter usage.
