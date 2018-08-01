@@ -16,10 +16,11 @@ fi
 echo "origin_target_branch: $origin_target_branch"
 
 echo "--- Cloning all core repositories"
-for dir in dmd druntime phobos tools dub ; do
+repositories=(dmd druntime phobos tools dub)
+for dir in "${repositories[@]}" ; do
     if [ "$origin_repo" == "$dir" ] ; then
       # we have already cloned this repo, so let's use this data
-        mkdir -p $dir
+        mkdir -p "$dir"
         for f in ./* ; do
             case "$f" in
                 ./.git) ;;
@@ -29,9 +30,12 @@ for dir in dmd druntime phobos tools dub ; do
                     ;;
             esac
         done
-    else
-        branch=$(git ls-remote --exit-code --heads https://github.com/dlang/$dir "${origin_target_branch}" > /dev/null || echo "master")
-        git clone -b "${branch:-master}" --depth 1 https://github.com/dlang/$dir
+    fi
+done
+for dir in "${repositories[@]}" ; do
+    if [ "$origin_repo" != "$dir" ] ; then
+        branch=$(git ls-remote --exit-code --heads "https://github.com/dlang/$dir" "${origin_target_branch}" > /dev/null || echo "master")
+        git clone -b "${branch:-master}" --depth 1 "https://github.com/dlang/$dir"
     fi
 done
 
