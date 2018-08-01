@@ -24,6 +24,7 @@ for dir in "${repositories[@]}" ; do
         for f in ./* ; do
             case "$f" in
                 ./.git) ;;
+                ./buildkite) ;;
                 "./${dir}") ;;
                 *)
                     mv "$f" "$dir"
