@@ -19,11 +19,19 @@ echo "--- Cloning all core repositories"
 for dir in dmd druntime phobos tools dub ; do
     if [ "$origin_repo" == "$dir" ] ; then
       # we have already cloned this repo, so let's use this data
-      mkdir -p $dir
-      cp -r $(ls -A | grep -v $dir) $dir
+        mkdir -p $dir
+        for f in ./* ; do
+            case "$f" in
+                ./.git) ;;
+                "./${dir}") ;;
+                *)
+                    mv "$f" "$dir"
+                    ;;
+            esac
+        done
     else
-      branch=$(git ls-remote --exit-code --heads https://github.com/dlang/$dir "${origin_target_branch}" > /dev/null || echo "master")
-      git clone -b "${branch:-master}" --depth 1 https://github.com/dlang/$dir
+        branch=$(git ls-remote --exit-code --heads https://github.com/dlang/$dir "${origin_target_branch}" > /dev/null || echo "master")
+        git clone -b "${branch:-master}" --depth 1 https://github.com/dlang/$dir
     fi
 done
 
