@@ -134,6 +134,7 @@
         - libgtk-3-0
         - liblapack-dev
         - liblzo2-dev
+        - libopenblas-dev
         - libreadline-dev
         - libssl-dev
         - libxml2-dev
