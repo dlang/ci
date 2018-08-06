@@ -37,33 +37,8 @@
     - name: tools
       apt: { name: "{{ item }}", install_recommends: no, update_cache: yes, cache_valid_time: 3600 }
       with_items: [git, jq]
-    - block:
-      - name: download gcloud sdk
-        unarchive:
-          src: https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-183.0.0-linux-x86_64.tar.gz
-          dest: $HOME/
-          remote_src: yes
-      - name: copy service account credentials
-        copy: { src: dlang-ci 2ad4426ddfa9.json, dest: /var/lib/jenkins/google-cloud-sdk/dlang-ci 2ad4426ddfa9.json, mode: 0400, owner: jenkins, group: jenkins }
-        become_user: root
-      - name: activate service account
-        command: $HOME/google-cloud-sdk/bin/gcloud auth activate-service-account --key-file='$HOME/google-cloud-sdk/dlang-ci 2ad4426ddfa9.json'
-      - name: configure default project
-        command: $HOME/google-cloud-sdk/bin/gcloud config set project dlang-ci
-      become_user: jenkins
-      tags: gcloud-sdk
-    # https://cloud.google.com/compute/docs/faq#networking
-    - name: get dns entries to query for GCE netblocks
-      set_fact:
-        gce_netblocks: "{{ lookup('dig', '_cloud-netblocks.googleusercontent.com', 'qtype=TXT') | regex_findall('include:([^ ]+)', '\\1') }}"
-    - name: get cloud netblocks
-      set_fact:
-        tmp: "{{ lookup('dig', item, 'qtype=TXT') | regex_findall('ip4:([^ ]+)', '\\1') }}"
-      with_items: "{{ gce_netblocks }}"
-      register: gce_netblocks
-    - name: extract netblocks
-      set_fact:
-        gce_netblocks: "{{ gce_netblocks.results | sum(attribute='ansible_facts.tmp', start=[]) }}"
+    - name: remove gcloud sdk
+      file: { dest: /var/lib/jenkins/google-cloud-sdk/, state: absent }
 
     - name: reset to default firewall setup
       include: roles/common/tasks/firewall.yml
@@ -75,7 +50,6 @@
     - name: allow agent traffic
       ufw: { rule: allow, src: "{{ item }}", port: "{{ jenkins_slave_agent_port }}", proto: tcp }
       with_flattened:
-        - "{{ gce_netblocks }}"
         # allow access from host (indirectly SNAT) and directly from other containers
         - ["{{ hostvars['ci.dlang.io'].ansible_default_ipv4.address }}", "{{ ansible_default_ipv4.address }}/24"]
     - name: enable ufw

@@ -36,13 +36,6 @@ jenkins_num_executors=4
 
 # on-demand jenkins slaves
 [jenkins_demand_slaves:children]
-jenkins_gce_slaves
-
-[jenkins_gce_slaves]
-runner-[01:02]-gce
-
-[jenkins_gce_slaves:vars]
-jenkins_num_executors="{{ ansible_processor_vcpus }}"
 
 ## Buildkite Agents
 #
@@ -62,14 +55,9 @@ buildkite-agent-[01:04].ci.lxd
 lxd_hosts
 lxd_containers
 
-# running at GCE
-[gce_hosts:children]
-jenkins_gce_slaves
-
 # all non-containerized host
 [servers:children]
 lxd_hosts
-gce_hosts
 
 # admin setting
 [servers:vars]
