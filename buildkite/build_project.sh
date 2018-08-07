@@ -216,6 +216,14 @@ case "$REPO_FULL_NAME" in
         # remove once https://github.com/rejectedsoftware/ddox/pull/212 is merged and released
         sed 's/bridgeip.*/exit \$failure/' -i travis-ci.sh # build without the phantomcss tester
         ;;
+
+    ldc-developers/ldc)
+        git submodule update --init
+        mkdir build && cd build
+        cmake -DCMAKE_BUILD_TYPE=Debug -DD_COMPILER="$DC" ..
+        make -j2 ldc2
+        ;;
+
     *)
     use_travis_test_script
     ;;
