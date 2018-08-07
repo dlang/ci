@@ -60,7 +60,7 @@ projects=(
     "rejectedsoftware/diet-ng" # 56s
     "mbierlee/poodinis" # 40s
     "dlang/tools" # 40s
-    "atilaneves/unit-threaded" #36s
+    #"atilaneves/unit-threaded" #36s
     "d-gamedev-team/gfm" # 28s
     "dlang-community/DCD" # 23s
     "weka-io/mecca" # 22s
