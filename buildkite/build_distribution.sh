@@ -35,7 +35,11 @@ for dir in "${repositories[@]}" ; do
 done
 for dir in "${repositories[@]}" ; do
     if [ "$origin_repo" != "$dir" ] ; then
-        branch=$(git ls-remote --exit-code --heads "https://github.com/dlang/$dir" "${origin_target_branch}" > /dev/null || echo "master")
+        if [ "$origin_target_branch" == "master" ] || [ "$origin_target_branch" == "stable" ] ; then
+            branch="$origin_target_branch"
+        else
+            branch=$(git ls-remote --exit-code --heads "https://github.com/dlang/$dir" "${origin_target_branch}" > /dev/null && echo "$origin_target_branch" || echo "master")
+        fi
         git clone -b "${branch:-master}" --depth 1 "https://github.com/dlang/$dir"
     fi
 done
