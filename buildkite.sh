@@ -1,16 +1,6 @@
 #!/bin/bash
 
-cat << 'EOF'
-steps:
-  - command: |
-        echo "--- Print environment"
-        uname -a
-        make --version
-        \${SHELL} --version || true
-        c++ --version
-        ld -v
-        ! command -v gdb &>/dev/null || gdb --version
-        ! dmd --version # ensure that no dmd is the current environment
+read -r -d '' LOAD_CI_FOLDER <<- EOM
         echo "--- Load CI folder"
         # just to be sure there isn't anything old left
         git clean -ffdxq .
@@ -21,6 +11,20 @@ steps:
            tar xvfz master.tar.gz --strip-components=2 ci-master/buildkite
            rm -rf master.tar.gz && popd
         fi
+EOM
+
+cat << EOF
+steps:
+  - command: |
+        echo "--- Print environment"
+        uname -a
+        make --version
+        \\\${SHELL} --version || true
+        c++ --version
+        ld -v
+        ! command -v gdb &>/dev/null || gdb --version
+        ! dmd --version # ensure that no dmd is the current environment
+        ${LOAD_CI_FOLDER}
         ./buildkite/build_distribution.sh
     label: "Build"
     artifact_paths: "distribution.tar.xz"
@@ -36,7 +40,7 @@ cat << 'EOF'
 EOF
 
 ################################################################################
-# Style targets
+# Style & coverage targets
 # Must run after the 'wait' to avoid blocking the build_distribution step
 # (and thus all subsequent project builds)
 ################################################################################
@@ -47,10 +51,17 @@ case "${BUILDKITE_REPO:-x}" in
     "https://github.com/dlang/phobos.git")
 
 cat << 'EOF'
-steps:
   - command: |
         make -f posix.mak style
     label: "Style"
+
+  - command: |
+        ${LOAD_CI_FOLDER}
+        ./buildkite/test_coverage.sh
+    label: "Coverage"
+    retry:
+      automatic:
+        limit: 2
 EOF
         ;;
     *)
