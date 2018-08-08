@@ -50,7 +50,7 @@ case "${BUILDKITE_REPO:-x}" in
     "https://github.com/dlang/druntime.git" | \
     "https://github.com/dlang/phobos.git")
 
-cat << 'EOF'
+cat << EOF
   - command: |
         make -f posix.mak style
     label: "Style"
