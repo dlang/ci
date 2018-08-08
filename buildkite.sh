@@ -52,7 +52,7 @@ case "${BUILDKITE_REPO:-x}" in
 
 cat << 'EOF'
   - command: |
-        make -f posix.mak style
+        make -f posix.mak style AUTO_BOOTSTRAP=1
     label: "Style"
 
   - command: |
