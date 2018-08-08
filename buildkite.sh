@@ -27,9 +27,35 @@ steps:
     retry:
       automatic:
         limit: 2
+EOF
 
+################################################################################
+
+cat << 'EOF'
   - wait
 EOF
+
+################################################################################
+# Style targets
+# Must run after the 'wait' to avoid blocking the build_distribution step
+# (and thus all subsequent project builds)
+################################################################################
+
+case "${BUILDKITE_REPO:-x}" in
+    "https://github.com/dlang/dmd.git" | \
+    "https://github.com/dlang/druntime.git" | \
+    "https://github.com/dlang/phobos.git")
+
+cat << 'EOF'
+steps:
+  - command: |
+        make -f posix.mak style
+    label: "Style"
+EOF
+        ;;
+    *)
+        ;;
+esac
 
 ################################################################################
 # Add your project here.
