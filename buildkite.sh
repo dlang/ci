@@ -3,8 +3,6 @@
 read -r -d '' LOAD_CI_FOLDER <<- EOM
         # just to be sure there isn't anything old left
         git clean -ffdxq .
-        echo "--- Merging with the upstream target branch"
-        ./buildkite/merge_head.sh
         echo "--- Load CI folder"
         # make sure the entire CI folder is loaded
         if [ ! -d buildkite ] ; then
@@ -13,6 +11,8 @@ read -r -d '' LOAD_CI_FOLDER <<- EOM
            tar xvfz master.tar.gz --strip-components=2 ci-master/buildkite
            rm -rf master.tar.gz && popd
         fi
+        echo "--- Merging with the upstream target branch"
+        ./buildkite/merge_head.sh
 EOM
 
 read -r -d '' LOAD_DISTRIBUTION <<- EOM
