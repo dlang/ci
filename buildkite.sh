@@ -15,6 +15,14 @@ read -r -d '' LOAD_CI_FOLDER <<- EOM
         fi
 EOM
 
+read -r -d '' LOAD_DISTRIBUTION <<- EOM
+        echo "--- Load distribution archive"
+        buildkite-agent artifact download distribution.tar.xz .
+        tar xfJ distribution.tar.xz
+        rm -rf buildkite
+        mv distribution/buildkite buildkite
+EOM
+
 cat << EOF
 steps:
   - command: |
@@ -54,7 +62,9 @@ case "${BUILDKITE_REPO:-x}" in
 
 cat << EOF
   - command: |
-        make -f posix.mak style AUTO_BOOTSTRAP=1
+        ${LOAD_DISTRIBUTION}
+        . ./buildkite/load_distribution.sh
+        make -f posix.mak style
     label: "Style"
 
   - command: |
@@ -164,29 +174,22 @@ for project_name in "${projects[@]}" ; do
     project="$(echo "$project_name" | sed "s/\([^+]*\)+.*/\1/")"
 cat << EOF
   - command: |
-      # just to be sure there isn't anything old left
-      git clean -ffdxq .
+        # just to be sure there isn't anything old left
+        git clean -ffdxq .
 
-      # don't build everything from the root folder
-      mkdir build && cd build
+        # don't build everything from the root folder
+        mkdir build && cd build
 
-      # download the distribution archive
-      buildkite-agent artifact download distribution.tar.xz .
-      tar xfJ distribution.tar.xz
+        export REPO_URL="https://github.com/${project}"
+        export REPO_DIR="$(echo "${project_name}" | tr '/' '-')"
+        export REPO_FULL_NAME="${project_name}"
 
-      export REPO_URL="https://github.com/${project}"
-      export REPO_DIR="$(echo "${project_name}" | tr '/' '-')"
-      export REPO_FULL_NAME="${project_name}"
-      rm -rf buildkite
-      mv distribution/buildkite buildkite
-      ./buildkite/build_project.sh
+        ${LOAD_DISTRIBUTION}
+        ./buildkite/build_project.sh
     label: "${project_name}"
     retry:
       automatic:
         limit: 2
-    env:
-      DC: dmd
-      DMD: dmd
 EOF
 
 if [ "${memory_req["$project_name"]:-x}" != "x" ] ; then
