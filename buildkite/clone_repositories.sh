@@ -9,10 +9,7 @@ echo "--- Setting build variables"
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 origin_repo="$(echo "$BUILDKITE_REPO" | sed "s/.*\/\([^\]*\)[.]git/\1/")"
-origin_target_branch="$BUILDKITE_PULL_REQUEST_BASE_BRANCH"
-if [ -z "$origin_target_branch" ] ; then
-  origin_target_branch="$BUILDKITE_BRANCH"
-fi
+origin_target_branch="${BUILDKITE_PULL_REQUEST_BASE_BRANCH:-$BUILDKITE_BRANCH}"
 echo "origin_target_branch: $origin_target_branch"
 
 echo "--- Cloning all core repositories"
