@@ -99,6 +99,7 @@ projects=(
     "vibe-d/vibe.d+vibe-core-examples" # 9m51s
     "vibe-d/vibe.d+libevent-tests" # 8m35s
     "vibe-d/vibe.d+vibe-core-tests" # 6m44s
+    "ldc-developers/ldc" # 4m49s
     "vibe-d/vibe.d+libevent-base" # 4m20s
     "vibe-d/vibe.d+vibe-core-base" # 4m31s
     # https://github.com/vibe-d/vibe.d/issues/2157
@@ -109,7 +110,6 @@ projects=(
     "vibe-d/vibe-core+select" # 3m30s
     "higgsjs/Higgs" # 3m10s
     "rejectedsoftware/ddox" # 2m42s
-    "ldc-developers/ldc" # 2m15s
     "BlackEdder/ggplotd" # 1m56s
     "LaurentTreguier/dls" # 1m55s
     "eBay/tsv-utils" # 1m41s

@@ -33,6 +33,10 @@ case "$REPO_URL" in
         # for https://github.com/vibe-d/vibe.d/pull/2183, required until 0.8.5 is released
         latest_tag=master
         ;;
+    https://github.com/ldc-developers/ldc)
+        # ldc doesn't really do point releases, so master is easier to adapt if needed.
+        latest_tag=master
+        ;;
     *)
         ;;
 esac
@@ -206,10 +210,16 @@ case "$REPO_FULL_NAME" in
         ;;
 
     ldc-developers/ldc)
-        git submodule update --init
+        cd runtime && git clone --depth 5 https://github.com/ldc-developers/druntime
+        git clone --depth 5 https://github.com/ldc-developers/phobos
+        cd .. && git submodule update
+        mkdir bootstrap && cd bootstrap
+        cmake -GNinja -DCMAKE_BUILD_TYPE=Debug -DD_COMPILER="$DC" ..
+        ninja -j2 ldmd2 druntime-ldc-debug phobos2-ldc-debug
+        cd ..
         mkdir build && cd build
-        cmake -DCMAKE_BUILD_TYPE=Debug -DD_COMPILER="$DC" ..
-        make -j2 ldc2
+        cmake -GNinja -DCMAKE_BUILD_TYPE=Debug -DD_COMPILER="$(pwd)/../bootstrap/bin/ldmd2" ..
+        ninja -j2 ldc2 druntime-ldc phobos2-ldc
         ;;
 
     *)
