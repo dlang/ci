@@ -68,7 +68,8 @@ cat << EOF
     label: "Style"
 
   - command: |
-        ${LOAD_CI_FOLDER}
+        ${LOAD_DISTRIBUTION}
+        . ./buildkite/load_distribution.sh
         ./buildkite/test_coverage.sh
     label: "Coverage"
     retry:
