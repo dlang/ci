@@ -104,6 +104,7 @@ projects=(
     "rejectedsoftware/ddox" # 2m42s
     "ldc-developers/ldc" # 2m15s
     "BlackEdder/ggplotd" # 1m56s
+    "LaurentTreguier/dls" # 1m55s
     "eBay/tsv-utils" # 1m41s
     "dlang-community/D-Scanner" # 1m40s
     "dlang-tour/core" # 1m17s
