@@ -70,19 +70,26 @@ cat << EOF
         echo "--- Running style testing"
         make -f posix.mak style
     label: "Style"
+EOF
 
+for model in 32 64 ; do
+
+cat << EOF
   - command: |
         ${LOAD_DISTRIBUTION}
         . ./buildkite/load_distribution.sh
         echo "--- Merging with the upstream target branch"
         ./buildkite/merge_head.sh
         echo "--- Running coverage testing"
-        ./buildkite/test_coverage.sh
-    label: "Coverage"
+        MODEL=$model ./buildkite/test_coverage.sh
+    label: "Coverage ($model)"
     retry:
       automatic:
         limit: 2
 EOF
+
+done
+
         ;;
     *)
         ;;
