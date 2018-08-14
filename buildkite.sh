@@ -21,6 +21,7 @@ read -r -d '' LOAD_DISTRIBUTION <<- EOM
         tar xfJ distribution.tar.xz
         rm -rf buildkite
         mv distribution/buildkite buildkite
+        rm distribution.tar.xz
 EOM
 
 cat << EOF
@@ -64,12 +65,18 @@ cat << EOF
   - command: |
         ${LOAD_DISTRIBUTION}
         . ./buildkite/load_distribution.sh
+        echo "--- Merging with the upstream target branch"
+        ./buildkite/merge_head.sh
+        echo "--- Running style testing"
         make -f posix.mak style
     label: "Style"
 
   - command: |
         ${LOAD_DISTRIBUTION}
         . ./buildkite/load_distribution.sh
+        echo "--- Merging with the upstream target branch"
+        ./buildkite/merge_head.sh
+        echo "--- Running coverage testing"
         ./buildkite/test_coverage.sh
     label: "Coverage"
     retry:
