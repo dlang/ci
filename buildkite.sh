@@ -103,6 +103,7 @@ projects=(
     "vibe-d/vibe.d+vibe-core-base" # 4m31s
     # https://github.com/vibe-d/vibe.d/issues/2157
     "vibe-d/vibe.d+libasync-base" # 3m45s
+    "dlang/phobos" # 4m50s
     "sociomantic-tsunami/ocean" # 4m49s
     "dlang/dub" # 3m55s
     "vibe-d/vibe-core+epoll" # 3m38s

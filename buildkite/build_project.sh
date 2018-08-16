@@ -37,10 +37,17 @@ case "$REPO_URL" in
         ;;
 esac
 
+# Don't checkout a tagged version of the core repostories like Phobos
+case "$REPO_FULL_NAME" in
+    dlang/phobos)
+        ;;
+    *)
+
 echo "--- Cloning the ${REPO_URL} (tag: $latest_tag)"
 git clone -b "${latest_tag}" --depth 1 "${REPO_URL}" "${REPO_DIR}"
-
 cd "${REPO_DIR}"
+
+esac
 
 
 use_travis_test_script()
@@ -210,6 +217,17 @@ case "$REPO_FULL_NAME" in
         mkdir build && cd build
         cmake -DCMAKE_BUILD_TYPE=Debug -DD_COMPILER="$DC" ..
         make -j2 ldc2
+        ;;
+
+    dlang/phobos)
+        "$DIR"/clone_repositories.sh
+        # To avoid running into "Path too long" issues, see e.g. https://github.com/dlang/ci/pull/287
+        export TMP="/tmp/${BUILDKITE_AGENT_NAME}"
+        export TEMP="$TMP"
+        export TMPDIR="$TMP"
+        rm -rf "$TMP" && mkdir -p "$TMP"
+        cd phobos && make -f posix.mak -j2 buildkite-test
+        rm -rf "$TMP"
         ;;
 
     aliak00/optional)
