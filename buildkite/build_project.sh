@@ -212,6 +212,10 @@ case "$REPO_FULL_NAME" in
         make -j2 ldc2
         ;;
 
+    aliak00/optional)
+        dub test "--compiler=$DC"
+        ;;
+
     *)
     use_travis_test_script
     ;;
