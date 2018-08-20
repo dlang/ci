@@ -216,6 +216,10 @@ case "$REPO_FULL_NAME" in
         dub test "--compiler=$DC"
         ;;
 
+    pbackus/sumtype)
+        dub test "--compiler=$DC"
+        ;;
+
     *)
     use_travis_test_script
     ;;

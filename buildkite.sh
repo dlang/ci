@@ -130,8 +130,8 @@ projects=(
     "libmir/mir-random" # 13s
     "dlang-community/libdparse" # 13s
     "BBasile/iz" # 12s
+    "aliak00/optional" # 12s
     "dlang-community/dfmt" # 11s
-    "aliak00/optional" # TODO
     # run in under 10s sorted alphabetically
     "Abscissa/libInputVisitor"
     "ariovistus/pyd"
@@ -154,6 +154,7 @@ projects=(
     "msoucy/dproto"
     "Netflix/vectorflow"
     "nomad-software/dunit"
+    "pbackus/sumtype"
     "PhilippeSigaud/Pegged"
     "repeatedly/mustache-d"
     "s-ludwig/std_data_json"
