@@ -70,6 +70,9 @@ cat << EOF
         echo "--- Running style testing"
         make -f posix.mak style
     label: "Style"
+    retry:
+      automatic:
+        limit: 2
 
   - command: |
         ${LOAD_DISTRIBUTION}
