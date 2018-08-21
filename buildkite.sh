@@ -137,6 +137,7 @@ projects=(
     "BBasile/iz" # 12s
     "aliak00/optional" # 12s
     "dlang-community/dfmt" # 11s
+    "dlang/druntime" # TODO
     # run in under 10s sorted alphabetically
     "Abscissa/libInputVisitor"
     "ariovistus/pyd"

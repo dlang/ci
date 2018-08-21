@@ -250,6 +250,8 @@ case "$REPO_FULL_NAME" in
         ninja -j2 ldc2 druntime-ldc phobos2-ldc
         ;;
 
+    dlang/dmd | \
+    dlang/druntime | \
     dlang/phobos)
         "$DIR"/clone_repositories.sh
         # To avoid running into "Path too long" issues, see e.g. https://github.com/dlang/ci/pull/287
@@ -257,7 +259,7 @@ case "$REPO_FULL_NAME" in
         export TEMP="$TMP"
         export TMPDIR="$TMP"
         rm -rf "$TMP" && mkdir -p "$TMP"
-        cd phobos && make -f posix.mak -j2 buildkite-test
+        cd "$(basename "${REPO_FULL_NAME}")"&& make -f posix.mak clean && make -f posix.mak -j2 buildkite-test
         rm -rf "$TMP"
         ;;
 
