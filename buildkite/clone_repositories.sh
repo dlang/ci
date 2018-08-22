@@ -15,13 +15,16 @@ echo "origin_target_branch: $origin_target_branch"
 echo "--- Cloning all core repositories"
 repositories=(dmd druntime phobos tools dub)
 for dir in "${repositories[@]}" ; do
-    if [ "$origin_repo" == "$dir" ] ; then
+    # repos cloned via the project tester can't be considered as existent
+    if [ "$origin_repo" == "$dir" ] && [ "${REPO_FULL_NAME:-x}" == "x" ]  ; then
     # we have already cloned this repo, so let's use this data
         mkdir -p "$dir"
         for f in ./* ; do
             case "$f" in
                 ./.git) ;;
                 ./buildkite) ;;
+                ./distribution) ;;
+                ./tmp) ;;
                 "./${dir}") ;;
                 *)
                     mv "$f" "$dir"
@@ -32,7 +35,7 @@ for dir in "${repositories[@]}" ; do
 done
 
 for dir in "${repositories[@]}" ; do
-    if [ "$origin_repo" != "$dir" ] ; then
+    if [ ! -d "$origin_repo" ] ; then
         if [ "$origin_target_branch" == "master" ] || [ "$origin_target_branch" == "stable" ] ; then
             branch="$origin_target_branch"
         else
