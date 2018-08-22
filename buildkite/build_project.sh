@@ -199,11 +199,10 @@ case "$REPO_FULL_NAME" in
         dub build -c vibed
         ;;
 
-    libmir/mir-algorithm)
-        dub test "--compiler=$DC"
-        ;;
-
-    libmir/mir)
+    libmir/mir-algorithm | \
+    libmir/mir | \
+    pbackus/sumtype | \
+    aliak00/optional)
         dub test "--compiler=$DC"
         ;;
 
@@ -228,14 +227,6 @@ case "$REPO_FULL_NAME" in
         rm -rf "$TMP" && mkdir -p "$TMP"
         cd phobos && make -f posix.mak -j2 buildkite-test
         rm -rf "$TMP"
-        ;;
-
-    aliak00/optional)
-        dub test "--compiler=$DC"
-        ;;
-
-    pbackus/sumtype)
-        dub test "--compiler=$DC"
         ;;
 
     *)
