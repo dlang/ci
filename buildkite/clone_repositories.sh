@@ -35,7 +35,7 @@ for dir in "${repositories[@]}" ; do
 done
 
 for dir in "${repositories[@]}" ; do
-    if [ ! -d "$origin_repo" ] ; then
+    if [ ! -d "$dir" ] ; then
         if [ "$origin_target_branch" == "master" ] || [ "$origin_target_branch" == "stable" ] ; then
             branch="$origin_target_branch"
         else
