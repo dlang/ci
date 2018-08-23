@@ -178,12 +178,6 @@ memory_req["libmir/mir-algorithm"]=high
 memory_req["sociomantic-tsunami/ocean"]=high
 memory_req["dlang-bots/dlang-bot"]=high
 memory_req["dlang/dub"]=high
-# Force long-running tasks to be on the low-end machines
-memory_req["vibe-d/vibe.d+libevent-examples"]=low
-memory_req["vibe-d/vibe.d+vibe-core-examples"]=low
-memory_req["vibe-d/vibe.d+libevent-tests"]=low
-memory_req["vibe-d/vibe.d+vibe-core-tests"]=low
-
 
 for project_name in "${projects[@]}" ; do
     project="$(echo "$project_name" | sed "s/\([^+]*\)+.*/\1/")"
