@@ -9,7 +9,8 @@
 
 - hosts: lxd_hosts
   roles:
-    - lxd_host
+    - role: lxd_host
+      tags: lxd_host
     - role: users
       tags: users
       groups_for_roles:
