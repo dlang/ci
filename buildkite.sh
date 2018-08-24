@@ -178,6 +178,7 @@ memory_req["libmir/mir-algorithm"]=high
 memory_req["sociomantic-tsunami/ocean"]=high
 memory_req["dlang-bots/dlang-bot"]=high
 memory_req["dlang/dub"]=high
+memory_req["higgsjs/Higgs"]=high
 
 for project_name in "${projects[@]}" ; do
     project="$(echo "$project_name" | sed "s/\([^+]*\)+.*/\1/")"
