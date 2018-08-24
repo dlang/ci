@@ -113,7 +113,7 @@ projects=(
     "vibe-d/vibe-core+select" # 3m30s
     "higgsjs/Higgs" # 3m10s
     "rejectedsoftware/ddox" # 2m42s
-    #"ldc-developers/ldc" # 2m15s
+    "ldc-developers/ldc" # 2m15s
     "BlackEdder/ggplotd" # 1m56s
     "LaurentTreguier/dls" # 1m55s
     "eBay/tsv-utils" # 1m41s
