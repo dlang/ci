@@ -15,5 +15,24 @@
     tags: '"queue=default,memory=high"'
     priority: "{{ priority }}"
   notify: restart buildkite-agent
+- name: create systemd service drop-in
+  file:
+    dest: /etc/systemd/system/buildkite-agent.service.d
+    state: directory
+- name: create systemd service drop-in
+  file:
+    src: /etc/systemd/system/buildkite-agent.service.d
+    dest: /etc/systemd/system/buildkite-agent@.service.d
+    state: link
+- name: increase TimeoutStopSec for buildkite agents
+  copy:
+    dest: /etc/systemd/system/buildkite-agent.service.d/timeout.conf
+    # https://www.freedesktop.org/software/systemd/man/systemd.service.html#TimeoutStopSec=
+    # https://www.freedesktop.org/software/systemd/man/systemd.kill.html#KillMode=
+    content: |
+      [Service]
+      TimeoutStopSec={{ stop_timeout }}
+      KillMode=mixed
+  notify: systemctl daemon-reload
 - name: enable buildkite-agent
   service: { name: buildkite-agent, enabled: yes, state: started }
