@@ -4,7 +4,7 @@
 - name: add buildkite-agent apt repo
   apt_repository: { repo: 'deb https://apt.buildkite.com/buildkite-agent stable main' }
 - name: install buildkite-agent
-  apt: { name: buildkite-agent, install_recommends: no, update_cache: yes, cache_valid_time: 3600 }
+  apt: { name: "buildkite-agent={{ agent_version }}-*", install_recommends: no, update_cache: yes, cache_valid_time: 3600 }
 - name: configure buildkite agent
   lineinfile:
     dest: /etc/buildkite-agent/buildkite-agent.cfg
@@ -13,6 +13,26 @@
   with_dict:
     token: '"{{ buildkite_agent_token }}"'
     tags: '"queue=default,memory=high"'
+    priority: "{{ priority }}"
   notify: restart buildkite-agent
+- name: create systemd service drop-in
+  file:
+    dest: /etc/systemd/system/buildkite-agent.service.d
+    state: directory
+- name: create systemd service drop-in
+  file:
+    src: /etc/systemd/system/buildkite-agent.service.d
+    dest: /etc/systemd/system/buildkite-agent@.service.d
+    state: link
+- name: increase TimeoutStopSec for buildkite agents
+  copy:
+    dest: /etc/systemd/system/buildkite-agent.service.d/timeout.conf
+    # https://www.freedesktop.org/software/systemd/man/systemd.service.html#TimeoutStopSec=
+    # https://www.freedesktop.org/software/systemd/man/systemd.kill.html#KillMode=
+    content: |
+      [Service]
+      TimeoutStopSec={{ stop_timeout }}
+      KillMode=mixed
+  notify: systemctl daemon-reload
 - name: enable buildkite-agent
   service: { name: buildkite-agent, enabled: yes, state: started }

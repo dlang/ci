@@ -156,7 +156,9 @@
   vars_files:
     - vars/passwords.yml # buildkite_agent_token
   roles:
-    - buildkite_agent
+    - role: buildkite_agent
+      priority: 1
+      tags: buildkite_agent
 
 - hosts: ci.dlang.io
   roles:
