@@ -4,7 +4,7 @@
 - name: add buildkite-agent apt repo
   apt_repository: { repo: 'deb https://apt.buildkite.com/buildkite-agent stable main' }
 - name: install buildkite-agent
-  apt: { name: buildkite-agent, install_recommends: no, update_cache: yes, cache_valid_time: 3600 }
+  apt: { name: "buildkite-agent={{ agent_version }}-*", install_recommends: no, update_cache: yes, cache_valid_time: 3600 }
 - name: configure buildkite agent
   lineinfile:
     dest: /etc/buildkite-agent/buildkite-agent.cfg
