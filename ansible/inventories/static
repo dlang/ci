@@ -7,8 +7,6 @@ ci_containers
 
 [ci_containers]
 jenkins.ci.lxd
-runner-01.ci.lxd
-runner-02.ci.lxd
 dub-registry.ci.lxd
 buildkite-agent-[01:08].ci.lxd
 
@@ -19,23 +17,6 @@ jenkins_use_github_auth=True
 # ssh proxy into container (running ssh itself)
 ansible_ssh_common_args=-o ProxyCommand="ssh -W %h:%p ci.dlang.io"
 ansible_ssh_user=root
-
-## Jenkins slaves
-#
-[jenkins_slaves:children]
-jenkins_permanent_slaves
-jenkins_demand_slaves
-
-# permanent jenkins slaves
-[jenkins_permanent_slaves]
-runner-01.ci.lxd
-runner-02.ci.lxd
-
-[jenkins_permanent_slaves:vars]
-jenkins_num_executors=4
-
-# on-demand jenkins slaves
-[jenkins_demand_slaves:children]
 
 ## Buildkite Agents
 #

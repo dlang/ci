@@ -7,8 +7,6 @@ ci_containers
 
 [ci_containers]
 jenkins.ci.lxd
-runner-01.ci.lxd
-runner-02.ci.lxd
 
 [ci_containers:vars]
 jenkins_use_github_auth=False
@@ -17,11 +15,6 @@ jenkins_use_github_auth=False
 # ssh proxy into container (running ssh itself)
 ansible_ssh_common_args=-o ProxyCommand="ssh -o IdentityFile=.vagrant/machines/ci.dlang.io/virtualbox/private_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -W %h:%p ubuntu@172.16.1.2" -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null
 ansible_ssh_user=root
-
-# grouped by purpose
-[jenkins_slaves]
-runner-01.ci.lxd
-runner-02.ci.lxd
 
 [vagrant_hosts:children]
 container_hosts
