@@ -43,8 +43,12 @@
       TimeoutStopSec={{ stop_timeout }}
       KillMode=mixed
   notify: systemctl daemon-reload
-- name: enable buildkite-agent
-  service: { name: buildkite-agent, enabled: yes, state: started }
+
+- name: disable buildkite-agent
+  service: { name: buildkite-agent, enabled: no, state: stopped }
+- name: enable buildkite-agents
+  service: { name: "buildkite-agent@{{ item }}", enabled: yes, state: started }
+  with_items: "{{ range(1, num_agents + 1) | list }}"
 
 - include_tasks: agent_shutdown_check.yml
   when: inventory_hostname in groups.buildkite_demand_agents

@@ -1,0 +1,122 @@
+---
+- hosts: localhost
+  become: False
+  vars_files:
+    - vars/passwords.yml # hcloud_dlang_ci_token
+  tasks:
+    - name: get server to build image
+      uri:
+        url: "https://api.hetzner.cloud/v1/servers?name=gen-ci-agent-image"
+        headers:
+          Authorization: "Bearer {{ hcloud_dlang_ci_token }}"
+        status_code: 200
+        return_content: yes
+      register: result
+      tags: create
+    - name: set server facts
+      set_fact:
+        server: "{{ result.json.servers[0] }}"
+      tags: create
+      when: result.json.servers | length
+    - name: create server to build image
+      uri:
+        url: "https://api.hetzner.cloud/v1/servers"
+        method: POST
+        headers:
+          Authorization: "Bearer {{ hcloud_dlang_ci_token }}"
+          Content-Type: application/json
+        body: |-
+          {
+            "name": "gen-ci-agent-image",
+            "server_type": "cx11",
+            "image": "ubuntu-16.04",
+            "ssh_keys": ["dawg@FedoraX64", "seb@wilzba.ch"]
+          }
+        status_code: 201
+        return_content: yes
+      register: result
+      tags: create
+      when: server is not defined
+    - name: set server facts
+      set_fact:
+        server: "{{ result.json.server }}"
+      tags: create
+      when: server is not defined
+    - name: wait for ssh to come up
+      wait_for:
+        port: 22
+        host: "{{ server.public_net.ipv4.ip }}"
+        search_regex: OpenSSH
+      tags: create
+    - name: add build server as new host
+      add_host:
+        hostname: gen-ci-agent-image
+        ansible_ssh_host: "{{ server.public_net.ipv4.ip }}"
+        groups:
+          - hcloud
+          - buildkite_demand_agents
+      tags: create
+
+- hosts: gen-ci-agent-image
+  user: root
+  gather_facts: False
+  pre_tasks:
+    - name: install python
+      raw: |
+        if [ ! -e /usr/bin/python ]; then
+            apt-get update -qq && apt-get install -qq --no-install-recommends python-minimal python-apt
+        fi
+    - name: gather facts
+      setup:
+
+- hosts: gen-ci-agent-image
+  gather_facts: False
+  vars_files:
+    - vars/passwords.yml # hcloud_dlang_ci_token
+  roles:
+    - role: users
+      tags: users
+      ansible_ssh_user: root
+      groups_for_roles:
+        - role: admin
+          groups: sudo,adm,lxd
+    - role: common
+      tags: common
+    - role: test_deps
+      tags: deps
+    - role: buildkite_agent
+      tags: buildkite_agent
+      priority: 2
+      num_agents: 8 # for CX51 server
+      agent_tags: '"queue=default,memory=high"'
+
+- hosts: localhost
+  become: False
+  vars_files:
+    - vars/passwords.yml # hcloud_dlang_ci_token
+  tasks:
+    - name: shutdown server
+      uri:
+        url: "https://api.hetzner.cloud/v1/servers/{{ server.id }}/actions/shutdown"
+        method: POST
+        headers:
+          Authorization: "Bearer {{ hcloud_dlang_ci_token }}"
+        status_code: 201
+      tags: image
+    - name: create snapshot
+      uri:
+        url: "https://api.hetzner.cloud/v1/servers/{{ server.id }}/actions/create_image"
+        method: POST
+        headers:
+          Authorization: "Bearer {{ hcloud_dlang_ci_token }}"
+          Content-Type: application/json
+        body: '{ "description": "ci-agent" }'
+        status_code: 201
+      tags: image
+    - name: delete server
+      uri:
+        url: "https://api.hetzner.cloud/v1/servers/{{ server.id }}"
+        method: DELETE
+        headers:
+          Authorization: "Bearer {{ hcloud_dlang_ci_token }}"
+      tags: image

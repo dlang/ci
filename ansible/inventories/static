@@ -40,10 +40,14 @@ lxd_containers
 [scaleway:children]
 scaleway_metal
 
+# running at Hetzner cloud
+[hcloud]
+
 # all non-containerized host
 [servers:children]
 lxd_hosts
 scaleway
+hcloud
 
 # admin setting
 [servers:vars]
