@@ -52,7 +52,8 @@ esac
 
 use_travis_test_script()
 {
-    "$DIR/travis_get_script" | bash
+    # Strip any meson tests
+    "$DIR/travis_get_script" | sed -e '/meson/d' | bash
 }
 
 remove_spurious_vibed_tests()
@@ -124,11 +125,6 @@ case "$REPO_FULL_NAME" in
     vibe-d/vibe-core+select)
         rm tests/issue-58-task-already-scheduled.d # https://github.com/vibe-d/vibe-core/issues/84
         CONFIG=select ./travis-ci.sh
-        ;;
-
-    rejectedsoftware/diet-ng)
-        sed -i '/mkdir build && cd build/,//d' .travis.yml # strip meson tests
-        use_travis_test_script
         ;;
 
     dlang/dub)
