@@ -13,6 +13,8 @@ sudo systemctl enable buildkite-agent@2 && systemctl start buildkite-agent@2
 apt-get install -y build-essential curl gdb git jq libblas-dev libbz2-dev libcairo-dev libclang-3.8-dev libcurl4-gnutls-dev libevent-dev libgcrypt20-dev libgpg-error-dev libgtk-3-0 liblapack-dev liblzo2-dev libreadline-dev libssl-dev libxml2-dev libxslt1-dev libzmq3-dev mongodb-server moreutils pkg-config python-dev python-yaml python3-yaml python3-nose redis-server rsync unzip binutils-gold clang
 #libssl1.0-dev
 
+pip3 install meson
+
 wget https://bintray.com/sociomantic-tsunami/dlang/download_file?file_path=d1to2fix_0.10.0-alpha1-xenial_amd64.deb -O d1tod2.deb
 dpkg -i d1tod2.deb && rm d1tod2.deb
 wget https://bintray.com/sociomantic-tsunami/dlang/download_file?file_path=libebtree6_6.0.s7-rc5-xenial_amd64.deb -O libebtree6.deb
