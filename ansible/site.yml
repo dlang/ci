@@ -1,0 +1,24 @@
+---
+- hosts: servers
+  roles:
+    - role: users
+      tags: users
+      groups_for_roles:
+        - role: admin
+          groups: sudo,adm
+    - role: common
+      tags: common
+
+- hosts: lxd_hosts
+  vars_files:
+    - roles/users/vars/main.yml # users_for_role
+  roles:
+    - role: lxd_host
+      tags: lxd_host
+  tasks:
+    - name: add admins to lxd group
+      user: { name: "{{ item }}", groups: lxd, append: yes }
+      with_items: "{{ users_for_role.admin }}"
+
+- import_playbook: ci.yml
+- import_playbook: builds.yml
