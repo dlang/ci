@@ -42,5 +42,7 @@ lxd_hosts
 
 # admin setting
 [servers:vars]
+# read sudo password from GPG encrypted passwordstore.org
+ansible_become_pass="{{ lookup('pipe', 'pass dlangci/sudo') }}"
 admin_user=dawg
 admin_email=code+hostmaster@dawg.eu
