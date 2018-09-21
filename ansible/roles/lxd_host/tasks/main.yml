@@ -45,7 +45,7 @@
       type: image
       mode: pull
       server: https://images.linuxcontainers.org
-      alias: ubuntu/xenial/amd64
+      alias: ubuntu/{{ ansible_distribution_release }}/amd64
   with_items: "{{ groups[inventory_hostname_short + '_containers'] }}"
 
 - name: install python for provisioning
