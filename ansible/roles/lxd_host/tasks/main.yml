@@ -27,12 +27,71 @@
     LXD_IPV6_NETWORK:
     LXD_IPV6_NAT: 'false'
     LXD_IPV6_PROXY: 'false'
+  when: ansible_distribution_major_version | int <= 16
+
+- name: configure lxd
+  copy:
+    dest: /tmp/lxd-init.yml
+    content: |
+      networks:
+      - config:
+          ipv4.address: 10.23.{{ host_id | int }}.1/24
+          ipv4.nat: true
+          ipv6.address: none
+          dns.domain: {{ inventory_hostname_short }}.lxd
+        name: lxdbr0
+        type: bridge
+      storage_pools:
+      - name: default
+        driver: dir
+        config: {}
+      profiles:
+      - name: default
+        devices:
+          eth0:
+            name: eth0
+            nictype: bridged
+            parent: lxdbr0
+            type: nic
+          root:
+            path: /
+            pool: default
+            type: disk
+  register: lxd_config
+  when: ansible_distribution_major_version | int > 16
+- name: configure lxd
+  shell: lxd init --preseed < /tmp/lxd-init.yml
+  when: lxd_config.changed and ansible_distribution_major_version | int > 16
 
 - name: resolve container names (lxd dnsmasq)
   lineinfile:
     dest: /etc/resolvconf/resolv.conf.d/head
     line: "nameserver 10.23.{{ host_id | int }}.1"
   notify: resolvconf
+  when: ansible_distribution_major_version | int <= 16
+
+- name: resolve container names (lxd dnsmasq)
+  file: { dest: /etc/systemd/resolved.conf.d/, state: absent }
+  when: ansible_distribution_major_version | int > 16
+- name: resolve container names (lxd dnsmasq)
+  copy:
+    dest: /etc/systemd/system/lxd-resolved.service
+    content: |
+      [Unit]
+      Description=Add lxd DNS to systemd-resolved
+      After=systemd-resolved.service sys-devices-virtual-net-lxdbr0.device
+      # only need to rerun when device reappears
+      # systemd-resolved keeps configs across restarts
+      BindsTo=sys-devices-virtual-net-lxdbr0.device
+
+      [Service]
+      Type=oneshot
+      ExecStart=/usr/bin/systemd-resolve --interface lxdbr0 --set-dns 10.23.{{ host_id | int }}.1 --set-domain {{ inventory_hostname_short }}.lxd
+
+      [Install]
+      WantedBy=sys-devices-virtual-net-lxdbr0.device
+  notify: [systemctl daemon-reload, enable lxd-resolved, restart lxd-resolved]
+  when: ansible_distribution_major_version | int > 16
 
 - name: reconfigure lxd
   meta: flush_handlers
@@ -66,12 +125,24 @@
     creates: "/var/lib/lxd/containers/{{ item.split('.')[0] }}/rootfs/root/.ssh"
   with_items: "{{ groups[inventory_hostname_short + '_containers'] }}"
 
+- name: get root's subuid
+  slurp: { src: /etc/subuid }
+  register: subuid
+  tags: subuid
+- name: get root's subgid
+  slurp: { src: /etc/subgid }
+  register: subgid
+  tags: subuid
+- set_fact:
+    subuid: "{{ subuid.content | b64decode | regex_search('^root:\\d*', multiline=True) | regex_replace('root:') }}"
+    subgid: "{{ subgid.content | b64decode | regex_search('^root:\\d*', multiline=True) | regex_replace('root:') }}"
+
 - name: add authorized_keys
   copy:
     dest: "/var/lib/lxd/containers/{{ item.split('.')[0] }}/rootfs/root/.ssh/authorized_keys"
     content: "{{ users_for_role.admin | map('extract', user_details) | map(attribute='public_keys') | join() }}"
-    group: 100000 # TODO: subgid
-    owner: 100000 # TODO: subuid
+    group: "{{ subgid }}"
+    owner: "{{ subuid }}"
     mode: 0400
   with_items: "{{ groups[inventory_hostname_short + '_containers'] }}"
   when: ansible_virtualization_type != 'virtualbox'
@@ -82,8 +153,8 @@
     remote_src: True
     src: "/home/{{ ansible_user }}/.ssh/authorized_keys" # TODO: hardcoded path
     dest: "/var/lib/lxd/containers/{{ item.split('.')[0] }}/rootfs/root/.ssh/authorized_keys"
-    group: 100000 # TODO: subgid
-    owner: 100000 # TODO: subuid
+    group: "{{ subgid }}"
+    owner: "{{ subuid }}"
     mode: 0400
   with_items: "{{ groups[inventory_hostname_short + '_containers'] }}"
   when: ansible_virtualization_type == 'virtualbox'
