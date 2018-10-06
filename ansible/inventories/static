@@ -6,9 +6,9 @@ ci.dlang.io
 ci_containers
 
 [ci_containers]
-jenkins.ci.lxd
-dub-registry.ci.lxd
-buildkite-agent-[01:08].ci.lxd
+jenkins.ci.dlang.io
+dub-registry.ci.dlang.io
+buildkite-agent-[01:08].ci.dlang.io
 
 [ci_containers:vars]
 jenkins_use_github_auth=True
@@ -26,7 +26,7 @@ buildkite_demand_agents
 
 # permanent buildkite agents
 [buildkite_permanent_agents]
-buildkite-agent-[01:08].ci.lxd
+buildkite-agent-[01:08].ci.dlang.io
 
 # on-demand buildkite agents
 [buildkite_demand_agents]

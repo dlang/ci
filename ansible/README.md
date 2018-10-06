@@ -17,10 +17,11 @@
   ```
 
 - Each container runs it's own sshd server which can be accessed by proxing through the host.
-  The following setting in your `~/.ssh/config` is recommended so that you can e.g. run `ssh root@jenkins.ci.lxd`.
+  The following setting in your `~/.ssh/config` is recommended so that you can e.g. run `ssh nightlies.builds.dlang.io`.
   ```
-  Host *.ci.lxd
-     ProxyCommand ssh -W %h:%p ci.dlang.io
+  Host *.*.lxd
+     User root
+     ProxyCommand ssh -W %h:%p $(echo %h | cut -d. -f2).dlang.io
   ```
 
 ### Passwords

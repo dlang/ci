@@ -6,7 +6,7 @@ ci.dlang.io
 ci_containers
 
 [ci_containers]
-jenkins.ci.lxd
+jenkins.ci.dlang.io
 
 [ci_containers:vars]
 jenkins_use_github_auth=False

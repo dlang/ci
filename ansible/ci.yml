@@ -17,13 +17,13 @@
         - role: admin
           groups: sudo,adm,lxd
 
-- hosts: dub-registry.ci.lxd
+- hosts: dub-registry.ci.dlang.io
   vars:
     - dub_registry_http_port: 8080
   roles:
     - dub_registry_mirror
 
-- hosts: jenkins.ci.lxd
+- hosts: jenkins.ci.dlang.io
   vars:
     - jenkins_url: https://ci.dlang.io/
     - jenkins_http_port: 8080
@@ -64,8 +64,8 @@
         protocol: tcp
         host_ip: "{{ ansible_default_ipv4.address }}"
         host_port: 55000
-        container_ip: "{{ hostvars['jenkins.ci.lxd'].ansible_default_ipv4.address }}"
-        container_subnet: "{{ hostvars['jenkins.ci.lxd'].ansible_default_ipv4.address }}/24"
+        container_ip: "{{ hostvars['jenkins.ci.dlang.io'].ansible_default_ipv4.address }}"
+        container_subnet: "{{ hostvars['jenkins.ci.dlang.io'].ansible_default_ipv4.address }}/24"
         container_port: 55000
   handlers:
     - name: save iptables
@@ -158,7 +158,7 @@
       backends:
         ci.dlang.io: |
           mode http
-          server s1 jenkins.ci.lxd:8080
+          server s1 jenkins.ci.dlang.io:8080
         code-mirror.dlang.io: |
           mode http
-          server s1 dub-registry.ci.lxd:8005
+          server s1 dub-registry.ci.dlang.io:8005

@@ -15,7 +15,7 @@
     LXD_BRIDGE: 'lxdbr0'
     UPDATE_PROFILE: 'true'
     LXD_CONFILE:
-    LXD_DOMAIN: "{{ inventory_hostname_short }}.lxd"
+    LXD_DOMAIN: "{{ inventory_hostname }}"
     LXD_IPV4_ADDR: "10.23.{{ host_id | int }}.1"
     LXD_IPV4_NETMASK: 255.255.255.0
     LXD_IPV4_NETWORK: "10.23.{{ host_id | int }}.1/24"
@@ -38,7 +38,7 @@
           ipv4.address: 10.23.{{ host_id | int }}.1/24
           ipv4.nat: true
           ipv6.address: none
-          dns.domain: {{ inventory_hostname_short }}.lxd
+          dns.domain: {{ inventory_hostname }}
         name: lxdbr0
         type: bridge
       storage_pools:
@@ -86,7 +86,7 @@
 
       [Service]
       Type=oneshot
-      ExecStart=/usr/bin/systemd-resolve --interface lxdbr0 --set-dns 10.23.{{ host_id | int }}.1 --set-domain {{ inventory_hostname_short }}.lxd
+      ExecStart=/usr/bin/systemd-resolve --interface lxdbr0 --set-dns 10.23.{{ host_id | int }}.1 --set-domain {{ inventory_hostname }}
 
       [Install]
       WantedBy=sys-devices-virtual-net-lxdbr0.device
