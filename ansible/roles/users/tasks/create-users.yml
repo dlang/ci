@@ -7,6 +7,7 @@
     state: "{{ user_details[username].state | default('present') }}"
     groups: "{{ groups_for_role.groups }}"
     shell: /bin/bash
+    append: yes
   with_items: "{{ users_for_role[groups_for_role.role] }}"
   loop_control: { loop_var: username }
   tags: loop

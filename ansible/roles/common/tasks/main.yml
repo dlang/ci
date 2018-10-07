@@ -1,12 +1,18 @@
 ---
 - name: update apt cache
   apt: { update_cache: yes, cache_valid_time: 3600 }
+- name: set timezone to UTC
+  timezone: { name: Etc/UTC }
 - include: hostname.yml
+  tags: hostname
 - include: journald.yml
 - include: sshd.yml
+  tags: sshd
 # TODO: firewall on containers?
 - include: firewall.yml
 - include: mta.yml
+- include: tools.yml
+  tags: tools
 - name: uninstall unused packages
   apt: { name: "{{item}}", purge: yes, state: absent }
   with_items: [mlocate, snapd]

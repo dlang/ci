@@ -6,14 +6,12 @@ ci.dlang.io
 ci_containers
 
 [ci_containers]
-jenkins.ci.lxd
-dub-registry.ci.lxd
-buildkite-agent-[01:08].ci.lxd
+jenkins.ci.dlang.io
+dub-registry.ci.dlang.io
+buildkite-agent-[01:08].ci.dlang.io
 
 [ci_containers:vars]
 jenkins_use_github_auth=True
-
-[ci_containers:vars]
 # ssh proxy into container (running ssh itself)
 ansible_ssh_common_args=-o ProxyCommand="ssh -W %h:%p ci.dlang.io"
 ansible_ssh_user=root
@@ -26,7 +24,7 @@ buildkite_demand_agents
 
 # permanent buildkite agents
 [buildkite_permanent_agents]
-buildkite-agent-[01:08].ci.lxd
+buildkite-agent-[01:08].ci.dlang.io
 
 # on-demand buildkite agents
 [buildkite_demand_agents]
@@ -42,5 +40,7 @@ lxd_hosts
 
 # admin setting
 [servers:vars]
+# read sudo password from GPG encrypted passwordstore.org
+ansible_become_pass="{{ lookup('pipe', 'pass dlangci/sudo') }}"
 admin_user=dawg
 admin_email=code+hostmaster@dawg.eu

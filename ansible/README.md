@@ -17,10 +17,11 @@
   ```
 
 - Each container runs it's own sshd server which can be accessed by proxing through the host.
-  The following setting in your `~/.ssh/config` is recommended so that you can e.g. run `ssh root@jenkins.ci.lxd`.
+  The following setting in your `~/.ssh/config` is recommended so that you can e.g. run `ssh nightlies.builds.dlang.io`.
   ```
-  Host *.ci.lxd
-     ProxyCommand ssh -W %h:%p ci.dlang.io
+  Host *.*.lxd
+     User root
+     ProxyCommand ssh -W %h:%p $(echo %h | cut -d. -f2).dlang.io
   ```
 
 ### Passwords
@@ -40,6 +41,14 @@ and pass `-K, --ask-become-pass` and `--ask-vault-pass` to `ansible-playbook`.
 ### Caches
 
 - remove host facts caches under .cache/ in case major properties (e.g. IP address, hostname) change
+
+### Prepare New Servers
+
+- assuming initial account created during installation (using your commong username and sudo password, also see [roles/users](roles/users/defaults/main.yml))
+- `ssh-copy-id server.dlang.io`
+- `ansible -m raw -a 'apt-get update -q=2' server.dlang.io`
+- `ansible -m raw -a 'apt-get install --no-install-recommends python-minimal python-apt -q=2' server.dlang.io`
+- `ansible -m ping server.dlang.io` # test access
 
 ## [Vagrant](https://www.vagrantup.com/) to setup local VirtualBox (Jenkins on http://172.16.1.2)
 
