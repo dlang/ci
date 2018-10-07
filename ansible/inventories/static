@@ -12,8 +12,6 @@ buildkite-agent-[01:08].ci.dlang.io
 
 [ci_containers:vars]
 jenkins_use_github_auth=True
-
-[ci_containers:vars]
 # ssh proxy into container (running ssh itself)
 ansible_ssh_common_args=-o ProxyCommand="ssh -W %h:%p ci.dlang.io"
 ansible_ssh_user=root
