@@ -7,3 +7,5 @@
   service: { name: sshd, state: restarted }
 - name: newaliases
   command: newaliases
+- name: apt-get update
+  apt: { update_cache: yes }

@@ -1,0 +1,10 @@
+steps:
+  - label: ':package: Build'
+    command:
+      - scw-metadata | sed -n 's|^ID=||p' | tr -d '\n' |  buildkite-agent meta-data set 'server-id'
+      - scw-metadata | sed -n 's|^COMMERCIAL_TYPE=||p' | tr -d '\n' | buildkite-agent meta-data set 'server-type'
+      # just to be sure there isn't anything old left
+      - git clean -ffdxq .
+      - './buildkite/build_release.sh'
+    agents:
+      queue: release-builder
