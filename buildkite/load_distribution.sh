@@ -22,3 +22,6 @@ export TEMP=$PWD/tmp
 
 export DC=dmd
 export DMD=dmd
+
+# At the moment all workers are x86_64
+export ARCH=x86_64
