@@ -83,7 +83,7 @@
         - libxml2-dev
         - libxslt1-dev
         - libzmq3-dev
-        - llvm-dev # ldc
+        - llvm-3.9-dev # ldc
         - mongodb-server
         - moreutils # sponge et.al.
         - pkg-config
