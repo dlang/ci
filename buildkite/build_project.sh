@@ -41,7 +41,7 @@ case "$REPO_URL" in
         ;;
 esac
 
-# Don't checkout a tagged version of the core repostories like Phobos
+# Don't checkout a tagged version of the core repositories like Phobos
 case "$REPO_FULL_NAME" in
     dlang/phobos)
         ;;
