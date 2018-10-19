@@ -41,18 +41,34 @@ case "$REPO_URL" in
         ;;
 esac
 
+echo "--- Checking ${REPO_URL} for a core repository and branch merging with ${BUILDKITE_REPO}"
+
 # Don't checkout a tagged version of the core repositories like Phobos
-case "$REPO_FULL_NAME" in
-    dlang/phobos)
+case "${REPO_URL:-x}" in
+    "https://github.com/dlang/dmd" | \
+    "https://github.com/dlang/druntime" | \
+    "https://github.com/dlang/phobos" | \
+    "https://github.com/dlang/tools" | \
+    "https://github.com/dlang/dub" | \
+    "https://github.com/dlang/ci")
+        # if the core repo is the current repo, then just merge its head
+        if [ "${REPO_URL:-a}" == "${BUILDKITE_REPO:-b}" ] ; then
+            echo "--- Merging with the upstream target branch"
+            "./$DIR/merge_head.sh"
+            latest_tag="IS-ALREADY_CHECKED-OUT"
+        else
+            # otherwise checkout the respective branch
+            latest_tag=$("$DIR/origin_target_branch.sh" "${REPO_URL}")
+        fi
         ;;
     *)
-
-echo "--- Cloning the ${REPO_URL} (tag: $latest_tag)"
-git clone -b "${latest_tag}" --depth 1 "${REPO_URL}" "${REPO_DIR}"
-cd "${REPO_DIR}"
-
 esac
 
+if [ "$latest_tag" != "IS-ALREADY-CHECKED-OUT" ] ; then
+    echo "--- Cloning ${REPO_URL} (tag: $latest_tag)"
+    git clone -b "${latest_tag}" --depth 1 "${REPO_URL}" "${REPO_DIR}"
+    cd "${REPO_DIR}"
+fi
 
 use_travis_test_script()
 {

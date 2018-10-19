@@ -9,8 +9,6 @@ echo "--- Setting build variables"
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 origin_repo="$(echo "$BUILDKITE_REPO" | sed "s/.*\/\([^\]*\)[.]git/\1/")"
-origin_target_branch="${BUILDKITE_PULL_REQUEST_BASE_BRANCH:-$BUILDKITE_BRANCH}"
-echo "origin_target_branch: $origin_target_branch"
 
 echo "--- Cloning all core repositories"
 repositories=(dmd druntime phobos tools dub)
@@ -36,12 +34,10 @@ done
 
 for dir in "${repositories[@]}" ; do
     if [ ! -d "$dir" ] ; then
-        if [ "$origin_target_branch" == "master" ] || [ "$origin_target_branch" == "stable" ] ; then
-            branch="$origin_target_branch"
-        else
-            branch=$(git ls-remote --exit-code --heads "https://github.com/dlang/$dir" "${origin_target_branch}" > /dev/null && echo "$origin_target_branch" || echo "master")
-        fi
-        git clone -b "${branch:-master}" --depth 1 "https://github.com/dlang/$dir"
+        repo="https://github.com/dlang/$dir"
+        branch=$("$DIR/origin_target_branch.sh" "$repo")
+        echo "target_branch: $branch"
+        git clone -b "${branch:-master}" --depth 1 "$repo"
     fi
 done
 
