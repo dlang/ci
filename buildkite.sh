@@ -125,6 +125,7 @@ projects=(
     "dlang/tools" # 40s
     #"atilaneves/unit-threaded" #36s
     "d-gamedev-team/gfm" # 28s
+    "gecko0307/dagon" # 25s
     "dlang-community/DCD" # 23s
     "weka-io/mecca" # 22s
     "CyberShadow/ae" # 22s
@@ -136,7 +137,6 @@ projects=(
     "BBasile/iz" # 12s
     "aliak00/optional" # 12s
     "dlang-community/dfmt" # 11s
-    "gecko0307/dagon" # TODO
     # run in under 10s sorted alphabetically
     "Abscissa/libInputVisitor"
     "ariovistus/pyd"
