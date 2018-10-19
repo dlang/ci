@@ -180,6 +180,7 @@ memory_req["sociomantic-tsunami/ocean"]=high
 memory_req["dlang-bots/dlang-bot"]=high
 memory_req["dlang/dub"]=high
 memory_req["higgsjs/Higgs"]=high
+memory_req["LaurentTreguier/dls"]=high
 
 for project_name in "${projects[@]}" ; do
     project="$(echo "$project_name" | sed "s/\([^+]*\)+.*/\1/")"
