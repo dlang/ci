@@ -134,8 +134,12 @@ case "$REPO_FULL_NAME" in
     dlang/dub)
         rm test/issue895-local-configuration.sh # FIXME
         rm test/issue884-init-defer-file-creation.sh # FIXME
-        sed 's/"stdx-allocator": "2.77.0",/"stdx-allocator": "2.77.2",/' -i dub.selections.json # upgrade stdx-allocator (can be removed once v1.11 gets released)
-        rm test/ddox.sh # can be removed once v1.11 gets released
+        # GitHub's  UI/API doesn't return 0.9.20 anymore
+        # Thus 0.9.20 isn't available on the dub registry anymore
+        sed 's/0[.]9[.]20/1.9.0/g' -i test/interactive-remove.sh
+        sed 's/0[\][.]9[\][.]20/1.9.0/' -i test/interactive-remove.sh
+        sed 's/0[.]9[.]21/1.10.0/g' -i test/interactive-remove.sh
+        sed 's/0[\][.]9[\][.]21/1.10.0/g' -i test/interactive-remove.sh
         sed -i '/^source.*activate/d' travis-ci.sh
         DC=$DC ./travis-ci.sh
         ;;
