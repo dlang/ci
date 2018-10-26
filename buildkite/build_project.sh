@@ -259,6 +259,8 @@ case "$REPO_FULL_NAME" in
         export TEMP="$TMP"
         export TMPDIR="$TMP"
         rm -rf "$TMP" && mkdir -p "$TMP"
+        # patch makefile which requires gdb 8 - see https://github.com/dlang/ci/pull/301
+        sed "s/TESTS+=rt_trap_exceptions_drt_gdb//" -i druntime/test/exceptions/Makefile
         cd "$(basename "${REPO_FULL_NAME}")"&& make -f posix.mak clean && make -f posix.mak -j2 buildkite-test
         rm -rf "$TMP"
         ;;
