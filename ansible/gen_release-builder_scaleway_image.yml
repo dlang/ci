@@ -42,6 +42,7 @@
         ansible_ssh_host: "{{ server.public_ip.address }}"
         groups:
           - scaleway_metal
+          - buildkite_demand_agents
       tags: create
 
 - hosts: gen-release-builder-image
@@ -86,6 +87,7 @@
       priority: 2
       num_agents: 1
       agent_tags: '"queue=release-builder"'
+      allowed_pipelines: build-release
   tasks:
     - name: remove cloud-init default user
       user: { name: ubuntu, state: absent }

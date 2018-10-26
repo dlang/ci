@@ -17,6 +17,13 @@
     tags: "{{ agent_tags }}"
     priority: "{{ priority }}"
   notify: restart buildkite-agent
+- name: add allowed-pipelines pre-checkout hook
+  template:
+    src: allowed-pipelines-pre-checkout.sh.j2
+    dest: /etc/buildkite-agent/hooks/pre-checkout
+    owner: buildkite-agent
+    mode: 0700
+  when: allowed_pipelines != None
 - name: create systemd service drop-in
   file:
     dest: /etc/systemd/system/buildkite-agent.service.d
