@@ -1,0 +1,19 @@
+---
+- name: add dlang-bot agent token
+  copy:
+    dest: /etc/dlang-bot-agent-token.conf
+    content: |
+      DLANG_BOT_AGENT_TOKEN={{ dlang_bot_agent_api_token }}
+    mode: 0400
+- name: add agent shutdown check
+  copy:
+    src: agent-shutdown-check.service
+    dest: /etc/systemd/system/agent-shutdown-check.service
+  notify: systemctl daemon-reload
+- name: add agent shutdown check timer
+  copy:
+    src: agent-shutdown-check.timer
+    dest: /etc/systemd/system/agent-shutdown-check.timer
+  notify: [systemctl daemon-reload, restart agent-shutdown-check.timer]
+- name: enable agent-shutdown-check.timer
+  service: { name: agent-shutdown-check.timer, enabled: yes, state: started }
