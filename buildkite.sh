@@ -39,6 +39,7 @@ steps:
         ./buildkite/build_distribution.sh
     label: "Build"
     artifact_paths: "distribution.tar.xz"
+    timeout_in_minutes: 10
     retry:
       automatic:
         limit: 2
@@ -70,6 +71,7 @@ cat << EOF
         echo "--- Running style testing"
         make -f posix.mak style
     label: "Style"
+    timeout_in_minutes: 30
     retry:
       automatic:
         limit: 2
@@ -82,6 +84,7 @@ cat << EOF
         echo "--- Running coverage testing"
         ./buildkite/test_coverage.sh
     label: "Coverage"
+    timeout_in_minutes: 30
     retry:
       automatic:
         limit: 2
@@ -199,6 +202,7 @@ cat << EOF
         ${LOAD_DISTRIBUTION}
         ./buildkite/build_project.sh
     label: "${project_name}"
+    timeout_in_minutes: 30
     retry:
       automatic:
         limit: 2
