@@ -130,21 +130,27 @@ case "$REPO_FULL_NAME" in
         VIBED_DRIVER=vibe-core PARTS=examples ./travis-ci.sh
         ;;
     vibe-d/vibe.d+vibe-core-tests)
-        remove_spurious_vibed_tests
-        VIBED_DRIVER=vibe-core PARTS=tests ./travis-ci.sh
+        # disabled due to https://github.com/vibe-d/eventcore/pull/86
+        echo "DISABLED"
+        #remove_spurious_vibed_tests
+        #VIBED_DRIVER=vibe-core PARTS=tests ./travis-ci.sh
         ;;
     vibe-d/vibe.d+libasync-base)
         VIBED_DRIVER=libasync PARTS=builds,unittests ./travis-ci.sh
         ;;
 
     vibe-d/vibe-core+epoll)
+        # disabled due to https://github.com/vibe-d/eventcore/pull/86
+        echo "DISABLED"
         rm tests/issue-58-task-already-scheduled.d # https://github.com/vibe-d/vibe-core/issues/84
-        CONFIG=epoll ./travis-ci.sh
+        #CONFIG=epoll ./travis-ci.sh
         ;;
 
     vibe-d/vibe-core+select)
+        # disabled due to https://github.com/vibe-d/eventcore/pull/86
+        echo "DISABLED"
         rm tests/issue-58-task-already-scheduled.d # https://github.com/vibe-d/vibe-core/issues/84
-        CONFIG=select ./travis-ci.sh
+        #CONFIG=select ./travis-ci.sh
         ;;
 
     dlang/dub)
