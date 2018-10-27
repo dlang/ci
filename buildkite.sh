@@ -118,6 +118,7 @@ projects=(
     "LaurentTreguier/dls" # 1m55s
     "eBay/tsv-utils" # 1m41s
     "dlang-community/D-Scanner" # 1m40s
+    "dlang/druntime" # 1m18s
     "dlang-tour/core" # 1m17s
     "d-widget-toolkit/dwt" # 1m16s
     "rejectedsoftware/diet-ng" # 56s
@@ -137,7 +138,6 @@ projects=(
     "BBasile/iz" # 12s
     "aliak00/optional" # 12s
     "dlang-community/dfmt" # 11s
-    "dlang/druntime" # TODO
     # run in under 10s sorted alphabetically
     "Abscissa/libInputVisitor"
     "ariovistus/pyd"
