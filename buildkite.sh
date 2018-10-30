@@ -24,6 +24,14 @@ read -r -d '' LOAD_DISTRIBUTION <<- EOM
         rm distribution.tar.xz
 EOM
 
+read -r -d '' DEFAULT_COMMAND_PROPS <<- EOM
+    branches: !dmd-cxx
+    timeout_in_minutes: 30
+    retry:
+      automatic:
+        limit: 2
+EOM
+
 cat << EOF
 steps:
   - command: |
@@ -39,10 +47,7 @@ steps:
         ./buildkite/build_distribution.sh
     label: "Build"
     artifact_paths: "distribution.tar.xz"
-    timeout_in_minutes: 10
-    retry:
-      automatic:
-        limit: 2
+    ${DEFAULT_COMMAND_PROPS}
 EOF
 
 ################################################################################
@@ -71,10 +76,7 @@ cat << EOF
         echo "--- Running style testing"
         make -f posix.mak style
     label: "Style"
-    timeout_in_minutes: 30
-    retry:
-      automatic:
-        limit: 2
+    ${DEFAULT_COMMAND_PROPS}
 
   - command: |
         ${LOAD_DISTRIBUTION}
@@ -84,10 +86,7 @@ cat << EOF
         echo "--- Running coverage testing"
         ./buildkite/test_coverage.sh
     label: "Coverage"
-    timeout_in_minutes: 30
-    retry:
-      automatic:
-        limit: 2
+    ${DEFAULT_COMMAND_PROPS}
 EOF
         ;;
     *)
@@ -203,10 +202,7 @@ cat << EOF
         ${LOAD_DISTRIBUTION}
         ./buildkite/build_project.sh
     label: "${project_name}"
-    timeout_in_minutes: 30
-    retry:
-      automatic:
-        limit: 2
+    ${DEFAULT_COMMAND_PROPS}
 EOF
 
 if [ "${memory_req["$project_name"]:-x}" != "x" ] ; then
