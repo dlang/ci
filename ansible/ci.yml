@@ -86,6 +86,7 @@
         - llvm-3.9-dev # ldc
         - mongodb-server
         - moreutils # sponge et.al.
+        - ninja-build # ldc
         - pkg-config
         - python-dev
         - python-yaml
