@@ -26,7 +26,7 @@ EOM
 
 read -r -d '' DEFAULT_COMMAND_PROPS <<- EOM
     branches: !dmd-cxx
-    timeout_in_minutes: 30
+    timeout_in_minutes: 40
     retry:
       automatic:
         limit: 2
