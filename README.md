@@ -27,3 +27,7 @@ Alternatively, to use your locally build `dmd`, simply make sure that it has a h
 ```
 export PATH="$HOME/dlang/dmd/generated/linux/release/64:$PATH"
 ```
+Pre-installed dependencies on buildkite agents
+----------------------------------------------
+
+The server infrastructure is maintained using ansible and a list of pre-installed test dependencies can be found [here](/ansible/roles/test_deps/tasks/main.yml). Send us a PR if you need something that isn't yet installed.
