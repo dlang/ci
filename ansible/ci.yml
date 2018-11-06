@@ -56,75 +56,9 @@
         ip6tables-save > /etc/iptables/rules.v6
 
 - hosts: buildkite_agents
-  tasks:
-    - name: test dependencies (1/2)
-      apt: { name: "{{ item }}", install_recommends: no, update_cache: yes, cache_valid_time: 3600 }
-      with_items:
-        - build-essential
-        - cmake
-        - curl
-        - gdb
-        - git
-        - jq
-        - libblas-dev
-        - libbz2-dev
-        - libcairo-dev
-        - libclang-4.0-dev # dstep
-        - libcurl4-gnutls-dev
-        - libevent-dev
-        - libgcrypt20-dev
-        - libgpg-error-dev
-        - libgtk-3-0
-        - liblapack-dev
-        - liblzo2-dev
-        - libopenblas-dev
-        - libreadline-dev
-        - libssl-dev
-        - libxml2-dev
-        - libxslt1-dev
-        - libzmq3-dev
-        - llvm-3.9-dev # ldc
-        - mongodb-server
-        - moreutils # sponge et.al.
-        - ninja-build # ldc
-        - pkg-config
-        - python-dev
-        - python-yaml
-        - python3-nose
-        - redis-server
-        - rsync
-        - unzip
+  roles:
+    - role: test_deps
       tags: deps
-    - name: test dependencies (2/2)
-      apt: { deb: "{{ item }}", install_recommends: no }
-      with_items:
-        - https://bintray.com/sociomantic-tsunami/dlang/download_file?file_path=libebtree6_6.0.s7-rc5-xenial_amd64.deb
-        - https://bintray.com/sociomantic-tsunami/dlang/download_file?file_path=libebtree6-dev_6.0.s7-rc5-xenial_amd64.deb
-        - https://bintray.com/sociomantic-tsunami/dlang/download_file?file_path=d1to2fix_0.10.0-alpha1-xenial_amd64.deb
-      tags: deps
-    - name: disable mongodb journaling
-      lineinfile: { dest: /etc/mongodb.conf, regexp: "^{{ item.key }} *=", line: "{{ item.key }} = {{ item.value }}" }
-      with_dict:
-        journal: 'false'
-        nojournal: 'true'
-      notify: restart mongodb
-    - name: use ld.gold
-      alternatives: { name: ld, link: /usr/bin/ld, path: /usr/bin/ld.gold }
-    - name: add load_travis_script command
-      copy:
-        dest: /usr/local/bin/get_travis_test_script
-        mode: 0555
-        content: |
-          #!/usr/bin/env python
-          import sys, yaml
-
-          script = yaml.load(open('.travis.yml', 'r')).get('script', '')
-          if isinstance(script, list):
-            script = '\n'.join(script)
-          print(script)
-  handlers:
-    - name: restart mongodb
-      service: { name: mongodb, state: restarted }
 
 - hosts: buildkite_agents
   vars_files:
