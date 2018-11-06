@@ -34,9 +34,16 @@ buildkite-agent-[01:08].ci.dlang.io
 lxd_hosts
 lxd_containers
 
+# running on scaleway metal servers
+[scaleway_metal]
+
+[scaleway:children]
+scaleway_metal
+
 # all non-containerized host
 [servers:children]
 lxd_hosts
+scaleway
 
 # admin setting
 [servers:vars]

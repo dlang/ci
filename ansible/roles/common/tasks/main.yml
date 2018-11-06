@@ -1,6 +1,15 @@
 ---
+- name: use ubuntu apt mirrors
+  template:
+    src: apt-sources.list.j2
+    dest: /etc/apt/sources.list
+  notify: apt-get update
+- name: update apt cache
+  meta: flush_handlers
 - name: update apt cache
   apt: { update_cache: yes, cache_valid_time: 3600 }
+- name: install tzdata
+  apt: { name: tzdata, install_recommends: no }
 - name: set timezone to UTC
   timezone: { name: Etc/UTC }
 - include: hostname.yml
@@ -10,6 +19,10 @@
   tags: sshd
 # TODO: firewall on containers?
 - include: firewall.yml
+  tags: firewall
+# TODO: firewall with nbd
+# https://www.scaleway.com/docs/configure-ufw-firewall-on-ubuntu-bionic-beaver/#-Enabling-ufw-on-a-BareMetal-Instance
+  when: inventory_hostname not in groups.scaleway_metal
 - include: mta.yml
 - include: tools.yml
   tags: tools

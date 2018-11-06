@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -ueo pipefail
+
+allowed_pipelines=(build-release)
+for pipeline in "${allowed_pipelines[@]}"; do
+    if [ "$pipeline" == "$BUILDKITE_PIPELINE_SLUG" ]; then
+        exit 0
+    fi
+done
+
+echo "This agent is not allowed to run on pipeline $BUILDKITE_PIPELINE_SLUG" >&2
+exit 1

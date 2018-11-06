@@ -1,0 +1,249 @@
+---
+- hosts: localhost
+  become: False
+  vars:
+    scaleway_organization: e7f21552-b79a-404d-96f9-ff4a14f37841
+  vars_files:
+    - vars/passwords.yml # scaleway_access_key, scaleway_secret_key
+  tasks:
+    - name: create server to build image
+      scaleway_compute:
+        api_token: "{{ scaleway_secret_key }}"
+        name: gen-release-builder-image
+        state: running
+        image: d4067cdc-dc9d-4810-8a26-0dae51d7df42 # Ubuntu Bionic x86_64
+        organization: "{{ scaleway_organization }}"
+        region: par1
+        commercial_type: C2S
+        enable_ipv6: yes
+        wait: yes
+      register: create
+      tags: create
+    - name: wait for IP
+      wait_for: { timeout: 2 }
+      delegate_to: localhost
+      tags: create
+      when: create.changed
+    - name: get server facts
+      scaleway_server_facts: { api_token: "{{ scaleway_secret_key }}" }
+      tags: create
+    - set_fact:
+        server: "{{ scaleway_server_facts | selectattr('name', 'equalto', 'gen-release-builder-image') | first }}"
+      tags: create
+    - name: wait for ssh to come up
+      wait_for:
+        port: 22
+        host: "{{ server.public_ip.address }}"
+        search_regex: OpenSSH
+      tags: create
+    - name: add build server as new host
+      add_host:
+        hostname: gen-release-builder-image
+        ansible_ssh_host: "{{ server.public_ip.address }}"
+        groups:
+          - scaleway_metal
+          - buildkite_demand_agents
+      tags: create
+
+- hosts: gen-release-builder-image
+  user: root
+  gather_facts: False
+  pre_tasks:
+    - name: install python
+      raw: |
+        if [ ! -e /usr/bin/python ]; then
+            apt-get update -qq && apt-get install -qq --no-install-recommends python-minimal python-apt
+        fi
+    - name: gather facts
+      setup:
+
+- hosts: gen-release-builder-image
+  vars:
+    ansible_ssh_user: root
+  pre_tasks:
+    - name: fix sudoers file
+      copy:
+        src: sudoers
+        dest: /etc/sudoers
+    - name: remove cloud-init sudoers
+      file: { dest: /etc/sudoers.d/90-cloud-init-users, state: absent }
+    - name: install sudo
+      apt: { name: sudo, install_recommends: no, update_cache: yes, cache_valid_time: 3600 }
+  roles:
+    - role: users
+      tags: users
+      groups_for_roles:
+        - role: admin
+          groups: sudo,adm,lxd
+
+- hosts: gen-release-builder-image
+  vars_files:
+    - vars/passwords.yml # buildkite_agent_token, aws access keys
+  roles:
+    - role: common
+      tags: common
+    - role: buildkite_agent
+      tags: buildkite_agent
+      priority: 2
+      num_agents: 1
+      agent_tags: '"queue=release-builder"'
+      allowed_pipelines: build-release
+  tasks:
+    - name: remove cloud-init default user
+      user: { name: ubuntu, state: absent }
+    - name: preserve apt sources.list
+      lineinfile: { dest: /etc/cloud/cloud.cfg, line: 'apt_preserve_sources_list: true' }
+    - name: install build deps for kernel module
+      apt: { name: [build-essential, libssl-dev], install_recommends: no }
+    # https://github.com/scaleway/kernel-tools#how-to-build-a-custom-kernel-module
+    - name: script to prepare kernel headers/sources
+      copy:
+        src: get-kernel-sources.sh
+        dest: /usr/local/bin/get-kernel-sources.sh
+        mode: 0755
+    - name: prepare kernel sources
+      command: /usr/local/bin/get-kernel-sources.sh
+    - name: accepting Virtualbox extension pack license
+      debconf:
+        name: virtualbox-ext-pack
+        question: virtualbox-ext-pack/license
+        vtype: boolean
+        value: true
+    - name: install vagrant, and virtualbox
+      apt: { name: [vagrant, virtualbox, virtualbox-ext-pack], install_recommends: no }
+    - name: install pip
+      apt: { name: [python-pip, python-setuptools, python-wheel], install_recommends: no }
+    - name: install awscli
+      pip: { name: awscli }
+    - name: create aws config dir
+      file:
+        dest: /var/lib/buildkite-agent/.aws
+        state: directory
+        owner: buildkite-agent
+        group: buildkite-agent
+    - name: configure aws
+      copy:
+        dest: /var/lib/buildkite-agent/.aws/config
+        content: |
+          [profile ddo]
+          region = us-west-2
+        owner: buildkite-agent
+        group: buildkite-agent
+    - name: configure aws
+      copy:
+        dest: /var/lib/buildkite-agent/.aws/credentials
+        content: |
+          [ddo]
+          aws_access_key_id = {{ ddo_aws_access_key_id }}
+          aws_secret_access_key = {{ ddo_aws_secret_access_key }}
+        owner: buildkite-agent
+        group: buildkite-agent
+        mode: 0400
+    - name: install dmd
+      apt:
+        deb: http://downloads.dlang.org/releases/2.x/2.082.0/dmd_2.082.0-0_amd64.deb
+    - name: copy gpg sign key
+      copy:
+        src: files/nightly-bot-signkey.gpg
+        dest: /var/lib/buildkite-agent/nightly-bot-signkey.gpg
+    - name: import gpg sign key
+      shell: gpg --import < /var/lib/buildkite-agent/nightly-bot-signkey.gpg
+      become_user: buildkite-agent
+    - name: remove gpg sign key
+      file:
+        dest: /var/lib/buildkite-agent/nightly-bot-signkey.gpg
+        state: absent
+    - name: install 7za and libcurl
+      apt: { name: [p7zip-full, libcurl4-openssl-dev], install_recommends: no }
+    - name: import d-keyring
+      shell: curl -fsS https://dlang.org/d-keyring.gpg | gpg --import
+      become_user: buildkite-agent
+    - name: create vagrant boxes dir
+      file:
+        dest: /var/lib/buildkite-agent/.vagrant.d/boxes
+        state: directory
+        owner: buildkite-agent
+        group: buildkite-agent
+    - name: copy vagrant boxes
+      copy:
+        src: "~/.vagrant.d/boxes/create_dmd_release-{{ item }}"
+        dest: "/var/lib/buildkite-agent/.vagrant.d/boxes/"
+        owner: buildkite-agent
+        group: buildkite-agent
+      with_items: [linux, windows, osx, freebsd-32, freebsd-64]
+    - name: poweroff server
+      command: poweroff
+      register: poweroff
+      async: 45
+      poll: 0
+      tags: image
+    - name: wait for poweroff
+      wait_for: { timeout: 5 }
+      delegate_to: localhost
+      become: False
+      tags: image
+      when: poweroff.changed
+
+# Might be simpler to do this on Scaleway's web-ui
+- hosts: localhost
+  become: False
+  vars_files:
+    - vars/passwords.yml # scaleway_secret_key
+  tasks:
+    - name: stop server for snapshotting
+      uri:
+        url: "https://cp-par1.scaleway.com/servers/{{ server.id }}/action"
+        method: POST
+        headers:
+          X-Auth-Token: "{{ scaleway_secret_key }}"
+        body: '{ "action": "stop_in_place" }'
+        body_format: json
+        status_code: 202
+      tags: image
+    - name: create snapshot
+      uri:
+        url: "https://cp-par1.scaleway.com/snapshots"
+        method: POST
+        headers:
+          X-Auth-Token: "{{ scaleway_secret_key }}"
+        body: |
+          {
+            "name": "release-builder",
+            "organization": "{{ server.organization }}",
+            "volume_id": "{{ server.volumes['0'].id }}"
+          }
+        body_format: json
+        return_content: yes
+        status_code: 201
+      register: snapshot
+      tags: image
+    - set_fact:
+        snapshot: "{{ snapshot.json.snapshot }}"
+      tags: image
+    - name: create image
+      uri:
+        url: "https://cp-par1.scaleway.com/images"
+        method: POST
+        headers:
+          X-Auth-Token: "{{ scaleway_secret_key }}"
+        body: |
+          {
+            "name": "release-builder",
+            "arch": "x86_64",
+            "organization": "{{ snapshot.organization }}",
+            "root_volume": "{{ snapshot.id }}",
+            "default_bootscript": "{{ server.bootscript.id }}"
+          }
+        body_format: json
+        status_code: 201
+      tags: image
+    - name: terminate server
+      uri:
+        url: "https://cp-par1.scaleway.com/servers/{{ server.id }}/action"
+        method: POST
+        headers:
+          X-Auth-Token: "{{ scaleway_secret_key }}"
+        body: '{ "action": "terminate" }'
+        body_format: json
+        status_code: 202
+      tags: image
