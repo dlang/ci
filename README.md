@@ -1,6 +1,7 @@
 # dlangci
 
 CI pipelines for dlang.
+At the moment this mainly tests various dub projects against regressions during development of dlang.
 
 [![Build status](https://badge.buildkite.com/7e4ed28182279b460ce787dbc36ba2f5a142843225a9c9ecb8.svg?branch=master)](https://buildkite.com/dlang/ci)
 
