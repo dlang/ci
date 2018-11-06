@@ -226,11 +226,6 @@ case "$REPO_FULL_NAME" in
         dub test "--compiler=$DC"
         ;;
 
-    rejectedsoftware/ddox)
-        # remove once https://github.com/rejectedsoftware/ddox/pull/212 is merged and released
-        sed 's/bridgeip.*/exit \$failure/' -i travis-ci.sh # build without the phantomcss tester
-        ;;
-
     ldc-developers/ldc)
         cd runtime && git clone --depth 5 https://github.com/ldc-developers/druntime
         git clone --depth 5 https://github.com/ldc-developers/phobos
@@ -256,8 +251,8 @@ case "$REPO_FULL_NAME" in
         ;;
 
     *)
-    use_travis_test_script
-    ;;
+        use_travis_test_script
+        ;;
 esac
 
 # final cleanup
