@@ -10,6 +10,12 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 "$DIR/clone_repositories.sh"
 
+echo "--- Building all core repositories"
+for dir in dmd druntime phobos ; do
+    echo "--- Building $dir"
+    make -C $dir -f posix.mak AUTO_BOOTSTRAP=1 --jobs=4
+done
+
 echo "--- Building dub"
 cd dub
 DMD="../dmd/generated/linux/release/64/dmd" ./build.sh
