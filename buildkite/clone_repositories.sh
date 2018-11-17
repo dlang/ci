@@ -43,5 +43,5 @@ done
 
 for dir in dmd druntime phobos ; do
     echo "--- Building $dir"
-    make -C $dir -f posix.mak AUTO_BOOTSTRAP=1 --jobs=4
+    make -C $dir -f posix.mak AUTO_BOOTSTRAP=1 --jobs=4 BUILD=debug
 done
