@@ -164,6 +164,12 @@
         state: directory
         owner: buildkite-agent
         group: buildkite-agent
+    - name: copy vagrant default config
+      copy:
+        src: Vagrantfile
+        dest: /var/lib/buildkite-agent/.vagrant.d/Vagrantfile
+        owner: buildkite-agent
+        group: buildkite-agent
     - name: copy vagrant boxes
       copy:
         src: "~/.vagrant.d/boxes/create_dmd_release-{{ item }}"
