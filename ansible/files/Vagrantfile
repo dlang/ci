@@ -1,0 +1,23 @@
+require 'etc'
+
+VIRTUALBOX_SETTINGS = {
+  memory: 4096,
+  cpus: Etc.nprocessors, # ruby >=2.2.3
+  largepages: 'on',
+  accelerate3d: 'off',
+  audio: 'none',
+  usb: 'off',
+  vrde: 'off',
+}.freeze
+
+Vagrant.configure('2') do |config|
+  config.vm.box_check_update = false
+  # disable shared folders, because the guest additions are missing
+  config.vm.synced_folder ".", "/vagrant", :disabled => true
+  config.vm.boot_timeout = 450
+  config.vm.provider 'virtualbox' do |vb|
+    VIRTUALBOX_SETTINGS.each do |key, value|
+      vb.customize ['modifyvm', :id, '--'+key.to_s, value]
+    end
+  end
+end
