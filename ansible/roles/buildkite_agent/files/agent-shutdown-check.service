@@ -1,12 +1,11 @@
 [Unit]
 Description=Check whether server can be decomissioned
-# for correct hostname in %H
-After=cloud-init.target
 
 [Service]
 Type=simple
 EnvironmentFile=/etc/dlang-bot-agent-token.conf
-ExecStart=/usr/bin/curl -fsS -H 'Authentication: Bearer ${DLANG_BOT_AGENT_TOKEN}' https://dlang-bot.herokuapp.com/agent_shutdown_check -d 'hostname=%H'
+ExecStartPre=/bin/sh -c '/bin/systemctl set-environment HOSTNAME=$(hostname)'
+ExecStart=/usr/bin/curl -fsS -H 'Authentication: Bearer ${DLANG_BOT_AGENT_TOKEN}' https://dlang-bot.herokuapp.com/agent_shutdown_check -d 'hostname=${HOSTNAME}'
 Restart=on-failure
 RestartSec=10
 # retry up to 3 times

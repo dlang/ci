@@ -1,7 +1,5 @@
 [Unit]
 Description=Check whether server can be decomissioned every hour
-# for correct hostname in %H
-After=cloud-init.target
 
 [Timer]
 OnBootSec=54min
