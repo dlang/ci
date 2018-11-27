@@ -74,7 +74,7 @@ cat << EOF
         echo "--- Merging with the upstream target branch"
         ./buildkite/merge_head.sh
         echo "--- Running style testing"
-        make -f posix.mak style
+        ./buildkite/style.sh
     label: "Style"
     ${DEFAULT_COMMAND_PROPS}
 
