@@ -19,7 +19,10 @@ for dir in "${repositories[@]}" ; do
         mkdir -p "$dir"
         for f in ./* ; do
             case "$f" in
-                ./.git) ;;
+                ./.git)
+                    # for some commands a real "git" repository is required
+                    cp -r "$f" "$dir"
+                    ;;
                 ./buildkite) ;;
                 ./distribution) ;;
                 ./tmp) ;;
