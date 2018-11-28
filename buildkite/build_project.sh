@@ -41,20 +41,20 @@ case "$REPO_URL" in
         ;;
 esac
 
-echo "--- Checking ${REPO_URL} for a core repository and branch merging with ${BUILDKITE_REPO}"
+echo "--- Checking ${REPO_FULL_NAME} for a core repository and branch merging with ${BUILDKITE_REPO}"
 
 # Don't checkout a tagged version of the core repositories like Phobos
-case "${REPO_URL:-x}" in
-    "https://github.com/dlang/dmd" | \
-    "https://github.com/dlang/druntime" | \
-    "https://github.com/dlang/phobos" | \
-    "https://github.com/dlang/tools" | \
-    "https://github.com/dlang/dub" | \
-    "https://github.com/dlang/ci")
+case "$REPO_FULL_NAME" in
+    "dlang/dmd" | \
+    "dlang/druntime" | \
+    "dlang/phobos" | \
+    "dlang/tools" | \
+    "dlang/dub" | \
+    "dlang/ci")
         # if the core repo is the current repo, then just merge its head
-        if [ "${REPO_URL:-a}" == "${BUILDKITE_REPO:-b}" ] ; then
+        if [[ "${BUILDKITE_REPO:-b}" =~ ^${REPO_URL:-a}([.]git)?$ ]] ; then
             echo "--- Merging with the upstream target branch"
-            "./$DIR/merge_head.sh"
+            "$DIR/merge_head.sh"
             latest_tag="IS-ALREADY_CHECKED-OUT"
         else
             # otherwise checkout the respective branch
