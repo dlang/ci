@@ -147,6 +147,12 @@ case "$REPO_FULL_NAME" in
         CONFIG=select ./travis-ci.sh
         ;;
 
+    dlang/ci)
+        echo "Check that the PR commit has been merged into the target branch"
+        echo "Current commit: $(git describe)"
+        [[ "$(git log --format=%B -n 1)" =~ Merge[[:space:]]${BUILDKITE_COMMIT:-invalid} ]]
+        ;;
+
     dlang/dub)
         rm test/issue895-local-configuration.sh # FIXME
         rm test/issue884-init-defer-file-creation.sh # FIXME
