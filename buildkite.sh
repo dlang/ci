@@ -117,7 +117,7 @@ projects=(
     "higgsjs/Higgs" # 3m10s
     "rejectedsoftware/ddox" # 2m42s
     "BlackEdder/ggplotd" # 1m56s
-    "LaurentTreguier/dls" # 1m55s
+    "d-language-server/dls" # 1m55s
     "eBay/tsv-utils" # 1m41s
     "dlang-community/D-Scanner" # 1m40s
     "dlang/druntime" # 1m18s
@@ -184,7 +184,7 @@ memory_req["dlang-bots/dlang-bot"]=high
 memory_req["dlang/phobos"]=high
 memory_req["dlang/dub"]=high
 memory_req["higgsjs/Higgs"]=high
-memory_req["LaurentTreguier/dls"]=high
+memory_req["d-language-server/dls"]=high
 
 for project_name in "${projects[@]}" ; do
     project="$(echo "$project_name" | sed "s/\([^+]*\)+.*/\1/")"
