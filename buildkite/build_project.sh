@@ -55,7 +55,7 @@ case "$REPO_FULL_NAME" in
         if [[ "${BUILDKITE_REPO:-b}" =~ ^${REPO_URL:-a}([.]git)?$ ]] ; then
             echo "--- Merging with the upstream target branch"
             "$DIR/merge_head.sh"
-            latest_tag="IS-ALREADY_CHECKED-OUT"
+            latest_tag="IS-ALREADY-CHECKED-OUT"
         else
             # otherwise checkout the respective branch
             latest_tag=$("$DIR/origin_target_branch.sh" "${REPO_URL}")
