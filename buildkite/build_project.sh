@@ -148,9 +148,11 @@ case "$REPO_FULL_NAME" in
         ;;
 
     dlang/ci)
-        echo "Check that the PR commit has been merged into the target branch"
-        echo "Current commit: $(git describe --always)"
-        [[ "$(git log --format=%B -n 1)" =~ Merge[[:space:]]${BUILDKITE_COMMIT:-invalid} ]]
+        if [ "${BUILDKITE_PULL_REQUEST:-false}" != "false" ]; then
+            echo "--- Check that the PR commit has been merged into the target branch"
+            echo "Current commit: $(git describe --always)"
+            [[ "$(git log --format=%B -n 1)" =~ Merge[[:space:]]${BUILDKITE_COMMIT:-invalid} ]]
+        fi
         ;;
 
     dlang/dub)
