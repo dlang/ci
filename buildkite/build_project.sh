@@ -153,6 +153,9 @@ case "$REPO_FULL_NAME" in
             echo "Current commit: $(git describe --always)"
             [[ "$(git log --format=%B -n 1)" =~ Merge[[:space:]]${BUILDKITE_COMMIT:-invalid} ]]
         fi
+        echo "--- Test cloning all core repositories"
+        "$DIR"/clone_repositories.sh
+        ( cd ci && [[ "$(git log --format=%B -n 1)" =~ Merge[[:space:]]${BUILDKITE_COMMIT:-invalid} ]])
         ;;
 
     dlang/dub)
