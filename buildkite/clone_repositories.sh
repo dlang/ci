@@ -14,7 +14,7 @@ echo "--- Cloning all core repositories"
 repositories=(dmd druntime phobos tools dub)
 
 # For PRs to dlang/ci, clone itself too, s.t. the code below can be tested
-if "${REPO_FULL_NAME:-none}" == "dlang/ci" ; then
+if [ "${REPO_FULL_NAME:-none}" == "dlang/ci" ] ; then
     repositories+=(ci)
 fi
 
