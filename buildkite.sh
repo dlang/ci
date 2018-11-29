@@ -151,7 +151,6 @@ projects=(
     "DerelictOrg/DerelictSDL2"
     "dlang-bots/dlang-bot"
     "dlang-community/containers"
-    "dlang/ci"
     "dlang/undeaD"
     "DlangScience/scid"
     "ikod/dlang-requests"
@@ -186,6 +185,9 @@ memory_req["dlang/phobos"]=high
 memory_req["dlang/dub"]=high
 memory_req["higgsjs/Higgs"]=high
 memory_req["LaurentTreguier/dls"]=high
+
+# self-test PRs to dlang/ci
+projects+=("dlang/ci")
 
 for project_name in "${projects[@]}" ; do
     project="$(echo "$project_name" | sed "s/\([^+]*\)+.*/\1/")"
