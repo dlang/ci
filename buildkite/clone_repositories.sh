@@ -22,7 +22,7 @@ for dir in "${repositories[@]}" ; do
     if [ "$origin_repo" == "$dir" ] ; then
     # we have already cloned this repo, so let's use this data
         mkdir -p "$dir"
-        for f in ./* ; do
+        find . -maxdepth 1 -mindepth 1 | while read -r f ; do
             case "$f" in
                 ./.git)
                     # for some commands a real "git" repository is required
