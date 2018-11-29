@@ -12,6 +12,12 @@ origin_repo="$(echo "$BUILDKITE_REPO" | sed "s/.*\/\([^\]*\)[.]git/\1/")"
 
 echo "--- Cloning all core repositories"
 repositories=(dmd druntime phobos tools dub)
+
+# For PRs to dlang/ci, clone itself too, s.t. the code below can be tested
+if "${REPO_FULL_NAME:-none}" == "dlang/ci" ; then
+    repositories+=(ci)
+fi
+
 for dir in "${repositories[@]}" ; do
     # repos cloned via the project tester can't be considered as existent
     if [ "$origin_repo" == "$dir" ] && [ "${REPO_FULL_NAME:-x}" == "x" ]  ; then
