@@ -57,8 +57,18 @@ case "$REPO_FULL_NAME" in
             "$DIR/merge_head.sh"
             latest_tag="IS-ALREADY-CHECKED-OUT"
         else
-            # otherwise checkout the respective branch
-            latest_tag=$("$DIR/origin_target_branch.sh" "${REPO_URL}")
+            # for the main core repositories,
+            # clone_repositories.sh will clone them together
+            case "$REPO_FULL_NAME" in
+                "dlang/dmd" | \
+                "dlang/druntime" | \
+                "dlang/phobos")
+                latest_tag="IS-ALREADY-CHECKED-OUT"
+                ;;
+            *)
+                # otherwise checkout the respective branch
+                latest_tag=$("$DIR/origin_target_branch.sh" "${REPO_URL}")
+            esac
         fi
         ;;
     *)
