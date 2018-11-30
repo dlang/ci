@@ -78,6 +78,9 @@ if [ "$latest_tag" != "IS-ALREADY-CHECKED-OUT" ] ; then
     echo "--- Cloning ${REPO_URL} (tag: $latest_tag)"
     git clone -b "${latest_tag}" --depth 1 "${REPO_URL}" "${REPO_DIR}"
     cd "${REPO_DIR}"
+else
+    # list the entire directory layout for debugging
+    ls -R
 fi
 
 use_travis_test_script()
