@@ -81,6 +81,8 @@ if [ "$latest_tag" != "IS-ALREADY-CHECKED-OUT" ] ; then
 else
     # list the entire directory layout for debugging
     ls -R
+    echo "--- Reusing existing layout for ${REPO_URL}"
+    cd ..
 fi
 
 use_travis_test_script()
