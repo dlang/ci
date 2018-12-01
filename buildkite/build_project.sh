@@ -170,7 +170,9 @@ case "$REPO_FULL_NAME" in
         fi
         echo "--- Test cloning all core repositories"
         "$DIR"/clone_repositories.sh
-        ( cd ci && [[ "$(git log --format=%B -n 1)" =~ Merge[[:space:]]${BUILDKITE_COMMIT:-invalid} ]])
+        if [ "${BUILDKITE_PULL_REQUEST:-false}" != "false" ]; then
+            ( cd ci && [[ "$(git log --format=%B -n 1)" =~ Merge[[:space:]]${BUILDKITE_COMMIT:-invalid} ]])
+        fi
         ;;
 
     dlang/dub)
