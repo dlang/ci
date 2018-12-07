@@ -16,6 +16,8 @@ read -r -d '' LOAD_CI_FOLDER <<- EOM
 EOM
 
 read -r -d '' LOAD_DISTRIBUTION <<- EOM
+        # just to be sure there isn't anything old left
+        git clean -ffdxq .
         echo "--- Load distribution archive"
         buildkite-agent artifact download distribution.tar.xz .
         tar xfJ distribution.tar.xz
