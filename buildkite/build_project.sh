@@ -222,6 +222,10 @@ case "$REPO_FULL_NAME" in
         ;;
 
     dlang-tour/core)
+        # this is required as the older git versions on the agents have troubles
+        # checking older submodules out otherwise
+        git pull --unshallow
+        (cd public/content/en && git fetch)
         git submodule update --init public/content/en
         dub test "--compiler=$DC"
         ;;
