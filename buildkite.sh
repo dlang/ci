@@ -39,6 +39,7 @@ steps:
   - command: |
         echo "--- Print environment"
         uname -a
+        git --version
         make --version
         \\\${SHELL} --version || true
         c++ --version
