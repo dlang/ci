@@ -222,7 +222,8 @@ case "$REPO_FULL_NAME" in
         ;;
 
     dlang-tour/core)
-        git submodule update --init public/content/en
+        cd public/content && git clone --depth 15 https://github.com/dlang-tour/english en
+        cd ../.. && git submodule update
         dub test "--compiler=$DC"
         ;;
 
