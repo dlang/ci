@@ -282,6 +282,15 @@ case "$REPO_FULL_NAME" in
         rm -rf "$TMP"
         ;;
 
+    d-language-server/dls)
+        # https://github.com/dlang/ci/issues/360
+        # dub's .editorconfig influences the behavior of dfmt
+        rm -f .editorconfig
+        rm -f ../.editorconfig
+        rm -f ../../.editorconfig
+        use_travis_test_script
+        ;;
+
     *)
         use_travis_test_script
         ;;
