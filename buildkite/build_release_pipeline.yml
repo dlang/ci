@@ -8,3 +8,6 @@ steps:
       - './buildkite/build_release.sh'
     agents:
       queue: release-builder
+    retry:
+      automatic:
+        limit: 2
