@@ -3,7 +3,7 @@
 # Don't run Buildkite for the dmd-cxx branch
 if [ "${BUILDKITE_PULL_REQUEST_BASE_BRANCH:-master}" == "dmd-cxx" ] ; then
     echo ""
-    return 0
+    exit 0
 fi
 
 read -r -d '' LOAD_CI_FOLDER <<- EOM
