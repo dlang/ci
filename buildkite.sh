@@ -164,7 +164,7 @@ projects=(
     "DlangScience/scid"
     "ikod/dlang-requests"
     "kaleidicassociates/excel-d"
-    "kaleidicassociates/lubeck"
+    #"kaleidicassociates/lubeck" # https://github.com/kaleidicassociates/lubeck/issues/21
     "kyllingstad/zmqd"
     "lgvz/imageformats"
     "libmir/mir"
