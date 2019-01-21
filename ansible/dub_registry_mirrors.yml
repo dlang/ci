@@ -1,0 +1,14 @@
+---
+- hosts: dub_hosts
+  vars:
+    - dub_registry_http_port: 8080
+    - dub_registry_version: 388e7ce70c0e9e06c966f1b5f901a49cbcc579c7
+  roles:
+    - role: dub_registry_mirror
+      tags: dub_registry_mirror
+    - role: haproxy
+      tags: haproxy
+      backends:
+        code-mirror.dlang.io: |
+          mode http
+          server s1 127.0.0.1:{{ dub_registry_http_port }}

@@ -1,10 +1,4 @@
 ---
-- hosts: dub-registry.ci.dlang.io
-  vars:
-    - dub_registry_http_port: 8080
-  roles:
-    - dub_registry_mirror
-
 - hosts: jenkins.ci.dlang.io
   vars:
     - jenkins_url: https://ci.dlang.io/

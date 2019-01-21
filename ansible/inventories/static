@@ -1,3 +1,5 @@
+## Virtualization
+# LXD hosts
 [lxd_hosts]
 ci.dlang.io
 
@@ -5,15 +7,16 @@ ci.dlang.io
 [lxd_containers:children]
 ci_containers
 
+# LXD containers
 [ci_containers]
 jenkins.ci.dlang.io
-dub-registry.ci.dlang.io
 
 [ci_containers:vars]
 jenkins_use_github_auth=True
 # ssh proxy into container (running ssh itself)
 ansible_ssh_common_args=-o ProxyCommand="ssh -W %h:%p ci.dlang.io"
 ansible_ssh_user=root
+
 
 ## Buildkite Agents
 #
@@ -27,6 +30,13 @@ buildkite_demand_agents
 # on-demand buildkite agents
 [buildkite_demand_agents]
 
+
+## dub-registry hosts
+[dub_hosts]
+code-mirror.dlang.io ansible_ssh_host=139.99.42.12
+
+
+## Server Providers
 # running at online.net
 [online_net:children]
 lxd_hosts
@@ -41,11 +51,16 @@ scaleway_metal
 # running at Hetzner cloud
 [hcloud]
 
+# running on OVH VPS
+[ovh_vps]
+code-mirror.dlang.io
+
 # all non-containerized host
 [servers:children]
 lxd_hosts
 scaleway
 hcloud
+ovh_vps
 
 # admin setting
 [servers:vars]

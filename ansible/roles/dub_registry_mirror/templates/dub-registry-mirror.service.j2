@@ -6,7 +6,7 @@ After=network.target remote-fs.target nss-lookup.target
 Type=simple
 Group=dub-registry
 User=dub-registry
-ExecStart=/home/dub-registry/dub-registry/dub-registry --mirror=https://code.dlang.org --bind=0.0.0.0
+ExecStart=/home/dub-registry/dub-registry/dub-registry --mirror=https://code.dlang.org --hostname={{ inventory_hostname }} --bind=127.0.0.1 --port={{ dub_registry_http_port }}
 WorkingDirectory=/home/dub-registry/dub-registry
 MemoryLimit=1.5G
 Restart=on-failure

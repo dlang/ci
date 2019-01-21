@@ -21,3 +21,4 @@
       with_items: "{{ users_for_role.admin }}"
 
 - import_playbook: ci.yml
+- import_playbook: dub_registry_mirrors.yml
