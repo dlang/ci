@@ -9,9 +9,12 @@
 - name: configure mongod
   copy: { src: mongod.conf, dest: /etc/mongod.conf }
   notify: [enable mongod, restart mongod]
+- name: start mongodb
+  meta: flush_handlers
+
 - name: install dmd
   apt:
-    deb: 'http://downloads.dlang.org/releases/2.x/2.079.1/dmd_2.079.1-0_amd64.deb'
+    deb: 'http://downloads.dlang.org/releases/2.x/2.083.1/dmd_2.083.1-0_amd64.deb'
     install_recommends: no
     update_cache: yes
     cache_valid_time: 3600
@@ -30,7 +33,8 @@
     src: "/home/dub-registry/dub-registry-{{ dub_registry_version | regex_replace('^v(\\d+\\.\\d+\\.\\d+)', '\\1') }}"
     state: link
 - name: build dub-registry
-  command: dub build
+  # use single-file build mode for low-mem servers
+  command: dub build --build=release --build-mode=singleFile --override-config vibe-d:tls/openssl-1.1
   args:
     chdir: /home/dub-registry/dub-registry
   become_user: dub-registry
@@ -39,5 +43,5 @@
   tags: rebuild
   notify: restart dub-registry-mirror
 - name: install service file
-  copy: { src: dub-registry-mirror.service, dest: /etc/systemd/system/ }
+  template: { src: dub-registry-mirror.service.j2, dest: /etc/systemd/system/dub-registry-mirror.service }
   notify: [systemctl daemon-reload, enable dub-registry-mirror, restart dub-registry-mirror]
