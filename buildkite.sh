@@ -125,6 +125,7 @@ projects=(
     "vibe-d/vibe-core+select" # 3m30s
     "higgsjs/Higgs" # 3m10s
     "rejectedsoftware/ddox" # 2m42s
+    "dlang-bots/dlang-bot" # 2m39s    
     "BlackEdder/ggplotd" # 1m56s
     "d-language-server/dls" # 1m55s
     "eBay/tsv-utils" # 1m41s
@@ -158,7 +159,6 @@ projects=(
     "DerelictOrg/DerelictGL3"
     "DerelictOrg/DerelictGLFW3"
     "DerelictOrg/DerelictSDL2"
-    "dlang-bots/dlang-bot"
     "dlang-community/containers"
     "dlang/undeaD"
     "DlangScience/scid"
