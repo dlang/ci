@@ -113,6 +113,7 @@ projects=(
     "vibe-d/vibe.d+vibe-core-examples" # 9m51s
     "vibe-d/vibe.d+libevent-tests" # 8m35s
     "vibe-d/vibe.d+vibe-core-tests" # 6m44s
+    "dlang-bots/dlang-bot" # 4m54s
     "ldc-developers/ldc" # 4m49s
     "vibe-d/vibe.d+libevent-base" # 4m20s
     "vibe-d/vibe.d+vibe-core-base" # 4m31s
@@ -158,7 +159,6 @@ projects=(
     "DerelictOrg/DerelictGL3"
     "DerelictOrg/DerelictGLFW3"
     "DerelictOrg/DerelictSDL2"
-    "dlang-bots/dlang-bot"
     "dlang-community/containers"
     "dlang/undeaD"
     "DlangScience/scid"
