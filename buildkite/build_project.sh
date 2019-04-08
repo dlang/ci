@@ -213,7 +213,7 @@ case "$REPO_FULL_NAME" in
 
     sociomantic-tsunami/ocean)
         git submodule update --init
-        make test V=1 DVER=2 F=production ALLOW_DEPRECATIONS=1
+        make test V=1 F=production ALLOW_DEPRECATIONS=1
         ;;
 
     eBay/tsv-utils)
