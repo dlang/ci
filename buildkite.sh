@@ -168,7 +168,7 @@ projects=(
     "kaleidicassociates/lubeck"
     "kyllingstad/zmqd"
     "lgvz/imageformats"
-    #"libmir/mir"
+    "libmir/mir"
     "msoucy/dproto"
     "Netflix/vectorflow"
     "nomad-software/dunit"
