@@ -229,8 +229,6 @@ case "$REPO_FULL_NAME" in
     CyberShadow/ae)
         # remove failing extended attribute test
         perl -0777 -pi -e "s/unittest[^{]*{[^{}]*xAttrs[^{}]*}//" sys/file.d
-        # remove network tests (they tend to timeout)
-        rm -f sys/net/test.d
         use_travis_test_script
         ;;
 
