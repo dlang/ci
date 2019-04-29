@@ -144,6 +144,7 @@ projects=(
     "weka-io/mecca" # 22s
     "CyberShadow/ae" # 22s
     "jmdavis/dxml" # 22s
+    "jacob-carlborg/dstep" # 18s
     "libmir/mir-algorithm" # 17s
     "dlang-community/D-YAML" # 15s
     "libmir/mir-random" # 13s

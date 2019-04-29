@@ -1,4 +1,10 @@
 ---
+- name: add LLVM repository
+  apt_repository:
+    repo: deb http://apt.llvm.org/jessie/ llvm-toolchain-jessie-8 main
+    state: present
+    validate_certs: false
+
 - name: test dependencies (1/2)
   apt: { name: "{{ item }}", install_recommends: no, update_cache: yes, cache_valid_time: 3600 }
   with_items:
@@ -11,7 +17,7 @@
     - libblas-dev
     - libbz2-dev
     - libcairo-dev
-    - libclang-4.0-dev # dstep
+    - libclang-8-dev # dstep
     - libcurl4-gnutls-dev
     - libevent-dev
     - libgcrypt20-dev
