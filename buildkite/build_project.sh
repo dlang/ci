@@ -288,6 +288,11 @@ case "$REPO_FULL_NAME" in
         use_travis_test_script
         ;;
 
+    jacob-carlborg/dlp)
+        git submodule update --init --recursive
+        use_travis_test_script
+        ;;
+
     *)
         use_travis_test_script
         ;;
