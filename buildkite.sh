@@ -128,7 +128,7 @@ projects=(
     "higgsjs/Higgs" # 3m10s
     "rejectedsoftware/ddox" # 2m42s
     "BlackEdder/ggplotd" # 1m56s
-    "d-language-server/dls" # 1m55s
+    #"d-language-server/dls" # 1m55s
     "eBay/tsv-utils" # 1m41s
     "dlang-community/D-Scanner" # 1m40s
     "dlang/druntime" # 1m18s
