@@ -121,6 +121,7 @@ projects=(
     "vibe-d/vibe.d+libasync-base" # 3m45s
     "dlang/phobos" # 4m50s
     "sociomantic-tsunami/ocean" # 4m49s
+    "sociomantic-tsunami/swarm"
     "sociomantic-tsunami/turtle"
     "dlang/dub" # 3m55s
     "vibe-d/vibe-core+epoll" # 3m38s
