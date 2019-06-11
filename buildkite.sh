@@ -139,7 +139,7 @@ projects=(
     "mbierlee/poodinis" # 40s
     "dlang/tools" # 40s
     #"atilaneves/unit-threaded" #36s
-    "d-gamedev-team/gfm" # 28s
+    #"d-gamedev-team/gfm" # 28s
     "gecko0307/dagon" # 25s
     "dlang-community/DCD" # 23s
     "weka-io/mecca" # 22s
