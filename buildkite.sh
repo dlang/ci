@@ -142,7 +142,7 @@ projects=(
     #"d-gamedev-team/gfm" # 28s
     "gecko0307/dagon" # 25s
     "dlang-community/DCD" # 23s
-    "weka-io/mecca" # 22s
+    #"weka-io/mecca" # 22s
     "CyberShadow/ae" # 22s
     "jmdavis/dxml" # 22s
     "jacob-carlborg/dstep" # 18s
