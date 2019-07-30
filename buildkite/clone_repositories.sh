@@ -19,10 +19,7 @@ if [ "${REPO_FULL_NAME:-none}" == "dlang/ci" ] ; then
 fi
 
 for dir in "${repositories[@]}" ; do
-    # repos cloned via the project tester can't be considered as existent
-    # except its the repository from which the PR was triggered
-    if [ "$origin_repo" == "$dir" ] &&
-        { [ "${REPO_FULL_NAME:-x}" == "x" ] || [ "$(basename "${REPO_FULL_NAME:-x}")" == "$origin_repo" ] ; }  ; then
+    if [ "$origin_repo" == "$dir" ] ; then
     # we have already cloned this repo, so let's use this data
         mkdir -p "$dir"
         find . -maxdepth 1 -mindepth 1 | while read -r f ; do
