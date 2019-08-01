@@ -151,7 +151,7 @@ projects=(
     "libmir/mir-random" # 13s
     "dlang-community/libdparse" # 13s
     "Basile-z/iz" # 12s
-    "aliak00/optional" # 12s
+    #"aliak00/optional" # 12s
     "dlang-community/dfmt" # 11s
     "jacob-carlborg/dlp" # 11s
     # run in under 10s sorted alphabetically
