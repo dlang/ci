@@ -150,7 +150,6 @@ projects=(
     "dlang-community/D-YAML" # 15s
     "libmir/mir-random" # 13s
     "dlang-community/libdparse" # 13s
-    "Basile-z/iz" # 12s
     "aliak00/optional" # 12s
     "dlang-community/dfmt" # 11s
     "jacob-carlborg/dlp" # 11s
@@ -187,7 +186,6 @@ projects=(
 # Add all projects that require more than 3GB of memory to build
 declare -A memory_req
 memory_req["BlackEdder/ggplotd"]=high
-memory_req["Basile-z/iz"]=high
 memory_req["dlang-community/D-Scanner"]=high
 memory_req["vibe-d/vibe-core+select"]=high
 memory_req["vibe-d/vibe-core+epoll"]=high

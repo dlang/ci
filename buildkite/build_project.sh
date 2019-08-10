@@ -202,10 +202,6 @@ case "$REPO_FULL_NAME" in
         use_travis_test_script
         ;;
 
-    Basile-z/iz)
-        cd scripts && sh ./test.sh
-        ;;
-
     dlang-community/D-YAML)
         dub build "--compiler=$DC"
         dub test "--compiler=$DC"
