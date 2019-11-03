@@ -113,6 +113,14 @@ remove_spurious_vibed_tests()
     rm -rf tests/redis # FIXME
 }
 
+remove_spurious_vibe_core_tests()
+{
+    # https://github.com/vibe-d/vibe-core/issues/84
+    rm -rf tests/issue-58-task-already-scheduled.d
+    # https://github.com/vibe-d/vibe-core/issues/184
+    rm -rf tests/vibe.core.process.d
+}
+
 ################################################################################
 # Add custom build instructions here
 ################################################################################
@@ -153,12 +161,12 @@ case "$REPO_FULL_NAME" in
         ;;
 
     vibe-d/vibe-core+epoll)
-        rm tests/issue-58-task-already-scheduled.d # https://github.com/vibe-d/vibe-core/issues/84
+        remove_spurious_vibe_core_tests
         CONFIG=epoll ./travis-ci.sh
         ;;
 
     vibe-d/vibe-core+select)
-        rm tests/issue-58-task-already-scheduled.d # https://github.com/vibe-d/vibe-core/issues/84
+        remove_spurious_vibe_core_tests
         CONFIG=select ./travis-ci.sh
         ;;
 
