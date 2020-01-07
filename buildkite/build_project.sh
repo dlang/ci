@@ -26,16 +26,16 @@ latest_tag=$(git ls-remote --tags ""${REPO_URL}"" | \
     sed -n 's|.*refs/tags/\(v\?[0-9]*\.[0-9]*\.[0-9]*$\)|\1|p' | \
     sort --version-sort | \
     tail -n 1)
-latest_tag="${latest_tag:-master}"
+ref_to_use="${latest_tag:-master}"
 
 case "$REPO_URL" in
     https://github.com/vibe-d/vibe.d)
         # for https://github.com/vibe-d/vibe.d/pull/2183, required until 0.8.5 is released
-        latest_tag=master
+        ref_to_use=master
         ;;
     https://github.com/ldc-developers/ldc)
         # ldc doesn't really do point releases, so master is easier to adapt if needed.
-        latest_tag=master
+        ref_to_use=master
         ;;
     *)
         ;;
@@ -55,7 +55,7 @@ case "$REPO_FULL_NAME" in
         if [[ "${BUILDKITE_REPO:-b}" =~ ^${REPO_URL:-a}([.]git)?$ ]] ; then
             echo "--- Merging with the upstream target branch"
             "$DIR/merge_head.sh"
-            latest_tag="IS-ALREADY-CHECKED-OUT"
+            ref_to_use="IS-ALREADY-CHECKED-OUT"
         else
             # for the main core repositories,
             # clone_repositories.sh will clone them together
@@ -63,20 +63,20 @@ case "$REPO_FULL_NAME" in
                 "dlang/dmd" | \
                 "dlang/druntime" | \
                 "dlang/phobos")
-                latest_tag="IS-ALREADY-CHECKED-OUT"
+                ref_to_use="IS-ALREADY-CHECKED-OUT"
                 ;;
             *)
                 # otherwise checkout the respective branch
-                latest_tag=$("$DIR/origin_target_branch.sh" "${REPO_URL}")
+                ref_to_use=$("$DIR/origin_target_branch.sh" "${REPO_URL}")
             esac
         fi
         ;;
     *)
 esac
 
-if [ "$latest_tag" != "IS-ALREADY-CHECKED-OUT" ] ; then
-    echo "--- Cloning ${REPO_URL} (tag: $latest_tag)"
-    git clone -b "${latest_tag}" --depth 1 "${REPO_URL}" "${REPO_DIR}"
+if [ "$ref_to_use" != "IS-ALREADY-CHECKED-OUT" ] ; then
+    echo "--- Cloning ${REPO_URL} (tag: $ref_to_use)"
+    git clone -b "${ref_to_use}" --depth 1 "${REPO_URL}" "${REPO_DIR}"
     cd "${REPO_DIR}"
 else
     # list the entire directory layout for debugging
