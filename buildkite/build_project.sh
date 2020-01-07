@@ -186,7 +186,13 @@ case "$REPO_FULL_NAME" in
     dlang/dub)
         rm test/issue895-local-configuration.sh # FIXME
         rm test/issue884-init-defer-file-creation.sh # FIXME
-        use_travis_test_script
+        # https://github.com/dlang/dub/commit/8b4ab6e0ebd930463198b19c4acf2f7fcc7bc7cd
+        if [ ! -f ./travis-ci.sh ]; then
+           use_travis_test_script
+        else
+            sed -i '/^source.*activate/d' travis-ci.sh
+            DC=$DC ./travis-ci.sh
+        fi
         ;;
 
     dlang/tools)
