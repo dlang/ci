@@ -119,6 +119,8 @@ remove_spurious_vibe_core_tests()
     rm -rf tests/issue-58-task-already-scheduled.d
     # https://github.com/vibe-d/vibe-core/issues/184
     rm -rf tests/vibe.core.process.d
+    # https://github.com/vibe-d/vibe-core/issues/190
+    rm -rf tests/vibe.core.net.1452.sh
 }
 
 ################################################################################
