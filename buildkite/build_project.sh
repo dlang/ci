@@ -306,6 +306,13 @@ case "$REPO_FULL_NAME" in
         use_travis_test_script
         ;;
 
+    MartinNowak/io)
+        export BUILD_TOOL=dub
+        export COVERAGE=false
+        export SKIP_IPv6_LOOPBACK_TESTS=yes
+        use_travis_test_script
+        ;;
+
     *)
         use_travis_test_script
         ;;
