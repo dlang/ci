@@ -109,16 +109,11 @@ esac
 ################################################################################
 projects=(
     # sorted by test time fast to slow (to minimize pending queue length)
-    "vibe-d/vibe.d+libevent-examples" # 12m1s
-    "vibe-d/vibe.d+vibe-core-examples" # 9m51s
-    "vibe-d/vibe.d+libevent-tests" # 8m35s
-    "vibe-d/vibe.d+vibe-core-tests" # 6m44s
+    "vibe-d/vibe.d+examples" # 9m51s
+    "vibe-d/vibe.d+tests" # 6m44s
     "dlang-bots/dlang-bot" # 4m54s
     "ldc-developers/ldc" # 4m49s
-    "vibe-d/vibe.d+libevent-base" # 4m20s
-    "vibe-d/vibe.d+vibe-core-base" # 4m31s
-    # https://github.com/vibe-d/vibe.d/issues/2157
-    "vibe-d/vibe.d+libasync-base" # 3m45s
+    "vibe-d/vibe.d+base" # 4m31s
     "dlang/phobos" # 4m50s
     "sociomantic-tsunami/ocean" # 4m49s
     "sociomantic-tsunami/swarm"
@@ -192,9 +187,7 @@ memory_req["BlackEdder/ggplotd"]=high
 memory_req["dlang-community/D-Scanner"]=high
 memory_req["vibe-d/vibe-core+select"]=high
 memory_req["vibe-d/vibe-core+epoll"]=high
-memory_req["vibe-d/vibe.d+vibe-core-base"]=high
-memory_req["vibe-d/vibe.d+libevent-base"]=high
-memory_req["vibe-d/vibe.d+libasync-base"]=high
+memory_req["vibe-d/vibe.d+base"]=high
 memory_req["libmir/mir-algorithm"]=high
 memory_req["sociomantic-tsunami/ocean"]=high
 memory_req["dlang-bots/dlang-bot"]=high
