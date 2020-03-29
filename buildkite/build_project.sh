@@ -30,7 +30,7 @@ ref_to_use="${latest_tag:-master}"
 
 case "$REPO_URL" in
     https://github.com/vibe-d/vibe.d)
-        # for https://github.com/vibe-d/vibe.d/pull/2183, required until 0.8.5 is released
+        # Use master as Vibe.d covers a lot of the language features
         ref_to_use=master
         ;;
     https://github.com/ldc-developers/ldc)
@@ -94,29 +94,15 @@ use_travis_test_script()
 remove_spurious_vibed_tests()
 {
     # these vibe.d tests tend to timeout or fail often
-    # temporarily disable failing tests, see: https://github.com/vibe-d/vibe-core/issues/56
-    rm -rf tests/vibe.core.net.1726 # FIXME
     rm -rf tests/std.concurrency # FIXME
-    # temporarily disable failing tests, see: https://github.com/vibe-d/vibe-core/issues/55
-    rm -rf tests/vibe.core.net.1429 # FIXME
-    # temporarily disable failing tests, see: https://github.com/vibe-d/vibe-core/issues/54
-    rm -rf tests/vibe.core.concurrency.1408 # FIXME
     # temporarily disable failing tests, see: https://github.com/vibe-d/vibe.d/issues/2057
     rm -rf tests/vibe.http.client.1389 # FIXME
-    # temporarily disable failing tests, see: https://github.com/vibe-d/vibe.d/issues/2054
-    rm -rf tests/tcp # FIXME
-    # temporarily disable failing tests, see: https://github.com/vibe-d/vibe.d/issues/2066
-    rm -rf tests/vibe.core.net.1452 # FIXME
-    # temporarily disable failing tests, see: https://github.com/vibe-d/vibe.d/issues/2068
-    rm -rf tests/vibe.core.net.1376 # FIXME
     # temporarily disable failing tests, see: https://github.com/vibe-d/vibe.d/issues/2078
     rm -rf tests/redis # FIXME
 }
 
 remove_spurious_vibe_core_tests()
 {
-    # https://github.com/vibe-d/vibe-core/issues/84
-    rm -rf tests/issue-58-task-already-scheduled.d
     # https://github.com/vibe-d/vibe-core/issues/184
     rm -rf tests/vibe.core.process.d
     # https://github.com/vibe-d/vibe-core/issues/190
@@ -138,28 +124,15 @@ case "$REPO_FULL_NAME" in
         make -C source test "DC=$DC"
         ;;
 
-    vibe-d/vibe.d+libevent-base)
-        VIBED_DRIVER=libevent PARTS=builds,unittests ./travis-ci.sh
-        ;;
-    vibe-d/vibe.d+libevent-examples)
-        VIBED_DRIVER=libevent PARTS=examples ./travis-ci.sh
-        ;;
-    vibe-d/vibe.d+libevent-tests)
-        remove_spurious_vibed_tests
-        VIBED_DRIVER=libevent PARTS=tests ./travis-ci.sh
-        ;;
-    vibe-d/vibe.d+vibe-core-base)
+    vibe-d/vibe.d+base)
         VIBED_DRIVER=vibe-core PARTS=builds,unittests ./travis-ci.sh
         ;;
-    vibe-d/vibe.d+vibe-core-examples)
+    vibe-d/vibe.d+examples)
         VIBED_DRIVER=vibe-core PARTS=examples ./travis-ci.sh
         ;;
-    vibe-d/vibe.d+vibe-core-tests)
+    vibe-d/vibe.d+tests)
         remove_spurious_vibed_tests
         VIBED_DRIVER=vibe-core PARTS=tests ./travis-ci.sh
-        ;;
-    vibe-d/vibe.d+libasync-base)
-        VIBED_DRIVER=libasync PARTS=builds,unittests ./travis-ci.sh
         ;;
 
     vibe-d/vibe-core+epoll)
