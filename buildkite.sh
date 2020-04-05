@@ -178,7 +178,7 @@ projects=(
     "PhilippeSigaud/Pegged"
     "repeatedly/mustache-d"
     "s-ludwig/std_data_json"
-    "s-ludwig/taggedalgebraic"
+    #"s-ludwig/taggedalgebraic"
     "MartinNowak/io"
 )
 # Add all projects that require more than 3GB of memory to build
