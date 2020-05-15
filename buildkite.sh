@@ -142,7 +142,7 @@ projects=(
     "jmdavis/dxml" # 22s
     "jacob-carlborg/dstep" # 18s
     "libmir/mir-algorithm" # 17s
-    "dlang-community/D-YAML" # 15s
+    #"dlang-community/D-YAML" # 15s
     "libmir/mir-random" # 13s
     "dlang-community/libdparse" # 13s
     "aliak00/optional" # 12s
