@@ -233,9 +233,7 @@ case "$REPO_FULL_NAME" in
         ;;
 
     ldc-developers/ldc)
-        cd runtime && git clone --depth 5 https://github.com/ldc-developers/druntime
-        git clone --depth 5 https://github.com/ldc-developers/phobos
-        cd .. && git submodule update
+        git submodule update --init
         mkdir bootstrap && cd bootstrap
         cmake -GNinja -DCMAKE_BUILD_TYPE=Debug -DD_COMPILER="$DC" ..
         ninja -j2 ldmd2 druntime-ldc-debug phobos2-ldc-debug
