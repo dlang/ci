@@ -33,10 +33,6 @@ case "$REPO_URL" in
         # Use master as Vibe.d covers a lot of the language features
         ref_to_use=master
         ;;
-    https://github.com/ldc-developers/ldc)
-        # ldc doesn't really do point releases, so master is easier to adapt if needed.
-        ref_to_use=master
-        ;;
     *)
         ;;
 esac
