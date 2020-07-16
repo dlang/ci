@@ -31,7 +31,7 @@
     - libxml2-dev
     - libxslt1-dev
     - libzmq3-dev
-    - llvm-3.9-dev # ldc
+    - llvm-8-dev # ldc
     - mongodb-server
     - moreutils # sponge et.al.
     - ninja-build # ldc
