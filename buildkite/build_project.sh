@@ -231,11 +231,13 @@ case "$REPO_FULL_NAME" in
     ldc-developers/ldc)
         git submodule update --init
         mkdir bootstrap && cd bootstrap
+        export CC=clang-8
+        export CXX=clang++-8
         cmake .. \
           -GNinja \
           -DCMAKE_BUILD_TYPE=Debug \
           -DD_COMPILER="$DC" \
-          -DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=gold # gold required for llvm-8 pkg
+          -DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=lld # lld required for llvm-8 pkg
         ninja -j2 ldmd2 druntime-ldc-debug phobos2-ldc-debug
         cd ..
         mkdir build && cd build
