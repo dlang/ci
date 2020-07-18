@@ -231,8 +231,8 @@ case "$REPO_FULL_NAME" in
     ldc-developers/ldc)
         git submodule update --init
         mkdir bootstrap && cd bootstrap
-        export CC=clang-8
-        export CXX=clang++-8
+        export CC=clang
+        export CXX=clang++
         cmake .. \
           -GNinja \
           -DCMAKE_BUILD_TYPE=Debug \
@@ -245,7 +245,7 @@ case "$REPO_FULL_NAME" in
           -GNinja \
           -DCMAKE_BUILD_TYPE=Debug \
           -DD_COMPILER="$(pwd)/../bootstrap/bin/ldmd2" \
-          -DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=gold
+          -DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=lld
         ninja -j2 ldc2 druntime-ldc phobos2-ldc
         ;;
 
