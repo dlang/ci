@@ -235,7 +235,7 @@ case "$REPO_FULL_NAME" in
           -GNinja \
           -DCMAKE_BUILD_TYPE=Debug \
           -DD_COMPILER="$DC" \
-          -DCMAKE_CROSSCOMPILING=True # work around gen_gccbuiltins linker issue with llvm-8 pkg
+          -DCMAKE_SYSTEM_NAME=Linux # work around gen_gccbuiltins linker issue with llvm-8 pkg
         ninja -j2 ldmd2 druntime-ldc-debug phobos2-ldc-debug
         cd ..
         mkdir build && cd build
@@ -243,7 +243,7 @@ case "$REPO_FULL_NAME" in
           -GNinja \
           -DCMAKE_BUILD_TYPE=Debug \
           -DD_COMPILER="$(pwd)/../bootstrap/bin/ldmd2" \
-          -DCMAKE_CROSSCOMPILING=True # work around gen_gccbuiltins linker issue with llvm-8 pkg
+          -DCMAKE_SYSTEM_NAME=Linux # work around gen_gccbuiltins linker issue with llvm-8 pkg
         ninja -j2 ldc2 druntime-ldc phobos2-ldc
         ;;
 
