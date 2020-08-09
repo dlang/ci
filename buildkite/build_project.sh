@@ -264,6 +264,12 @@ case "$REPO_FULL_NAME" in
             make -C druntime -j2 -f posix.mak
         fi
         cd "$(basename "${REPO_FULL_NAME}")"&& make -f posix.mak clean && make -f posix.mak -j2 buildkite-test
+        if [ "$REPO_FULL_NAME" == "dlang/phobos" ] ; then
+            # test autodecode items
+            export NO_AUTODECODE=1
+            echo "--- Running no-autodecode test"
+            make -f posix.mak clean && make -f posix.mak -j2 autodecode-test
+        fi
         rm -rf "$TMP"
         ;;
 
