@@ -44,6 +44,7 @@ case "$REPO_FULL_NAME" in
     "dlang/dmd" | \
     "dlang/druntime" | \
     "dlang/phobos" | \
+    "dlang/phobos+no-autodecode" | \
     "dlang/tools" | \
     "dlang/dub" | \
     "dlang/ci")
@@ -58,7 +59,8 @@ case "$REPO_FULL_NAME" in
             case "$REPO_FULL_NAME" in
                 "dlang/dmd" | \
                 "dlang/druntime" | \
-                "dlang/phobos")
+                "dlang/phobos" | \
+                "dlang/phobos+no-autodecode")
                 ref_to_use="IS-ALREADY-CHECKED-OUT"
                 ;;
             *)
@@ -264,12 +266,23 @@ case "$REPO_FULL_NAME" in
             make -C druntime -j2 -f posix.mak
         fi
         cd "$(basename "${REPO_FULL_NAME}")"&& make -f posix.mak clean && make -f posix.mak -j2 buildkite-test
-        if [ "$REPO_FULL_NAME" == "dlang/phobos" ] ; then
-            # test autodecode items
-            export NO_AUTODECODE=1
-            echo "--- Running no-autodecode test"
-            make -f posix.mak clean && make -f posix.mak -j2 autodecode-test
-        fi
+        rm -rf "$TMP"
+        ;;
+
+    dlang/phobos+no-autodecode)
+        "$DIR"/clone_repositories.sh
+        # To avoid running into "Path too long" issues, see e.g. https://github.com/dlang/ci/pull/287
+        export TMP="/tmp/${BUILDKITE_AGENT_NAME}"
+        export TEMP="$TMP"
+        export TMPDIR="$TMP"
+        export NO_AUTODECODE=1
+        rm -rf "$TMP" && mkdir -p "$TMP"
+        # patch makefile which requires gdb 8 - see https://github.com/dlang/ci/pull/301
+        sed "s/TESTS+=rt_trap_exceptions_drt_gdb//" -i druntime/test/exceptions/Makefile
+        # build druntime for phobos first, s.t. it doesn't fault when copying the druntime files in parallel
+        # see https://github.com/dlang/ci/pull/340
+        make -C druntime -j2 -f posix.mak
+        cd phobos && make -f posix.mak clean && make -f posix.mak -j2 autodecode-test
         rm -rf "$TMP"
         ;;
 

@@ -115,6 +115,7 @@ projects=(
     "ldc-developers/ldc" # 4m49s
     "vibe-d/vibe.d+base" # 4m31s
     "dlang/phobos" # 4m50s
+    "dlang/phobos+no-autodecode"
     "sociomantic-tsunami/ocean" # 4m49s
     "sociomantic-tsunami/swarm"
     "sociomantic-tsunami/turtle"
@@ -192,6 +193,7 @@ memory_req["libmir/mir-algorithm"]=high
 memory_req["sociomantic-tsunami/ocean"]=high
 memory_req["dlang-bots/dlang-bot"]=high
 memory_req["dlang/phobos"]=high
+memory_req["dlang/phobos+no-autodecode"]=high
 memory_req["dlang/dub"]=high
 memory_req["higgsjs/Higgs"]=high
 memory_req["d-language-server/dls"]=high
