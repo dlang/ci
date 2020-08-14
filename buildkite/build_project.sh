@@ -33,12 +33,6 @@ case "$REPO_URL" in
         # Use master as Vibe.d covers a lot of the language features
         ref_to_use=master
         ;;
-
-    https://github.com/dlang-community/libdparse)
-        # Freeze libdparse because of missing dependencies for the test suite
-        # See https://github.com/dlang-community/libdparse/issues/431
-        ref_to_use=v0.15.4
-        ;;
     *)
         ;;
 esac
