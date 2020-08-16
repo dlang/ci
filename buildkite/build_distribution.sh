@@ -10,18 +10,20 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 "$DIR/clone_repositories.sh"
 
-echo "--- Building all core repositories"
-for dir in dmd druntime phobos ; do
+echo "--- Building dmd"
+dmd/src/bootstrap.sh
+
+for dir in druntime phobos ; do
     echo "--- Building $dir"
-    make -C $dir -f posix.mak AUTO_BOOTSTRAP=1 --jobs=4
+    make -C $dir -f posix.mak --jobs=4
 done
 
 echo "--- Building dub"
-cd dub
+pushd dub
 # enable experimental build cache improvements https://github.com/dlang/dub/pull/1589
 sed -i 's|bool m_filterVersions = false;|bool m_filterVersions = true;|' source/dub/commandline.d
 DMD="../dmd/generated/linux/release/64/dmd" ./build.sh
-cd ..
+popd
 
 echo "--- Building tools"
 make -C tools -f posix.mak RELEASE=1 --jobs=4
