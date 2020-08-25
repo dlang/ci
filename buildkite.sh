@@ -134,7 +134,7 @@ projects=(
     "rejectedsoftware/diet-ng" # 56s
     "mbierlee/poodinis" # 40s
     "dlang/tools" # 40s
-    #"atilaneves/unit-threaded" #36s
+    "atilaneves/unit-threaded" #38s
     #"d-gamedev-team/gfm" # 28s
     "gecko0307/dagon" # 25s
     "dlang-community/DCD" # 23s
