@@ -33,6 +33,16 @@ case "$REPO_URL" in
         # Use master as Vibe.d covers a lot of the language features
         ref_to_use=master
         ;;
+
+    https://github.com/sociomantic-tsunami/swarm)
+        # Freeze repository because we patch the ocean submodule below
+        ref_to_use=v6.0.2
+        ;;
+
+    https://github.com/sociomantic-tsunami/turtle)
+        # Freeze repository because we patch the ocean submodule below
+        ref_to_use=v10.1.2
+        ;;
     *)
         ;;
 esac
@@ -197,6 +207,15 @@ case "$REPO_FULL_NAME" in
     sociomantic-tsunami/turtle | \
     sociomantic-tsunami/swarm)
         git submodule update --init
+
+        # Manually select a more recent ocean which includes
+        # https://github.com/sociomantic-tsunami/ocean/pull/831)
+        # until Swarm tags a new release using a more recent version
+        if [ "$REPO_FULL_NAME" != "sociomantic-tsunami/ocean" ]
+        then
+            git -C submodules/ocean/ checkout v5.4.0
+        fi
+
         make test V=1 F=production ALLOW_DEPRECATIONS=1
         ;;
 
