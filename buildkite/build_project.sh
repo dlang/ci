@@ -307,6 +307,10 @@ case "$REPO_FULL_NAME" in
         use_travis_test_script
         ;;
 
+    atilaneves/unit-threaded)
+        dub test
+        ;;
+
     *)
         use_travis_test_script
         ;;
