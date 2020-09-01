@@ -85,8 +85,9 @@ fi
 
 use_travis_test_script()
 {
+    export TRAVIS_OS_NAME="linux"
     # Strip any meson tests
-    "$DIR/travis_get_script" | sed -e '/meson/d' | bash
+    (echo "set -xeu" && "$DIR/travis_get_script") | sed -e '/meson/d' | bash
 }
 
 remove_spurious_vibed_tests()
