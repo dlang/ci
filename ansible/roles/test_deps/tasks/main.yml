@@ -47,7 +47,6 @@
   with_items:
     - https://bintray.com/sociomantic-tsunami/dlang/download_file?file_path=libebtree6_6.0.s7-rc5-xenial_amd64.deb
     - https://bintray.com/sociomantic-tsunami/dlang/download_file?file_path=libebtree6-dev_6.0.s7-rc5-xenial_amd64.deb
-    - https://bintray.com/sociomantic-tsunami/dlang/download_file?file_path=d1to2fix_0.10.0-alpha1-xenial_amd64.deb
 - name: disable mongodb journaling
   lineinfile: { dest: /etc/mongodb.conf, regexp: "^{{ item.key }} *=", line: "{{ item.key }} = {{ item.value }}" }
   with_dict:
