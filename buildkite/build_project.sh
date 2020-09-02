@@ -85,7 +85,6 @@ fi
 
 use_travis_test_script()
 {
-    export TRAVIS_OS_NAME="linux"
     # Strip any meson tests
     (echo "set -xeu" && "$DIR/travis_get_script") | sed -e '/meson/d' | bash
 }
@@ -193,6 +192,12 @@ case "$REPO_FULL_NAME" in
         sed -i 's|auto seed = unpredictableSeed|auto seed = 54321|' source/ggplotd/example.d
         use_travis_test_script
         ;;
+
+    AuburnSounds/intel-intrinsics)
+        export TRAVIS_OS_NAME="none" # do not run x86 tests
+        use_travis_test_script
+        ;;
+
 
     dlang-community/D-YAML)
         dub build "--compiler=$DC"
