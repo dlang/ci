@@ -86,7 +86,7 @@ fi
 use_travis_test_script()
 {
     # Strip any meson tests
-    "$DIR/travis_get_script" | sed -e '/meson/d' | bash
+    (echo "set -xeu" && "$DIR/travis_get_script") | sed -e '/meson/d' | bash
 }
 
 remove_spurious_vibed_tests()
@@ -178,6 +178,11 @@ case "$REPO_FULL_NAME" in
         make -f posix.mak unittest "DMD=$DMD" MODEL=64
         ;;
 
+    dlang-community/libdparse)
+        git submodule update --init --recursive
+        cd test && ./run_tests.sh
+        ;;
+
     dlang-community/containers)
         make -B -C test/ || echo failed # FIXME
         ;;
@@ -187,6 +192,12 @@ case "$REPO_FULL_NAME" in
         sed -i 's|auto seed = unpredictableSeed|auto seed = 54321|' source/ggplotd/example.d
         use_travis_test_script
         ;;
+
+    AuburnSounds/intel-intrinsics)
+        export TRAVIS_OS_NAME="none" # do not run x86 tests
+        use_travis_test_script
+        ;;
+
 
     dlang-community/D-YAML)
         dub build "--compiler=$DC"
