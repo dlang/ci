@@ -194,7 +194,8 @@ case "$REPO_FULL_NAME" in
         ;;
 
     AuburnSounds/intel-intrinsics)
-        export TRAVIS_OS_NAME="none" # do not run x86 tests
+        export TRAVIS_OS_NAME="none"   # do not run x86 tests
+        export TRAVIS_CPU_ARCH="amd64" # do not run arm64 tests
         use_travis_test_script
         ;;
 
