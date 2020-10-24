@@ -253,10 +253,13 @@ case "$REPO_FULL_NAME" in
         ninja -j2 ldmd2 druntime-ldc-debug phobos2-ldc-debug
         cd ..
         mkdir build && cd build
+        # LDC_LINK_MANUALLY=OFF works around an LDC 1.24.0 problem with CMAKE_BUILD_TYPE=Debug
+        # without *release* host druntime/Phobos.
         cmake .. \
           -GNinja \
           -DCMAKE_BUILD_TYPE=Debug \
           -DD_COMPILER="$(pwd)/../bootstrap/bin/ldmd2" \
+          -DLDC_LINK_MANUALLY=OFF \
           -DCMAKE_SYSTEM_NAME=Linux # work around gen_gccbuiltins linker issue with llvm-8 pkg
         ninja -j2 ldc2 druntime-ldc phobos2-ldc
         ;;
