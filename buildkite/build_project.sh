@@ -232,7 +232,6 @@ case "$REPO_FULL_NAME" in
         # full test suite is currently disabled
         # see https://github.com/dlang/ci/pull/166
         dub build -c std
-        dub build -c vibed
         ;;
 
     libmir/mir-algorithm | \
