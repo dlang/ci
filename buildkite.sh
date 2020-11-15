@@ -168,7 +168,7 @@ projects=(
     # See https://github.com/kyllingstad/zmqd/blob/v1.2.0/CHANGELOG.md#changed
     #"kyllingstad/zmqd"
     "lgvz/imageformats"
-    "libmir/mir"
+#    "libmir/mir"
     "libmir/mir-core"
     "libmir/mir-cpuid"
     "libmir/mir-optim"
