@@ -111,7 +111,7 @@ projects=(
     # sorted by test time fast to slow (to minimize pending queue length)
     "vibe-d/vibe.d+examples" # 9m51s
     "vibe-d/vibe.d+tests" # 6m44s
-    "dlang-bots/dlang-bot" # 4m54s
+    "dlang/dlang-bot" # 4m54s
     "ldc-developers/ldc" # 4m49s
     "vibe-d/vibe.d+base" # 4m31s
     "dlang/phobos" # 4m50s
@@ -190,7 +190,7 @@ memory_req["vibe-d/vibe-core+epoll"]=high
 memory_req["vibe-d/vibe.d+base"]=high
 memory_req["libmir/mir-algorithm"]=high
 memory_req["sociomantic-tsunami/ocean"]=high
-memory_req["dlang-bots/dlang-bot"]=high
+memory_req["dlang/dlang-bot"]=high
 memory_req["dlang/phobos"]=high
 memory_req["dlang/phobos+no-autodecode"]=high
 memory_req["dlang/dub"]=high

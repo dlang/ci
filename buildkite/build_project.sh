@@ -156,6 +156,10 @@ case "$REPO_FULL_NAME" in
         fi
         ;;
 
+    dlang/dlang-bot)
+        dub test --compiler=$DC -- --single --trace
+        ;;
+
     dlang/dub)
         rm test/issue895-local-configuration.sh # FIXME
         rm test/issue884-init-defer-file-creation.sh # FIXME
