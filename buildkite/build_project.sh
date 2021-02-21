@@ -324,6 +324,11 @@ case "$REPO_FULL_NAME" in
         dub test
         ;;
 
+    d-widget-toolkit/dwt)
+        dub build
+        ./tools/test_snippets.d
+        ;;
+
     *)
         use_travis_test_script
         ;;
