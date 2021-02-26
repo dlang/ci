@@ -209,7 +209,10 @@ case "$REPO_FULL_NAME" in
         dub test "--compiler=$DC"
         ;;
 
-    sociomantic-tsunami/ocean | \
+    sociomantic-tsunami/ocean)
+        git submodule update --init
+        make test V=1 F=prod ALLOW_DEPRECATIONS=1
+        ;;
     sociomantic-tsunami/turtle | \
     sociomantic-tsunami/swarm)
         git submodule update --init
