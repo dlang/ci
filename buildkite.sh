@@ -37,7 +37,7 @@ read -r -d '' DEFAULT_COMMAND_PROPS <<- EOM
     timeout_in_minutes: 60
     retry:
       automatic:
-        limit: 1
+        limit: 3
 EOM
 
 cat << EOF
