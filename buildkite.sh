@@ -111,7 +111,7 @@ projects=(
     # sorted by test time fast to slow (to minimize pending queue length)
     "vibe-d/vibe.d+examples" # 9m51s
     "vibe-d/vibe.d+tests" # 6m44s
-    "dlang/dlang-bot" # 4m54s
+#    "dlang/dlang-bot" # 4m54s
     "ldc-developers/ldc" # 4m49s
     "vibe-d/vibe.d+base" # 4m31s
     "dlang/phobos" # 4m50s
