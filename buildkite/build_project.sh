@@ -123,14 +123,14 @@ case "$REPO_FULL_NAME" in
         ;;
 
     vibe-d/vibe.d+base)
-        VIBED_DRIVER=vibe-core PARTS=builds,unittests ./travis-ci.sh
+        VIBED_DRIVER=vibe-core PARTS=builds,unittests ./run-ci.sh
         ;;
     vibe-d/vibe.d+examples)
-        VIBED_DRIVER=vibe-core PARTS=examples ./travis-ci.sh
+        VIBED_DRIVER=vibe-core PARTS=examples ./run-ci.sh
         ;;
     vibe-d/vibe.d+tests)
         remove_spurious_vibed_tests
-        VIBED_DRIVER=vibe-core PARTS=tests ./travis-ci.sh
+        VIBED_DRIVER=vibe-core PARTS=tests ./run-ci.sh
         ;;
 
     vibe-d/vibe-core+epoll)
