@@ -135,12 +135,12 @@ case "$REPO_FULL_NAME" in
 
     vibe-d/vibe-core+epoll)
         remove_spurious_vibe_core_tests
-        CONFIG=epoll ./run-ci.sh
+        CONFIG=epoll ./travis-ci.sh
         ;;
 
     vibe-d/vibe-core+select)
         remove_spurious_vibe_core_tests
-        CONFIG=select ./run-ci.sh
+        CONFIG=select ./travis-ci.sh
         ;;
 
     dlang/ci)
