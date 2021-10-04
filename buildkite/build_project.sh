@@ -33,6 +33,10 @@ case "$REPO_URL" in
         # Use master as Vibe.d covers a lot of the language features
         ref_to_use=master
         ;;
+    https://github.com/vibe-d/vibe-core)
+        # No tag includes https://github.com/vibe-d/vibe-core/commit/7833e425403c3804054b0bd16eacbf71fc7a28f4
+        ref_to_use=master
+        ;;
     *)
         ;;
 esac
