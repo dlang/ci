@@ -46,6 +46,6 @@ for dir in "${repositories[@]}" ; do
         repo="https://github.com/dlang/$dir"
         branch=$("$DIR/origin_target_branch.sh" "$repo")
         echo "target_branch: $branch"
-        git clone -b "${branch:-master}" --depth 1 "$repo"
+        git clone -b "${branch:-master}" --depth 1 "$repo" --quiet
     fi
 done

@@ -78,7 +78,7 @@ esac
 
 if [ "$ref_to_use" != "IS-ALREADY-CHECKED-OUT" ] ; then
     echo "--- Cloning ${REPO_URL} (tag: $ref_to_use)"
-    git clone -b "${ref_to_use}" --depth 1 "${REPO_URL}" "${REPO_DIR}"
+    git clone -b "${ref_to_use}" --depth 1 "${REPO_URL}" "${REPO_DIR}" --quiet
     cd "${REPO_DIR}"
 else
     # list the entire directory layout for debugging
@@ -278,6 +278,7 @@ case "$REPO_FULL_NAME" in
     dlang/druntime | \
     dlang/phobos)
         "$DIR"/clone_repositories.sh
+        echo "--- Launching test for $REPO_FULL_NAME"
         # To avoid running into "Path too long" issues, see e.g. https://github.com/dlang/ci/pull/287
         export TMP="/tmp/${BUILDKITE_AGENT_NAME}"
         export TEMP="$TMP"
@@ -296,6 +297,7 @@ case "$REPO_FULL_NAME" in
 
     dlang/phobos+no-autodecode)
         "$DIR"/clone_repositories.sh
+        echo "--- Launching test for $REPO_FULL_NAME"
         # To avoid running into "Path too long" issues, see e.g. https://github.com/dlang/ci/pull/287
         export TMP="/tmp/${BUILDKITE_AGENT_NAME}"
         export TEMP="$TMP"
