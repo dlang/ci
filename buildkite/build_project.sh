@@ -29,6 +29,17 @@ latest_tag=$(git ls-remote --tags ""${REPO_URL}"" | \
 ref_to_use="${latest_tag:-master}"
 
 case "$REPO_URL" in
+    # Sociomantic repositories are not released often anymore,
+    # so just use the HEAD of the default branch.
+    https://github.com/sociomantic-tsunami/ocean)
+        ref_to_use=v6.x.x
+        ;;
+    https://github.com/sociomantic-tsunami/swarm)
+        ref_to_use=v7.x.x
+        ;;
+    https://github.com/sociomantic-tsunami/turtle)
+        ref_to_use=v11.x.x
+        ;;
     https://github.com/vibe-d/vibe.d)
         # Use master as Vibe.d covers a lot of the language features
         ref_to_use=master
@@ -220,7 +231,7 @@ case "$REPO_FULL_NAME" in
     sociomantic-tsunami/turtle | \
     sociomantic-tsunami/swarm)
         git submodule update --init
-        make test V=1 F=production ALLOW_DEPRECATIONS=1
+        make test V=1 F=prod ALLOW_DEPRECATIONS=1
         ;;
 
     eBay/tsv-utils)
