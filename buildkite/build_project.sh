@@ -117,7 +117,7 @@ remove_spurious_vibed_tests()
     # temporarily disable failing tests, see: https://github.com/vibe-d/vibe.d/issues/2078
     rm -rf tests/redis # FIXME
     # temporarily disable failing tests, see: https://github.com/vibe-d/vibe.d/issues/2647
-    rm -rf tests/tls # FIXME
+    rm -rf tests/tls/*.d # FIXME
 }
 
 remove_spurious_vibe_core_tests()
