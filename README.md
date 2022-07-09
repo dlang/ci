@@ -1,4 +1,4 @@
-# dlangci
+# dlangci (TEST)
 
 CI pipelines for dlang.
 At the moment this mainly tests various dub projects against regressions during development of dlang.
