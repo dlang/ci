@@ -11,12 +11,20 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 "$DIR/clone_repositories.sh"
 
 echo "--- Building dmd"
-dmd/src/bootstrap.sh
+if [ -f dmd/src/bootstrap.sh ]; then
+    dmd/src/bootstrap.sh
 
-for dir in druntime phobos ; do
-    echo "--- Building $dir"
-    make -C $dir -f posix.mak --jobs=4
-done
+    for dir in druntime phobos ; do
+        echo "--- Building $dir"
+        make -C $dir -f posix.mak --jobs=4
+    done
+else
+    dmd/compiler/src/bootstrap.sh
+    echo "--- Building druntime"
+    make -C dmd/druntime/ -f posix.mak -j4
+    echo "--- Building Phobos"
+    make -C phobos -f posix.mak -j4
+fi
 
 echo "--- Building dub"
 pushd dub
