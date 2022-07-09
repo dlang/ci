@@ -37,9 +37,14 @@ echo "--- Building tools"
 make -C tools -f posix.mak RELEASE=1 --jobs=4
 
 echo "--- Building distribution"
+if [ -d dmd/druntime ]; then
+    DRUNTIME_IMPORTS='dmd/druntime/import/*'
+else
+    DRUNTIME_IMPORTS='druntime/import/*'
+fi
 mkdir -p distribution/{bin,imports,libs}
 cp --archive --link dmd/generated/linux/release/64/dmd dub/bin/dub tools/generated/linux/64/rdmd distribution/bin/
-cp --archive --link phobos/etc phobos/std druntime/import/* distribution/imports/
+cp --archive --link phobos/etc phobos/std $DRUNTIME_IMPORTS distribution/imports/
 cp --archive --link phobos/generated/linux/release/64/libphobos2.{a,so,so*[!o]} distribution/libs/
 echo '[Environment]' >> distribution/bin/dmd.conf
 echo 'DFLAGS=-I%@P%/../imports -L-L%@P%/../libs -L--export-dynamic -L--export-dynamic -fPIC' >> distribution/bin/dmd.conf
