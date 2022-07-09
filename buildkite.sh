@@ -73,7 +73,6 @@ EOF
 
 case "${BUILDKITE_REPO:-x}" in
     "https://github.com/dlang/dmd.git" | \
-    "https://github.com/dlang/druntime.git" | \
     "https://github.com/dlang/phobos.git")
 
 cat << EOF
@@ -128,7 +127,6 @@ projects=(
     #"d-language-server/dls" # 1m55s
     "eBay/tsv-utils" # 1m41s
     "dlang-community/D-Scanner" # 1m40s
-    "dlang/druntime" # 1m18s
     "dlang-tour/core" # 1m17s
     "d-widget-toolkit/dwt" # 1m16s
     "rejectedsoftware/diet-ng" # 56s

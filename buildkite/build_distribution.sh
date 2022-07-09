@@ -11,9 +11,11 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 "$DIR/clone_repositories.sh"
 
 echo "--- Building dmd"
-dmd/src/bootstrap.sh
+dmd/compiler/src/bootstrap.sh
+echo "--- Building druntime"
+make -C dmd/druntime -f posix.mak --jobs=4
 
-for dir in druntime phobos ; do
+for dir in phobos ; do
     echo "--- Building $dir"
     make -C $dir -f posix.mak --jobs=4
 done
@@ -31,7 +33,7 @@ make -C tools -f posix.mak RELEASE=1 --jobs=4
 echo "--- Building distribution"
 mkdir -p distribution/{bin,imports,libs}
 cp --archive --link dmd/generated/linux/release/64/dmd dub/bin/dub tools/generated/linux/64/rdmd distribution/bin/
-cp --archive --link phobos/etc phobos/std druntime/import/* distribution/imports/
+cp --archive --link phobos/etc phobos/std dmd/druntime/import/* distribution/imports/
 cp --archive --link phobos/generated/linux/release/64/libphobos2.{a,so,so*[!o]} distribution/libs/
 echo '[Environment]' >> distribution/bin/dmd.conf
 echo 'DFLAGS=-I%@P%/../imports -L-L%@P%/../libs -L--export-dynamic -L--export-dynamic -fPIC' >> distribution/bin/dmd.conf
