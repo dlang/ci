@@ -57,7 +57,6 @@ echo "--- Checking ${REPO_FULL_NAME} for a core repository and branch merging wi
 # Don't checkout a tagged version of the core repositories like Phobos
 case "$REPO_FULL_NAME" in
     "dlang/dmd" | \
-    "dlang/druntime" | \
     "dlang/phobos" | \
     "dlang/phobos+no-autodecode" | \
     "dlang/tools" | \
@@ -73,7 +72,6 @@ case "$REPO_FULL_NAME" in
             # clone_repositories.sh will clone them together
             case "$REPO_FULL_NAME" in
                 "dlang/dmd" | \
-                "dlang/druntime" | \
                 "dlang/phobos" | \
                 "dlang/phobos+no-autodecode")
                 ref_to_use="IS-ALREADY-CHECKED-OUT"
@@ -288,7 +286,6 @@ case "$REPO_FULL_NAME" in
         ;;
 
     dlang/dmd | \
-    dlang/druntime | \
     dlang/phobos)
         "$DIR"/clone_repositories.sh
         echo "--- Launching test for $REPO_FULL_NAME"
@@ -298,11 +295,11 @@ case "$REPO_FULL_NAME" in
         export TMPDIR="$TMP"
         rm -rf "$TMP" && mkdir -p "$TMP"
         # patch makefile which requires gdb 8 - see https://github.com/dlang/ci/pull/301
-        sed "s/TESTS+=rt_trap_exceptions_drt_gdb//" -i druntime/test/exceptions/Makefile
+        sed "s/TESTS+=rt_trap_exceptions_drt_gdb//" -i dmd/druntime/test/exceptions/Makefile
         # build druntime for phobos first, s.t. it doesn't fault when copying the druntime files in parallel
         # see https://github.com/dlang/ci/pull/340
         if [ "$REPO_FULL_NAME" == "dlang/phobos" ] ; then
-            make -C druntime -j2 -f posix.mak
+            make -C dmd/druntime -j2 -f posix.mak
         fi
         cd "$(basename "${REPO_FULL_NAME}")"&& make -f posix.mak clean && make -f posix.mak -j2 buildkite-test
         rm -rf "$TMP"
@@ -318,10 +315,10 @@ case "$REPO_FULL_NAME" in
         export NO_AUTODECODE=1
         rm -rf "$TMP" && mkdir -p "$TMP"
         # patch makefile which requires gdb 8 - see https://github.com/dlang/ci/pull/301
-        sed "s/TESTS+=rt_trap_exceptions_drt_gdb//" -i druntime/test/exceptions/Makefile
+        sed "s/TESTS+=rt_trap_exceptions_drt_gdb//" -i dmd/druntime/test/exceptions/Makefile
         # build druntime for phobos first, s.t. it doesn't fault when copying the druntime files in parallel
         # see https://github.com/dlang/ci/pull/340
-        make -C druntime -j2 -f posix.mak
+        make -C dmd/druntime -j2 -f posix.mak
         cd phobos && make -f posix.mak clean && make -f posix.mak -j2 autodecode-test
         rm -rf "$TMP"
         ;;
