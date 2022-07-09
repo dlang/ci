@@ -329,7 +329,7 @@ case "$REPO_FULL_NAME" in
         sed "s/TESTS+=rt_trap_exceptions_drt_gdb//" -i dmd/druntime/test/exceptions/Makefile
         # build druntime for phobos first, s.t. it doesn't fault when copying the druntime files in parallel
         # see https://github.com/dlang/ci/pull/340
-        if [ -d dmd/drunime ]; then
+        if [ -d dmd/druntime ]; then
             make -C dmd/druntime -j2 -f posix.mak
         else
             make -C druntime -j2 -f posix.mak
