@@ -326,7 +326,11 @@ case "$REPO_FULL_NAME" in
         export NO_AUTODECODE=1
         rm -rf "$TMP" && mkdir -p "$TMP"
         # patch makefile which requires gdb 8 - see https://github.com/dlang/ci/pull/301
-        sed "s/TESTS+=rt_trap_exceptions_drt_gdb//" -i dmd/druntime/test/exceptions/Makefile
+        if [ -f dmd/druntime/test/exceptions/Makefile ]; then
+            sed "s/TESTS+=rt_trap_exceptions_drt_gdb//" -i dmd/druntime/test/exceptions/Makefile
+        elif [ -f druntime/test/exceptions/Makefile ]; then
+            sed "s/TESTS+=rt_trap_exceptions_drt_gdb//" -i druntime/test/exceptions/Makefile
+        fi
         # build druntime for phobos first, s.t. it doesn't fault when copying the druntime files in parallel
         # see https://github.com/dlang/ci/pull/340
         if [ -d dmd/druntime ]; then
