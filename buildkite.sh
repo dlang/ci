@@ -150,7 +150,7 @@ projects=(
     "Abscissa/libInputVisitor"
     #"ariovistus/pyd"
     "atilaneves/automem"
-    "AuburnSounds/intel-intrinsics"
+    #"AuburnSounds/intel-intrinsics"
     "DerelictOrg/DerelictFT"
     "DerelictOrg/DerelictGL3"
     "DerelictOrg/DerelictGLFW3"
