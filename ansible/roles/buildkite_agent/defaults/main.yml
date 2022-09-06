@@ -1,5 +1,5 @@
 ---
-agent_version: 3.4.0
+agent_version: 3.28.0
 priority: 5 # Higher priority agents are assigned work first
 stop_timeout: 5min # systemd TimeoutStopSec for graceful agent shutdown
 num_agents: 1
