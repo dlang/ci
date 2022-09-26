@@ -160,7 +160,7 @@ projects=(
     "DlangScience/scid"
     "ikod/dlang-requests"
     "kaleidicassociates/excel-d"
-    "kaleidicassociates/lubeck"
+    #"kaleidicassociates/lubeck"
     # Need a zmq version >= 4.3
     # See https://github.com/kyllingstad/zmqd/blob/v1.2.0/CHANGELOG.md#changed
     #"kyllingstad/zmqd"
@@ -168,7 +168,7 @@ projects=(
     "libmir/mir"
     "libmir/mir-core"
     "libmir/mir-cpuid"
-    "libmir/mir-optim"
+    #"libmir/mir-optim"
     "msoucy/dproto"
     "Netflix/vectorflow"
     "nomad-software/dunit"
