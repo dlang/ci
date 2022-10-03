@@ -377,4 +377,4 @@ case "$REPO_FULL_NAME" in
 esac
 
 # final cleanup
-git clean -ffdxq .
+git clean ${BUILDKITE_GIT_CLEAN_FLAGS}
