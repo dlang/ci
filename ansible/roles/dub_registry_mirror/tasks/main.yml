@@ -14,7 +14,7 @@
 
 - name: install dmd
   apt:
-    deb: 'http://downloads.dlang.org/releases/2.x/2.083.1/dmd_2.083.1-0_amd64.deb'
+    deb: 'https://downloads.dlang.org/releases/2.x/2.083.1/dmd_2.083.1-0_amd64.deb'
     install_recommends: no
     update_cache: yes
     cache_valid_time: 3600
