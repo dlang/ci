@@ -19,7 +19,7 @@ git fetch upstream $("./$DIR/origin_target_branch.sh" https://github.com/dlang/i
 git checkout FETCH_HEAD --quiet
 
 mkdir build
-LATEST=$(wget -q -O - http://downloads.dlang.org/releases/LATEST)
+LATEST=$(wget -q -O - https://downloads.dlang.org/releases/LATEST)
 rdmd build_all.d v$LATEST $BRANCH
 rm -f build/*.zip # only keep lzma archives
 
@@ -34,9 +34,9 @@ aws --profile ddo s3 sync dmd-$BRANCH-$TODAY/ s3://downloads.dlang.org/nightlies
 
 # create redirects from dmd-$BRANCH/* to dmd-$BRANCH-2018-10-12/*
 for file in $(ls dmd-$BRANCH-$TODAY); do
-    echo -n | aws --profile ddo s3 cp - s3://downloads.dlang.org/nightlies/dmd-$BRANCH/$file --acl public-read --cache-control max-age=604800 --website-redirect http://downloads.dlang.org/nightlies/dmd-$BRANCH-$TODAY/$file
+    echo -n | aws --profile ddo s3 cp - s3://downloads.dlang.org/nightlies/dmd-$BRANCH/$file --acl public-read --cache-control max-age=604800 --website-redirect https://downloads.dlang.org/nightlies/dmd-$BRANCH-$TODAY/$file
 done
-echo -n | aws --profile ddo s3 cp - s3://downloads.dlang.org/nightlies/dmd-$BRANCH --acl public-read --cache-control max-age=604800 --website-redirect http://downloads.dlang.org/nightlies/dmd-$BRANCH-$TODAY
+echo -n | aws --profile ddo s3 cp - s3://downloads.dlang.org/nightlies/dmd-$BRANCH --acl public-read --cache-control max-age=604800 --website-redirect https://downloads.dlang.org/nightlies/dmd-$BRANCH-$TODAY
 echo -n $BRANCH-$TODAY | aws --profile ddo s3 cp - s3://downloads.dlang.org/nightlies/dmd-$BRANCH/LATEST --acl public-read --cache-control max-age=604800
 popd
 
