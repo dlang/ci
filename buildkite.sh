@@ -22,8 +22,6 @@ read -r -d '' LOAD_CI_FOLDER <<- EOM
 EOM
 
 read -r -d '' LOAD_DISTRIBUTION <<- EOM
-        # just to be sure there isn't anything old left
-        git clean ${BUILDKITE_GIT_CLEAN_FLAGS}
         echo "--- Load distribution archive"
         buildkite-agent artifact download distribution.tar.xz .
         tar xfJ distribution.tar.xz
@@ -206,9 +204,8 @@ cat << EOF
   - command: |
         # just to be sure there isn't anything old left
         git clean ${BUILDKITE_GIT_CLEAN_FLAGS}
-
         # don't build everything from the root folder
-        mkdir build && cd build
+        rm -rf buildkite-ci-build && mkdir buildkite-ci-build && cd buildkite-ci-build
 
         export REPO_URL="https://github.com/${project}"
         export REPO_DIR="$(echo "${project_name}" | tr '/' '-')"
