@@ -29,11 +29,10 @@ RUN apt-get update && \
     apt-get install -y build-essential cmake curl gdb git jq sqlite3 libblas-dev \
     libbz2-dev libcairo-dev libcurl4-gnutls-dev libevent-dev libgcrypt20-dev libgpg-error-dev \
     libgtk-3-0 liblapack-dev liblzo2-dev libopenblas-dev libreadline-dev libssl-dev libxml2-dev \
-    libxslt1-dev libzmq3-dev mongodb-server moreutils ninja-build \
+    libxslt1-dev libzmq3-dev llvm-dev mongodb-server moreutils ninja-build \
     pkg-config python-dev python-yaml python3-nose redis-server \
     rsync ruby ruby-dev sudo unzip wget gnupg lsb-release \
     apt-utils software-properties-common
-RUN bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
 
 # Install d-apt for dub / dmd (https://d-apt.sourceforge.io/)
 RUN wget https://netcologne.dl.sourceforge.net/project/d-apt/files/d-apt.list -O /etc/apt/sources.list.d/d-apt.list
