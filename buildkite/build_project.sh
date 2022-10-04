@@ -232,6 +232,7 @@ case "$REPO_FULL_NAME" in
 
     sociomantic-tsunami/ocean)
         git submodule update --init
+        rm -rfv integrationtest/pathutils/
         make test V=1 F=prod ALLOW_DEPRECATIONS=1
         ;;
     sociomantic-tsunami/turtle | \
