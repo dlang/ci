@@ -164,7 +164,8 @@ projects=(
     #"kyllingstad/zmqd"
     "lgvz/imageformats"
     "libmir/mir"
-    "libmir/mir-core"
+    # Disabled waiting for https://github.com/libmir/mir-core/pull/67
+    #"libmir/mir-core"
     "libmir/mir-cpuid"
     "libmir/mir-optim"
     "msoucy/dproto"
