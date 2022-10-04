@@ -377,4 +377,4 @@ case "$REPO_FULL_NAME" in
 esac
 
 # final cleanup
-git clean ${BUILDKITE_GIT_CLEAN_FLAGS}
+git clean ${BUILDKITE_GIT_CLEAN_FLAGS} || true
