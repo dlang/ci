@@ -27,11 +27,11 @@ ADD travis_get_script /usr/local/bin/get_travis_test_script
 
 RUN apt-get update && \
     apt-get install -y build-essential cmake curl gdb git jq sqlite3 libblas-dev \
-    libbz2-dev libcairo-dev libcurl4-gnutls-dev libevent-dev libgcrypt20-dev libgpg-error-dev \
+    libbz2-dev libcairo-dev libclang-dev libcurl4-gnutls-dev libevent-dev libgcrypt20-dev libgpg-error-dev \
     libgtk-3-0 liblapack-dev liblzo2-dev libopenblas-dev libreadline-dev libssl-dev libxml2-dev \
-    libxslt1-dev libzmq3-dev llvm-dev mongodb-server moreutils ninja-build \
+    libxslt1-dev libzmq3-dev llvm-dev mongodb-server moreutils net-tools ninja-build \
     pkg-config python-dev python-yaml python3-nose redis-server \
-    rsync ruby ruby-dev sudo unzip wget gnupg lsb-release \
+    rsync ruby ruby-dev sudo time unzip wget gnupg lsb-release \
     apt-utils software-properties-common
 
 # Install d-apt for dub / dmd (https://d-apt.sourceforge.io/)
