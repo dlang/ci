@@ -1,5 +1,22 @@
 #!/bin/bash
 
+################################################################################
+##               Generate YAML file used by Buildkite Pipelines               ##
+##                                                                            ##
+## This shell script will generate a YAML file which is then output to stdout ##
+## and pipped to `buildkite-agent pipeline upload` as described               ##
+## in Buildkite's 'Dynamic pipeline' section:                                 ##
+## https://buildkite.com/docs/pipelines/defining-steps#dynamic-pipelines      ##
+##                                                                            ##
+## The base configuration to do this is stored directly on Buildkite.         ##
+## The following projects currently support Buildkite pipelines:              ##
+## - dmd                                                                      ##
+## - phobos                                                                   ##
+## - dlang/ci itself                                                          ##
+## - dub                                                                      ##
+## - tools                                                                    ##
+################################################################################
+
 # Don't run Buildkite for the dmd-cxx branch
 if [ "${BUILDKITE_PULL_REQUEST_BASE_BRANCH:-master}" == "dmd-cxx" ] ; then
     echo ""
