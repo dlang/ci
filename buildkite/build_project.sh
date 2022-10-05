@@ -213,11 +213,18 @@ case "$REPO_FULL_NAME" in
         ;;
 
     AuburnSounds/intel-intrinsics)
-        export TRAVIS_OS_NAME="none"   # do not run x86 tests
-        export TRAVIS_CPU_ARCH="amd64" # do not run arm64 tests
-        use_travis_test_script
-        ;;
+        # Copied from x86_64 CI:
+        # https://github.com/AuburnSounds/intel-intrinsics/blob/f6efea7215cd1b38f4791945fc7705fc6bfc75d2/.github/workflows/x86_64.yml
 
+        # Unittest with default configuration
+        dub test
+        # Unittest with unittest-release configuration
+        dub test -b unittest-release
+        # Unittest with unittest-inst configuration
+        dub test -b unittest-inst
+        # Unittest with unittest-release-inst configuration
+        dub test -b unittest-release-inst
+        ;;
 
     dlang-community/D-YAML)
         dub build "--compiler=$DC"
