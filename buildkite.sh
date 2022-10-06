@@ -211,9 +211,9 @@ memory_req["higgsjs/Higgs"]=high
 memory_req["d-language-server/dls"]=high
 
 # self-test PRs to dlang/ci
-#if [[ "${BUILDKITE_REPO:-b}" =~ ^https://github.com/dlang/ci([.]git)?$ ]] ; then
-#    projects+=("dlang/ci")
-#fi
+if [[ "${BUILDKITE_REPO:-b}" =~ ^https://github.com/dlang/ci([.]git)?$ ]] ; then
+   projects+=("dlang/ci")
+fi
 
 for project_name in "${projects[@]}" ; do
     project="$(echo "$project_name" | sed "s/\([^+]*\)+.*/\1/")"
