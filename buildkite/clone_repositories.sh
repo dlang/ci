@@ -28,7 +28,7 @@ for dir in "${repositories[@]}" ; do
                     # for some commands a real "git" repository is required
                     cp -r "$f" "$dir"
                     ;;
-                ./build) ;;
+                ./buildkite-ci-build) ;;
                 ./buildkite) ;;
                 ./distribution) ;;
                 ./tmp) ;;
