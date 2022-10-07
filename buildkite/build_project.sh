@@ -40,10 +40,6 @@ case "$REPO_URL" in
     https://github.com/sociomantic-tsunami/turtle)
         ref_to_use=v11.x.x
         ;;
-    https://github.com/ldc-developers/ldc)
-        # Need to update the Buildkite runners to support LLVM >= 9
-        ref_to_use=v1.29.0
-        ;;
     https://github.com/vibe-d/vibe.d)
         # Use master as Vibe.d covers a lot of the language features
         ref_to_use=master
