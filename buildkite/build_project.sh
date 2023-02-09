@@ -369,6 +369,10 @@ case "$REPO_FULL_NAME" in
         ./tools/test_snippets.d
         ;;
 
+    snazzy-d/sdc)
+        dub build :sdfmt
+        ;;
+
     *)
         use_travis_test_script
         ;;

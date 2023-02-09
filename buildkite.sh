@@ -190,6 +190,7 @@ projects=(
     "repeatedly/mustache-d"
     "s-ludwig/std_data_json"
     "s-ludwig/taggedalgebraic"
+    "snazzy-d/sdc"
     # Fails with some network issue
     #"MartinNowak/io"
 )
