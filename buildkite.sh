@@ -172,8 +172,8 @@ projects=(
     "dlang/undeaD"
     "DlangScience/scid"
     "ikod/dlang-requests"
-    "kaleidicassociates/excel-d"
-    "kaleidicassociates/lubeck"
+    "symmetryinvestments/excel-d"
+    "symmetryinvestments/lubeck"
     # Need a zmq version >= 4.3
     # See https://github.com/kyllingstad/zmqd/blob/v1.2.0/CHANGELOG.md#changed
     #"kyllingstad/zmqd"
