@@ -188,7 +188,7 @@ projects=(
     "pbackus/sumtype"
     "PhilippeSigaud/Pegged"
     "repeatedly/mustache-d"
-    "s-ludwig/std_data_json"
+    "dlang-community/std_data_json"
     "s-ludwig/taggedalgebraic"
     "snazzy-d/sdc"
     # Fails with some network issue
