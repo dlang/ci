@@ -48,6 +48,10 @@ case "$REPO_URL" in
         # No tag includes https://github.com/vibe-d/vibe-core/commit/7833e425403c3804054b0bd16eacbf71fc7a28f4
         ref_to_use=master
         ;;
+    https://github.com/bpfkorea/agora)
+        # BPFK doesn't really have releases for the time being
+        latest_tag=v0.x.x
+        ;;
     *)
         ;;
 esac
@@ -236,6 +240,12 @@ case "$REPO_FULL_NAME" in
     sociomantic-tsunami/swarm)
         git submodule update --init
         make test V=1 F=prod ALLOW_DEPRECATIONS=1
+        ;;
+
+    bpfkorea/agora)
+        git submodule update --init
+        dub build --compiler=$DC
+        dub test --compiler=$DC
         ;;
 
     eBay/tsv-utils)
