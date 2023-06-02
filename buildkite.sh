@@ -174,6 +174,7 @@ projects=(
     "ikod/dlang-requests"
     "symmetryinvestments/excel-d"
     "symmetryinvestments/lubeck"
+    "symmetryinvestments/xlsxreader"
     # Need a zmq version >= 4.3
     # See https://github.com/kyllingstad/zmqd/blob/v1.2.0/CHANGELOG.md#changed
     #"kyllingstad/zmqd"
