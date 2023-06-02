@@ -173,6 +173,7 @@ projects=(
     "DlangScience/scid"
     "ikod/dlang-requests"
     "symmetryinvestments/excel-d"
+    "symmetryinvestments/ldapauth"
     "symmetryinvestments/lubeck"
     "symmetryinvestments/xlsxreader"
     # Need a zmq version >= 4.3
