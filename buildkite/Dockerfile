@@ -29,10 +29,14 @@ RUN apt-get update && \
     apt-get install -y build-essential cmake curl gdb git jq sqlite3 libblas-dev \
     libbz2-dev libcairo-dev libclang-dev libcurl4-gnutls-dev libevent-dev libgcrypt20-dev libgpg-error-dev \
     libgtk-3-0 liblapack-dev liblzo2-dev libopenblas-dev libreadline-dev libssl-dev libxml2-dev \
-    libxslt1-dev libzmq3-dev llvm-dev mongodb-server moreutils net-tools ninja-build \
-    pkg-config python-dev python-yaml python3-nose redis-server \
-    rsync ruby ruby-dev sudo time unzip wget gnupg lsb-release \
+    libxslt1-dev libzmq3-dev llvm-dev moreutils net-tools ninja-build \
+    pkg-config python3-dev python3-yaml python3-nose redis-server \
+    rsync ruby ruby-dev ruby-dotenv sudo time unzip wget gnupg lsb-release \
     apt-utils software-properties-common
+
+RUN curl -fsSL https://pgp.mongodb.com/server-6.0.asc | gpg -o /usr/share/keyrings/mongodb-server-6.0.gpg --dearmor
+RUN echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-6.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
+RUN apt update && export DEBIAN_FRONTEND=noninteractive && apt install -y mongodb-org-database
 
 # Install d-apt for dub / dmd (https://d-apt.sourceforge.io/)
 RUN wget https://netcologne.dl.sourceforge.net/project/d-apt/files/d-apt.list -O /etc/apt/sources.list.d/d-apt.list
