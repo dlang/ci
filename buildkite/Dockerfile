@@ -30,7 +30,7 @@ RUN apt-get update && \
     libbz2-dev libcairo-dev libclang-dev libcurl4-gnutls-dev libevent-dev libgcrypt20-dev libgpg-error-dev \
     libgtk-3-0 liblapack-dev libldap2-dev liblzo2-dev libopenblas-dev libreadline-dev libssl-dev libxml2-dev \
     libxslt1-dev libzmq3-dev llvm-dev moreutils net-tools ninja-build \
-    pkg-config python3-dev python3-yaml python3-nose redis-server \
+    pkg-config python3-dev python3-yaml python3-nose python2-dev redis-server \
     rsync ruby ruby-dev ruby-dotenv sudo time unzip wget gnupg lsb-release \
     apt-utils software-properties-common
 

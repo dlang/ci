@@ -136,7 +136,7 @@ case "$REPO_FULL_NAME" in
         ;;
 
     higgsjs/Higgs)
-        make -C source test "DC=$DC"
+        make -C source test "DC=$DC" "PYTHON=python2"
         ;;
 
     vibe-d/vibe.d+base)

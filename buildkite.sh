@@ -233,11 +233,16 @@ cat << EOF
     ${DEFAULT_COMMAND_PROPS}
 EOF
 
-if [ "${memory_req["$project_name"]:-x}" != "x" ] ; then
+#if [ "${memory_req["$project_name"]:-x}" != "x" ] ; then
+#cat << EOF
+    #agents:
+      #- "memory=${memory_req["$project_name"]}"
+#EOF
+#fi
+
 cat << EOF
     agents:
-      - "memory=${memory_req["$project_name"]}"
+      - "testtag"
 EOF
-fi
 
 done
