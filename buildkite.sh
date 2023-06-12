@@ -172,6 +172,7 @@ projects=(
     "dlang/undeaD"
     "DlangScience/scid"
     "ikod/dlang-requests"
+    "symmetryinvestments/autowrap"
     "symmetryinvestments/concurrency"
     "symmetryinvestments/excel-d"
     "symmetryinvestments/ldapauth"

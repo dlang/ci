@@ -373,6 +373,14 @@ case "$REPO_FULL_NAME" in
         dub build :sdfmt
         ;;
 
+    symmetryinvestments/autowrap)
+        dub fetch --cache=local pyd
+        dub run pyd:setup
+        source pyd_set_env_vars.sh python3
+        export PYTHON_LIB_DIR=/usr/lib
+        dub test
+        ;;
+
     *)
         use_travis_test_script
         ;;
