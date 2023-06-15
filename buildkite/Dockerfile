@@ -26,7 +26,7 @@ FROM buildkite/agent:ubuntu
 ADD travis_get_script /usr/local/bin/get_travis_test_script
 
 RUN apt-get update && \
-    apt-get install -y build-essential cmake curl gdb git jq sqlite3 libblas-dev \
+    apt-get install -y build-essential clang cmake curl gdb git jq sqlite3 libblas-dev \
     libbz2-dev libcairo-dev libclang-dev libcurl4-gnutls-dev libevent-dev libgcrypt20-dev libgpg-error-dev \
     libgtk-3-0 liblapack-dev libldap2-dev liblzo2-dev libopenblas-dev libreadline-dev libssl-dev libxml2-dev \
     libxslt1-dev libzmq3-dev llvm-dev moreutils net-tools ninja-build \
