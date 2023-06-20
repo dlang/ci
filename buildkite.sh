@@ -243,4 +243,9 @@ cat << EOF
 EOF
 fi
 
+#cat << eof
+    #agents:
+      #- "mylocalagent"
+#eof
+
 done
