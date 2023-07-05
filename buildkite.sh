@@ -195,6 +195,8 @@ projects=(
     "s-ludwig/std_data_json"
     "s-ludwig/taggedalgebraic"
     "snazzy-d/sdc"
+    "funkwerk-mobility/serialized" # 13s
+    "funkwerk-mobility/mocked" # 9s
     # Fails with some network issue
     #"MartinNowak/io"
 )
