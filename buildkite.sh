@@ -199,6 +199,7 @@ projects=(
     "funkwerk-mobility/mocked" # 9s
     # Fails with some network issue
     #"MartinNowak/io"
+    "andrey-zherikov/argparse"
 )
 # Add all projects that require more than 3GB of memory to build
 declare -A memory_req
