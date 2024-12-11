@@ -176,7 +176,7 @@ projects=(
     "symmetryinvestments/concurrency"
     "symmetryinvestments/excel-d"
     "symmetryinvestments/ldapauth"
-    "symmetryinvestments/lubeck"
+    "kaleidicassociates/lubeck"
     "symmetryinvestments/xlsxreader"
     # Need a zmq version >= 4.3
     # See https://github.com/kyllingstad/zmqd/blob/v1.2.0/CHANGELOG.md#changed
