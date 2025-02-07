@@ -138,7 +138,8 @@ projects=(
     "rejectedsoftware/ddox" # 2m42s
     "BlackEdder/ggplotd" # 1m56s
     #"d-language-server/dls" # 1m55s
-    "eBay/tsv-utils" # 1m41s
+    # tsv-utils is checking exact error messages, needs a PR to reenable
+    #"eBay/tsv-utils" # 1m41s
     "dlang-community/D-Scanner" # 1m40s
     "dlang-tour/core" # 1m17s
     "d-widget-toolkit/dwt" # 1m16s
