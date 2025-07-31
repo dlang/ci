@@ -178,8 +178,6 @@ case "$REPO_FULL_NAME" in
         ;;
 
     dlang/dub)
-        rm test/issue895-local-configuration.sh # FIXME
-        rm test/issue884-init-defer-file-creation.sh # FIXME
         use_travis_test_script
         ;;
 
