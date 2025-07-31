@@ -60,6 +60,7 @@ case "$REPO_FULL_NAME" in
     "dlang/druntime" | \
     "dlang/phobos" | \
     "dlang/phobos+no-autodecode" | \
+    "dlang/phobos+preview-in" | \
     "dlang/tools" | \
     "dlang/dub" | \
     "dlang/ci")
@@ -75,7 +76,8 @@ case "$REPO_FULL_NAME" in
                 "dlang/dmd" | \
                 "dlang/druntime" | \
                 "dlang/phobos" | \
-                "dlang/phobos+no-autodecode")
+                "dlang/phobos+no-autodecode" | \
+                "dlang/phobos+preview-in")
                 ref_to_use="IS-ALREADY-CHECKED-OUT"
                 ;;
             *)
@@ -336,6 +338,23 @@ case "$REPO_FULL_NAME" in
             make -C druntime -j2 -f posix.mak
         fi
         cd phobos && make -f posix.mak clean && make -f posix.mak -j2 autodecode-test
+        rm -rf "$TMP"
+        ;;
+
+    dlang/phobos+preview-in)
+        "$DIR"/clone_repositories.sh
+        # To avoid running into "Path too long" issues, see e.g. https://github.com/dlang/ci/pull/287
+        export TMP="/tmp/${BUILDKITE_AGENT_NAME}"
+        export TEMP="$TMP"
+        export TMPDIR="$TMP"
+        rm -rf "$TMP" && mkdir -p "$TMP"
+        # patch makefile which requires gdb 8 - see https://github.com/dlang/ci/pull/301
+        sed "s/TESTS+=rt_trap_exceptions_drt_gdb//" -i druntime/test/exceptions/Makefile
+        # Append `-preview=in` to DMD's config file so druntime / Phobos are built with it
+        ls -lR
+        sed 's/^DFLAGS=.*/& -preview=in/' $(find dmd/generated/ -name 'dmd.conf')
+        make -C druntime -j2 -f posix.mak
+        cd phobos && make -f posix.mak clean && make -f posix.mak -j2 buildkite-test
         rm -rf "$TMP"
         ;;
 
