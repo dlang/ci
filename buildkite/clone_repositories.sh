@@ -11,6 +11,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 origin_repo="$(echo "$BUILDKITE_REPO" | sed "s/.*\/\([^\]*\)[.]git/\1/")"
 
 echo "--- Cloning all core repositories"
+echo "BUILDKITE_PULL_REQUEST_REPO='${BUILDKITE_PULL_REQUEST_REPO:-}'"
 repositories=(dmd druntime phobos tools dub)
 
 # For PRs to dlang/ci, clone itself too, s.t. the code below can be tested
