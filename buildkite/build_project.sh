@@ -40,6 +40,9 @@ case "$REPO_URL" in
     https://github.com/sociomantic-tsunami/turtle)
         ref_to_use=v11.x.x
         ;;
+    https://github.com/dlang/undeaD)
+        ref_to_use=master
+        ;;
     https://github.com/vibe-d/vibe.d)
         # Use master as Vibe.d covers a lot of the language features
         ref_to_use=master
