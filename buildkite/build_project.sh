@@ -252,7 +252,7 @@ case "$REPO_FULL_NAME" in
     CyberShadow/ae)
         # remove failing extended attribute test
         perl -0777 -pi -e "s/unittest[^{]*{[^{}]*xAttrs[^{}]*}//" sys/file.d
-        use_travis_test_script
+        dub test "--compiler=$DC" --debug=ae_unittest
         ;;
 
     ikod/dlang-requests)
