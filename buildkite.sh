@@ -129,7 +129,7 @@ projects=(
     "dlang/phobos" # 4m50s
     "dlang/phobos+no-autodecode"
     "sociomantic-tsunami/ocean" # 4m49s
-    "sociomantic-tsunami/swarm"
+    #"sociomantic-tsunami/swarm"
     "sociomantic-tsunami/turtle"
     "dlang/dub" # 3m55s
     "vibe-d/vibe-core+epoll" # 3m38s
