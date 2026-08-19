@@ -171,6 +171,7 @@ projects=(
     "DerelictOrg/DerelictSDL2"
     "dlang-community/containers"
     "dlang/undeaD"
+    "dlang/dub-registry"
     "DlangScience/scid"
     "ikod/dlang-requests"
     "symmetryinvestments/autowrap"
