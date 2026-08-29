@@ -10,7 +10,12 @@ fi
 if [ $# -eq 2 ]; then
     origin_target_branch="$2"
 else
-    origin_target_branch="${BUILDKITE_PULL_REQUEST_BASE_BRANCH:-$BUILDKITE_BRANCH}"
+    if [[ "${BUILDKITE_PULL_REQUEST_REPO:-}" =~ github\.com/dlang/ ]]; then
+        # PR from official dlang repo - try same-named branches for the other repos
+        origin_target_branch="$BUILDKITE_BRANCH"
+    else
+        origin_target_branch="${BUILDKITE_PULL_REQUEST_BASE_BRANCH:-$BUILDKITE_BRANCH}"
+    fi
 fi
 
 if [ "$origin_target_branch" == "master" ] || [ "$origin_target_branch" == "stable" ] ; then
