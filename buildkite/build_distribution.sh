@@ -30,7 +30,7 @@ echo "--- Building dub"
 pushd dub
 # enable experimental build cache improvements https://github.com/dlang/dub/pull/1589
 sed -i 's|bool m_filterVersions = false;|bool m_filterVersions = true;|' source/dub/commandline.d
-DMD="../dmd/generated/linux/release/64/dmd" ./build.sh
+DMD="../dmd/generated/linux/release/64/dmd" rdmd ./build.d
 popd
 
 echo "--- Building tools"
