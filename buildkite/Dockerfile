@@ -21,7 +21,7 @@
 # to get a shell and see if any dependency is missing / the state of the build directory.
 #
 # To target your runner specifically for a certain job, other `--tags` arguments  can be used.
-FROM buildkite/agent:ubuntu
+FROM docker.io/buildkite/agent:3-ubuntu-24.04
 
 ADD travis_get_script /usr/local/bin/get_travis_test_script
 
@@ -29,20 +29,19 @@ RUN apt-get update && \
     apt-get install -y build-essential clang cmake curl gdb git jq sqlite3 libblas-dev \
     libbz2-dev libcairo-dev libclang-dev libcurl4-gnutls-dev libevent-dev libgcrypt20-dev libgpg-error-dev \
     libgtk-3-0 liblapack-dev libldap2-dev liblzo2-dev libopenblas-dev libreadline-dev libssl-dev libxml2-dev \
-    libxslt1-dev libzmq3-dev llvm-dev llvm-15-dev moreutils net-tools ninja-build \
+    libxslt1-dev libzmq3-dev llvm-dev llvm-20-dev moreutils net-tools ninja-build \
     pkg-config python3-dev python3-yaml python3-nose redis-server \
     rsync ruby ruby-dev ruby-dotenv sudo time unzip wget gnupg lsb-release \
     apt-utils software-properties-common
 
-RUN curl -fsSL https://pgp.mongodb.com/server-6.0.asc | gpg -o /usr/share/keyrings/mongodb-server-6.0.gpg --dearmor
-RUN echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-6.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
+RUN curl -fsSL https://pgp.mongodb.com/server-8.0.asc | gpg -o /usr/share/keyrings/mongodb-server-8.0.gpg --dearmor
+RUN echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] https://repo.mongodb.org/apt/ubuntu noble/mongodb-org/8.0 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-8.0.list
 RUN apt update && export DEBIAN_FRONTEND=noninteractive && apt install -y mongodb-org-database
 
 # Install d-apt for dub / dmd (https://d-apt.sourceforge.io/)
-RUN wget https://netcologne.dl.sourceforge.net/project/d-apt/files/d-apt.list -O /etc/apt/sources.list.d/d-apt.list
-RUN apt update --allow-insecure-repositories && \
-    apt -y --allow-unauthenticated install --reinstall d-apt-keyring && \
-    apt-get update && apt -y install dmd-compiler dub
+RUN wget https://master.dl.sourceforge.net/project/d-apt/files/d-apt.sources -O /etc/apt/sources.list.d/d-apt.sources && \
+    wget https://master.dl.sourceforge.net/project/d-apt/files/d-apt.asc -O /etc/apt/keyrings/d-apt.asc
+RUN apt-get update && apt -y install dmd-compiler dub
 
 # Build ebtree for sociomantic libraries
 # https://github.com/sociomantic-tsunami/ocean/commit/e895d9d6fc10f7f8a8829c197b2c66d310e2156f
