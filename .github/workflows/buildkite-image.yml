@@ -1,0 +1,50 @@
+name: Buildkite image
+
+on:
+  pull_request:
+    paths:
+      - 'buildkite/**'
+      - '.github/workflows/buildkite-image.yml'
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    env:
+      IMAGE: ghcr.io/${{ github.repository }}/buildkite
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Build image
+        run: docker build --pull --tag buildkite:test buildkite
+
+      - name: Smoke-test image
+        run: |
+          docker run --rm --entrypoint /bin/sh buildkite:test -ec '
+            buildkite-agent --version
+            dmd --version
+            dub --version
+            test -x /usr/local/bin/get_travis_test_script
+          '
+
+      - name: Log in to GHCR
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: echo "$GHCR_TOKEN" | docker login ghcr.io --username "$GITHUB_ACTOR" --password-stdin
+
+      - name: Publish image
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        run: |
+          IMAGE="${IMAGE,,}"
+          docker tag buildkite:test "$IMAGE:$GITHUB_SHA"
+          docker tag buildkite:test "$IMAGE:latest"
+          docker push "$IMAGE:$GITHUB_SHA"
+          docker push "$IMAGE:latest"

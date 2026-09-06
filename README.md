@@ -31,3 +31,9 @@ Pre-installed dependencies on buildkite agents
 ----------------------------------------------
 
 The server infrastructure is maintained using ansible and a list of pre-installed test dependencies can be found [here](/ansible/roles/test_deps/tasks/main.yml). Send us a PR if you need something that isn't yet installed.
+
+The [Buildkite Docker image](buildkite/Dockerfile) is built and smoke-tested on pull
+requests that change `buildkite/**` or its [workflow](.github/workflows/buildkite-image.yml).
+Every push to `master`, including merged pull requests, builds and tests the image
+before publishing it to `ghcr.io/dlang/ci/buildkite:latest` and a tag containing the
+full commit SHA. Publishing uses the repository's `GITHUB_TOKEN`.
