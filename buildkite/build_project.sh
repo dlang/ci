@@ -380,6 +380,12 @@ case "$REPO_FULL_NAME" in
         dub test
         ;;
 
+    jacob-carlborg/dstep)
+        # help it find libclang.so
+        ./configure --llvm-path=/usr/lib/llvm-18
+        use_travis_test_script
+        ;;
+
     *)
         use_travis_test_script
         ;;
