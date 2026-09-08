@@ -58,6 +58,10 @@ case "$REPO_URL" in
         # the latest tag from 2023 doesn't seem to support libclang v18
         ref_to_use=master
         ;;
+    https://github.com/dlang-tour/core)
+        # the latest tag from 2023 uses a buggy openssl dub-package version
+        ref_to_use=master
+        ;;
     *)
         ;;
 esac
