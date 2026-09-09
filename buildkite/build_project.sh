@@ -385,6 +385,8 @@ case "$REPO_FULL_NAME" in
         dub run pyd:setup
         source pyd_set_env_vars.sh python3
         export PYTHON_LIB_DIR=/usr/lib
+        # help dpp/libclang find libclang.so
+        export LIBRARY_PATH=/usr/lib/llvm-18/lib
         dub test
         ;;
 
