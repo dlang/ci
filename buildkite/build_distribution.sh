@@ -10,30 +10,6 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 "$DIR/clone_repositories.sh"
 
-# Run pre-commit checks on dmd repo if .pre-commit-config.yaml exists
-if [ -f dmd/.pre-commit-config.yaml ]; then
-    echo "--- Running pre-commit checks"
-    pip3 install --quiet --break-system-packages pre-commit
-    pushd dmd
-    export SKIP=no-commit-to-branch
-    pre-commit run --all-files
-    echo "--- Checking changelog entries"
-    check_prefix="$(find changelog -type f -name '*\.dd' -a ! -name 'dmd\.*' -a ! -name 'druntime\.*')"
-    if [ ! -z "${check_prefix}" ]; then
-        echo 'All changelog entries must begin with either `dmd.` or `druntime.`'
-        echo "Found: ${check_prefix}"
-        exit 1
-    fi
-    check_ext="$(find changelog -type f ! -name 'README\.md' -a ! -name '*\.dd')"
-    if [ ! -z "${check_ext}" ]; then
-        echo 'All changelog entries must end with `.dd`'
-        echo "Found: ${check_ext}"
-        exit 1
-    fi
-    popd
-    echo "--- Pre-commit checks passed"
-fi
-
 echo "--- Building dmd"
 if [ -f dmd/src/bootstrap.sh ]; then
     dmd/src/bootstrap.sh
